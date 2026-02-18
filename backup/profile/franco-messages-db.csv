@@ -1,0 +1,191 @@
+Description,Message
+Showing a new feature,"@Manish Kumar@Hitesh Shah @Shubh Garg @Suprith
+Hi team, quick update on the camera capture:
+I tested many approaches: react-native-camera-kit, react-native-vision-camera, expo-camera (what we had; overlay-friendly), the native camera, and some others. Native gave great quality but couldn’t support an overlay guide, and I had issues with the other options, so I came back to expo-camera and focused on improving it.
+The two main issues I saw with expo-camera on my iPhone, and translated to sub-par image quality in the submitted samples from José (American Asphalt):
+Focus only happened once and then stayed locked. I added a lightweight workaround that “nudges” autofocus on a loop (every ~2s) and also does a final settle just before capture. This makes the focus adapt as the user changes distance.
+Default resolution was too low. I now query the device’s available picture sizes and pick the best one automatically. On iOS, that list can mix presets (Photo/High/Medium/Low) with numeric sizes; we now prefer the largest numeric WxH. On Android, we pick the highest megapixel size for 4:3.
+Current behavior and user experience:
+Preview looks crisp and the captured image is high quality.
+We kept the overlay, and I added the copy to say the camera auto‑focuses every 2 seconds and to wait until the timecard is in focus before capturing.
+I’ve tested on my iPhone and it’s working well. It’d be great if someone could try on a few Android devices (I don’t have one with me ATM).
+I’ll show examples in the AI scrum today and open a PR today (branch name: feature/camera-improvements) into feature/Camera. Feel free to make changes, I tried to help, but I'm not by any means a mobile dev!
+@Greg I also adjusted the overlay text to reflect the autofocus behavior and the “wait until in focus” instruction, feel free to comment on that. See attached image."
+commenting on a PR from another team,"@Sanchit Sah @Shubh Garg Some comments on the PR:
+We understand that the idea behind this PR is to add to our API the functionality needed to store an extracted timesheet (in Lumber format) to Lumber DB.
+The issue with this is that the records of extracted timesheets shouldn't be saved to the DB after the extraction but after the verification process. As the verification process is detached and asynchronous from the extraction process (as discussed), these changed shouldn't be present in the timesheet_analyzer API.
+We have finished the implementation of the verification service, that takes as input a process_uuid, fetches a document from the extracted data collection, allows to edit its contents and populates another collection with the verified data. This is done by a human, for v1 we (AI team) will be responsible for this.
+We also added an endpoint that takes a process_uuid and fetches documents from the verified mongo DB collection, and outputs a JSON object in the agreed Lumber timesheet format, ready to be inserted into Lumber DB. This worked as a placeholder in the meantime while we didn't have access to Lumber DB API.
+Now that you shared the details on how to call Lumber API to store data in the Lumber DB (in Lumber format), we can add this to the verification service, so when a user finishes verifying the data, it is automatically sent to Lumber DB. We can finish up this integration today.
+But the way that this PR implements Lumber DB population is wrong because it is integrated in an incorrect place, it shouldn't be a part of the timesheet_analyzer API."
+"Telling politely to a team lead from other team that one member from his team should make work assigned to me (we are 2 in my team, his team ~20 people)","Hi @Shubh Garg, I hope you are ending your day well. About the changes to the timesheet capture camera feature: Do you think that after @Ritik Jha is done testing with Android (for now good news, he says that the autofocus is improving the image sharpness also on Android devices), someone from your team could make the proposed changes in this PR (and any other changes that you require)?
+https://github.com/Lumberfi/lumberfi-timesheet-app/pull/1275
+As I pointed out in the Slack group, our idea was just to try to help improve the capture quality, I think it might be better if someone who owns the repo makes the last adjustments to ensure nothing is missing or that I'm not breaking anything."
+Sharing improvements on a service to my boss and CTO,"@here I'm glad to say that we've wrapped up the improvements for the timesheet extractor we had in mind and pushed to develop deploy. Tomorrow will move to prod after conducting some additional testing.
+Speed improvements:
+Preprocessing Phase: From ~10s to ~6s per timesheet.
+Extraction Phase: From ~80s to ~25s per timesheet.
+Accuracy improvements:
+Please refer to the table in the following image for details. For now, we have a minimal dataset of 14 timesheets submitted in production and verified, but the improvements are still remarkable; we went from a total of 121 needed corrections to 26 across the 14 examples. Notable enhancement in the ""false positives"" area (calling that way the cases where the LLM detects content and the field is empty).
+
+EXTRACTION PROCESSES COMPARISON                        
+METRIC        LEGACY EXTRACTION        NEW EXTRACTION        IMPROVEMENT
+📋 DATASET OVERVIEW                        
+Verified extractions        14        14        -
+Total fields analyzed        2,352        2,352        -
+🎯 ACCURACY METRICS                        
+Overall accuracy        94.90%        98.90%        4.00%
+Correct fields        2,231        2,326        95
+❌ ERROR ANALYSIS                        
+Extractions with corrections        13        1        -12
+Extractions with false positives        13        0        -13
+Total corrections needed        121        26        -95
+Total false positives        94        0        -94
+False positive rate        77.70%        0.00%        -77.70%
+☑️ CHECKBOX ANALYSIS                        
+Checkbox corrections        32        5        -27
+Checkbox false positives        27        0        -27
+Checkbox false positive rate        84.40%        0.00%        -84.40%
+⚡ PERFORMANCE METRICS                        
+Avg corrections per image        8.6        1.9        -6.8
+Avg false positives per image        6.7        0        -6.7"
+Sharing improvements on a service to my boss and CTO,"@Manish Kumar@Hitesh Shah Hi team! Just an update, we just pushed to develop an improvement to the extraction processing speed: previously we took around 80s per timesheet, now we are at ~25 seconds.
+This is the extraction speed improvement I wrote about yesterday. We'll keep you posted about the accuracy improvements that we will implement next Monday/Tuesday.
+Have a great weekend!"
+Sharing state,"Hi team! @Manish Kumar @Hitesh Shah We just pushed an update for the preprocessing of the timesheet extractor to develop. Added testing and performance improvements to the preprocessing endpoint, now we are able to send the response in ~7.5 seconds. It should be less, maybe around 6 seconds in production (where we have more compute power available) but we haven't rolled it out to production yet, we need to finish testing to provide actual values.
+Now, the focus is on improving extraction performance, including both speed and accuracy. ETA for the improvements we have in mind should be end of week/monday.
+We are also working on the compliance chatbot. I will let @Federico Bogado provide an ETA.
+Also, @Shubh Garg shared today the code sections where we could experiment and try to help the team to have both high quality images and an overlay (just as a reminder, Shubh told us that using the new framework allowed the app to send high quality images but that now implementing an overlay to guide to user at capture time - or a zoom out - seems impossible). (edited) "
+Sharing state with boss,"Hi @Hitesh Shah! Happy Labor Day. FYI, today we met with @Greg and team, they wanted to know details about the face recognition process to start working on the UI design. I added @Shubh Garg to the call and he shared the current state of a feature that is being used to take profile pictures of workers, detecting when the quality of the capture is sufficient for face recognition. He will update us and the design team on whether it is feasible to add some feedback to the user, such us ""move closer, move further, stay still"", etc. I offered our help to Shubh in case he finds out that this is not trivial, because having high-quality images in the vector DB to match faces with is very important for the accuracy of the face detection system."
+When my CTO asked why a cursor request to connect to the organization github reached him,"I was exploring Cursor's Background Agents feature, which should enable:
+
+- Creating AI agents that can edit and run code asynchronously
+- GitHub integration for automated bug fixing (Bugbot)
+- Slack integration to interact with these agents directly from our workspace
+
+I wanted to test this feature to evaluate if it could improve our development workflow. This could be an initial trial to estimate its potential value for our team.
+We should be able to give access to only specific repositories inside the organization. If it's okay with you, I'd like to test it with these repos:
+
+- timesheet_analyzer
+- cba_rules_extractor
+- docs_chatbot
+- face-recognition
+
+Thanks,
+Franco"
+GPT summary of my work in Plegados Franger,"I worked at my family’s metalworking company, Plegados Franger, which provides CNC sheet metal forming and cutting services. My responsibilities covered a wide range of technical and operational tasks, including operating folding machines, guillotines, and pantographs, bending and welding profiles, and preparing CAD/CAM routines for plasma cutting. I also designed technical drawings for clients, handled customer service, and eventually became Plant Manager, overseeing production and a team of about 10 employees."
+Reporting Status to CEO (how is it going?),"@Shreesha Ramdas we were focusing on being demo ready on the facial recognition feature (demo was scheduled today 11:30 AM PST). The goal now is to be production ready by Monday.
+Besides that, we met with @Rajendran Nair, and we are making progress on the union agent,  he provided us with very valuable inputs to work with; but we don't have something ready to show right now."
+"Answering this question to Hitesh (boss):
+@channel I will be in transit starting tomorrow, landing back in the bay area Friday afternoon. Hope all is going well, please let me know if we need to have a call in the next few hours","@Hitesh Shah I think we are good. Status wise:
+@Shubh Garg implemented some changes to improve the speed of face-recognition process,  compressing the images (the main pain point was network I/O). @Federico Bogado worked with him to avoid major drawbacks on accuracy because of the resolution loss. This is a temporary solution; the real one will be moving the face detection step to the mobile app and sending out the embedded vectors instead of images.
+Regarding the union-agent / CBA project: We met with @Rajendran Nair , we have a clear path, and a clearly defined MVP. In this message I briefly described it and below @Shreesha Ramdas approved it, so it seems we are good. https://lumberfi.slack.com/archives/C09G9MVFJ5Q/p1759248162314149?thread_ts=1759243904.373269&cid=C09G9MVFJ5Q"
+Answer to my CEO: How’s the progress? When’s the next demo?,"We are working on extracting structured data from CBA documents (and optionally CBA + wage sheets). We have the requirements established, and one example pair of CBA and expected result from @Rajendran Nair (he’ll be sharing more examples when he has the chance). A good timeframe for a demo could be Friday next week."
+"Anser to my ceo, he asked me if there are more Andrej Karpathy videos or articles he should read","@Shreesha Ramdas
+Andrej Karpathy: Software Is Changing (Again) - https://www.youtube.com/watch?v=LCEmiRjPEtQ. Here he speaks about the evolution of software development, his “Software 3.0” concept. 40 min video full of useful timestamps, Jun 2025.
+In this medium post he introduced his ""Software 2.0"" concept, how software development is affected by Neural Networks. Article from 2017! But still relevant, can serve as a complement to the video on the first bullet: https://karpathy.medium.com/software-2-0-a64152b37c35
+In this youtube video he explains for a general audience how he uses LLMS - 2hs video, Feb 2025: https://www.youtube.com/watch?v=EWvNQjAaOHw&list=PLAqhIrjkxbuW9U8-vZ_s_cjKPT_FqRStI&index=3
+In these 2 videos he introduces LLMs, still not too technical:
+[1hr Talk] Intro to Large Language Models (the busy person intro to LLMs): https://www.youtube.com/watch?v=zjkBMFhNj_g
+Deep Dive into LLMs like ChatGPT (3.5 hs video): https://www.youtube.com/watch?v=7xTGNNLPyMI
+And finally, this is more technical content. I would recommend this playlist to any engineer who wants to start working in AI, is a fundamentals masterclass, and practical: for instance, he live codes GPT from scratch: https://www.youtube.com/watch?v=VMj-3S1tku0&list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ
+Bonus:
+Podcast with Lex Friedman, general talk about AI, Oct 2022, 3.5 hs video: https://www.youtube.com/watch?v=cdiD-9MMpb0"
+Sharing status to boss,"Hi @Hitesh Shah , yes all good. We ended up not assigning tasks to @Himanshu Agrawal and @Chetan Kumar Soni , there were no testing tasks (or tasks we could really parallelize) yet where it was worth it for them switch from their current tasks (on Monday - Tuesday this could change).
+
+An status report:
+
+Onboarding project - payroll register / YTD extraction:
+We met with Mel and Harish, really productive meeting, Mel solved a lot of questions, will work on some pending task on her side over the weekend.We have the new schema integrated in the pipeline, we are rn implementing changes from what we got from the meeting, and we should be able to start testing after implementing further changes based on the information Mel will deliver us on Monday.
+
+Union agent- CBA:
+Met with Harish and @Bhuvaneswari , she moved fast for us to have what we need. When Nitesh is online he will share lumber prod db credentials so we can have our much needed input - output pairs.
+
+We also met with @Aheesh , we demo’d the union agent and shared future steps, he liked it and saw value on the report generation."
+Sharing initiative to boss,"Also, we are ready to tackle the major pending our projects have until now: observability and evaluation, with a framework. Will try to finish the plan over the weekend and ask for the resources on Monday. Will tell you if we need your help on getting resources, but do not worry about this, one of the main ideas is to minimize the costs of this tool."
+"Sharing project with team, asking for resources","hi @Nitesh Kumar! I'm here, and Federico will connect in half an hour.  I wanted to take the chance to mention something I already brought up with @Hitesh Shah last week:
+CC: @Himanshu Agrawal @Chetan Kumar Soni 
+
+We'll be adding MLflow (LLM observability tool) to k8s-deployment-playbook. Using existing infrastructure to keep costs down.
+
+When you have a chance, I'll need a few things:
+1. Database (on existing RDS, dev + prod only) QA/Stage will point to the dev instance.
+
+CREATE DATABASE mlflow;
+CREATE USER mlflow WITH ENCRYPTED PASSWORD '<password>';
+GRANT ALL PRIVILEGES ON DATABASE mlflow TO mlflow;
+
+2. S3 buckets
+lumberfi-mlflow-artifacts-dev
+lumberfi-mlflow-artifacts-prod
+Versioning + lifecycle policies would be nice (for artifact cleanup over time)
+
+3. Google OAuth credentials This is for login, so team members will sign in with their Google accounts instead of managing separate passwords.
+Redirect URIs (these are the ""return addresses"" after Google login):
+https://mlflow.lumberfi.com/oauth2/callback (prod)
+https://mlflow-dev.lumberfi.com/oauth2/callback (dev)
+
+4. DNS
+mlflow.lumberfi.com → prod LB
+mlflow-dev.lumberfi.com → dev LB
+
+5. ECR repository (only if we end up building a custom image, might not need it)
+lumberfi/mlflow
+
+I'll push the vars files following the existing service pattern. Let me know if anything's unclear!"
+"My cto asked
+
+Can u give me some input on technology and architecture on ai side
+[5:00 PM]Like which Ilm do we have any custom rag or llm built etc","LLMs: No custom/fine-tuned models. All foundation models via API: Claude, OpenAI. 
+
+Why No own LLMs:We prioritized developing time and performance - accuracy, not costs.It doesn't make total sense for our current use cases. Might be overengineering. Fine-tuning is for when you need domain-specific behavior the base model can't handle with prompting alone. Our extraction tasks are solved with well structured prompts, schema enforcement, and validation loops on top of SOTA models. Fine-tuning would mean maintaining training infra, curating datasets, retraining on every model update, all for marginal gains we already get from better pipeline engineering (but might be worth experimenting with)
+
+RAG: No custom RAG framework. OpenAI Assistants API + Vector Store. Standard chunking + reranking. Got the job done fast for internal docs.
+
+Where the real engineering is currently in our projects:CV/LLM hybrid pipelines with heavy preprocessing (for instance in the paper timesheet extractor, we have OpenCV homography, SIFT, contour detection before hitting the model) garbage in, garbage out.Self-correcting agentic extraction loops (CBA Union Agent and Onboarding Payroll Register Extractor): LLM extracts → evaluator validates against source → fixes applied → re-validated. Multiple passes until output matches schema + source document.Token-aware batching to stay within context windows on large PDFs without losing cross-reference integrityFacial verification with pluggable backends (Rekognition, DeepFace/ArcFace, Qdrant vector search),  swappable.
+
+Some additional stack details:Multi-provider routing through LiteLLM.Structured output via Instructor with Pydantic schema enforcement and retry loops.Introducing observability and evaluation framework (mlflow / or some alternative).[5:35 PM]Our Philosophy: SOTA models, well-engineered pipelines around them. We optimized for extraction accuracy and reliability, not cost. Prioritize simple approaches, fail fast. The complexity is in the orchestration, validation, and preprocessing, not in training models. (edited) 
+[5:37 PM]tell me please if your question is answered"
+answering mail to cto abot issue,"Hi Manish,
+
+Our current pipeline runs face matching through AWS Rekognition, which doesnt include passive liveness detection natively.
+
+We can leverage DeepFace, which is already part of our deployment to run an anti-spoofing check (MiniFASNet) as a pre-validation gate before the Rekognition call. Its a lightweight model that analyzes the verification image for presentation attack artifacts. No changes needed to enrollment,
+reference images or the Rekognition pipeline, and nothing on the frontend side either.
+
+Adjusting the match threshold wouldnt help here since the face is genuine, just displayed on a screen. Liveness detection should be the right layer for this.
+
+Before commiting to a timeline we'd like to test this against the actual images from this to validate detection accuracy and latency in our
+environment. Will reach out to tget the original images.
+
+Franco"
+answering cto,"Yes, we will benchmark how much latency this extra step adds to the pipeline, as well as how it affects the overall accuracy of the system. We want to make sure we dont end up flagging poor quality images or edge cases (bad lighting, weird angles etc) as spoofing attempts, so we'll need to tune the threshold carefully.
+
+Also want to flag that even though this is a step in the right direction, the best solutions for anti-spoofing are when implemented on the camera side, or
+working with video instead of a single image. These type of solutions are much better at catching spoofing attempts because its way harder to trick the
+system when the detection is happening live on the camera while the picture is being taken. AWS actually has a product for exactly this purpose (Rekognition Face Liveness), but its not something we can just plug in on the backend, it needs to be connected to the camera/frontend itself.
+
+For now we'll get the server-side check in place, ideally test it with the actual images from the incident, and report back with accuracy and performance metrics.
+
+Franco"
+Giving issue solving status,"@Manish Kumar @Hitesh Shah @Priya @Shubh Garg Status on the face recognition spoof issue:
+
+Following yesterday's email, we have the MiniFASNet anti-spoof liveness check integrated and running. Tested it against the full Galindo dataset (all 9k images in prod from Galindo, the company that reported the issue).
+
+Corrected results at different confidence thresholds (separating actual spoofs from false positives):
+
+Threshold | Spoofs caught   | False positives | FP rate
+0.50          | 53/53 (100%)    | 168                   | 1.79%
+0.70          | 31/53 (58%)      | 69                     | 0.73%
+0.85          | 20/53 (38%)      | 38                     | 0.40%
+0.90          | 13/53 (25%)      | 24                     | 0.26%
+
+For now we're going with 0.50. Raising the threshold kills detection: at 0.70 we miss 42% of confirmed spoofs, which defeats the purpose. The 1.79% false positive rate means roughly 1 in 56 clock-ins gets a false rejection, not ideal but within acceptable range per ISO 30107-3 (the international biometric anti-spoofing standard, which considers up to 5% acceptable for security-oriented deployments). The false positives are recoverable (employee retries or falls back to manual clock-in) but a missed spoof is not.
+
+Also running a benchmark against a large industry-standard anti-spoofing dataset (~625K labeled images covering phone, tablet, print and mask attacks) to properly validate and lock in the final threshold. Should have full results tomorrow.
+
+@Manish Kumar Performance: ~180ms p50, ~205ms mean per image. p95 is 321ms
+
+
+
+Note on next steps: This current approach already improves the spoofing situation substantially and didn't require any changes on the client side. However as I mentioned in the email, the robust long-term solution is active liveness detection on the camera side (something like AWS Rekognition Face Liveness), which is more reliable than any backend-only analysis. That does require frontend integration (no special hardware, just the existing screen flashing and camera capturing a short video)."

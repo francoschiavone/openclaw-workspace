@@ -1,0 +1,34 @@
+# Pretrained Models Directory
+
+This directory is for storing saved/pretrained ML models.
+
+## Model Storage Convention
+
+Store models with descriptive names:
+- `failure_predictor_v1.joblib` - Trained failure prediction model
+- `anomaly_detector_v1.joblib` - Trained anomaly detection model
+- `forecast_model_v1.joblib` - Trained forecasting model
+
+## Loading Models
+
+```python
+import joblib
+from pathlib import Path
+
+model_path = Path(__file__).parent / "failure_predictor_v1.joblib"
+model = joblib.load(model_path)
+```
+
+## Training & Saving Models
+
+```python
+from ai.predictor import PredictorModel
+import joblib
+
+# Train model
+model = PredictorModel(model_type="random_forest")
+model.fit(X_train, y_train)
+
+# Save model
+joblib.dump(model, "pretrained/failure_predictor_v1.joblib")
+```

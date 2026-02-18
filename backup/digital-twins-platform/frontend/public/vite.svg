@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#006fff;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="20" fill="#0f172a"/>
+  <g fill="url(#gradient)">
+    <!-- Cube/Box representing Digital Twin -->
+    <path d="M50 20 L80 35 L80 65 L50 80 L20 65 L20 35 Z" fill="none" stroke="url(#gradient)" stroke-width="3"/>
+    <path d="M50 20 L50 80" stroke="url(#gradient)" stroke-width="2" opacity="0.5"/>
+    <path d="M20 35 L80 35" stroke="url(#gradient)" stroke-width="2" opacity="0.5"/>
+    <path d="M20 65 L80 65" stroke="url(#gradient)" stroke-width="2" opacity="0.5"/>
+    <!-- Center dot -->
+    <circle cx="50" cy="50" r="8" fill="url(#gradient)"/>
+    <!-- Connection lines -->
+    <line x1="50" y1="42" x2="50" y2="28" stroke="url(#gradient)" stroke-width="2"/>
+    <line x1="50" y1="58" x2="50" y2="72" stroke="url(#gradient)" stroke-width="2"/>
+    <line x1="42" y1="50" x2="28" y2="50" stroke="url(#gradient)" stroke-width="2"/>
+    <line x1="58" y1="50" x2="72" y2="50" stroke="url(#gradient)" stroke-width="2"/>
+  </g>
+</svg>
