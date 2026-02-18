@@ -1,0 +1,277 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Base dark theme */
+html {
+  @apply bg-industrial-darker;
+}
+
+body {
+  @apply bg-industrial-darker text-gray-100 min-h-screen;
+  background-image: 
+    radial-gradient(ellipse at top, rgba(0, 111, 255, 0.03) 0%, transparent 50%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, transparent 100%);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-industrial-dark;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-surface-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-surface-500;
+}
+
+/* Glow effects */
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+.glow-green {
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+.glow-orange {
+  box-shadow: 0 0 20px rgba(255, 149, 0, 0.3);
+}
+
+.glow-red {
+  box-shadow: 0 0 20px rgba(255, 59, 92, 0.3);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 59, 92, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 59, 92, 0.5);
+  }
+}
+
+/* Status indicators */
+.status-healthy {
+  @apply bg-accent-green/20 text-accent-green border-accent-green/30;
+}
+
+.status-warning {
+  @apply bg-accent-orange/20 text-accent-orange border-accent-orange/30;
+}
+
+.status-critical {
+  @apply bg-accent-red/20 text-accent-red border-accent-red/30;
+}
+
+.status-offline {
+  @apply bg-gray-500/20 text-gray-400 border-gray-500/30;
+}
+
+/* Card styles */
+.card {
+  @apply bg-industrial-panel rounded-xl border border-surface-700/50 p-4;
+  backdrop-filter: blur(10px);
+}
+
+.card-hover {
+  @apply transition-all duration-300 hover:border-primary-500/30 hover:shadow-lg hover:shadow-primary-500/5;
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply bg-gradient-to-r from-accent-cyan via-primary-400 to-accent-purple bg-clip-text text-transparent;
+}
+
+/* Grid pattern background */
+.grid-bg {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Animated gradient border */
+.gradient-border {
+  position: relative;
+  background: linear-gradient(var(--angle, 0deg), #00d4ff, #006fff, #a855f7);
+  padding: 1px;
+  border-radius: 12px;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(var(--angle, 0deg), #00d4ff, #006fff, #a855f7);
+  animation: rotate-gradient 3s linear infinite;
+}
+
+@keyframes rotate-gradient {
+  to {
+    --angle: 360deg;
+  }
+}
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* Sensor value animation */
+.sensor-value {
+  @apply font-mono text-lg transition-colors duration-300;
+}
+
+.sensor-value.warning {
+  @apply text-accent-orange;
+}
+
+.sensor-value.critical {
+  @apply text-accent-red animate-pulse;
+}
+
+/* 3D viewer container */
+.viewer-container {
+  @apply w-full h-full rounded-xl overflow-hidden;
+  background: linear-gradient(135deg, #0a0c10 0%, #14171e 100%);
+}
+
+/* Loading skeleton */
+.skeleton {
+  @apply bg-surface-700/50 rounded animate-pulse;
+}
+
+/* Notification badge */
+.notification-badge {
+  @apply absolute -top-1 -right-1 w-5 h-5 bg-accent-red text-white text-xs font-bold rounded-full flex items-center justify-center;
+  animation: bounce-subtle 2s ease-in-out infinite;
+}
+
+@keyframes bounce-subtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+/* Chart styling overrides */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: rgba(255, 255, 255, 0.05);
+}
+
+.recharts-text {
+  fill: #94a3b8;
+}
+
+/* Tooltip styling */
+.custom-tooltip {
+  @apply bg-industrial-panel border border-surface-600 rounded-lg p-3 shadow-xl;
+}
+
+/* Button styles */
+.btn-primary {
+  @apply bg-primary-500 hover:bg-primary-600 text-white font-medium px-4 py-2 rounded-lg transition-all duration-200;
+  @apply focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:ring-offset-2 focus:ring-offset-industrial-darker;
+}
+
+.btn-secondary {
+  @apply bg-surface-700 hover:bg-surface-600 text-gray-200 font-medium px-4 py-2 rounded-lg transition-all duration-200;
+  @apply border border-surface-600 hover:border-surface-500;
+}
+
+.btn-ghost {
+  @apply hover:bg-surface-700/50 text-gray-300 hover:text-white px-4 py-2 rounded-lg transition-all duration-200;
+}
+
+/* Input styles */
+.input {
+  @apply w-full bg-surface-800 border border-surface-600 rounded-lg px-4 py-2.5 text-gray-100 placeholder-gray-500;
+  @apply focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500/50;
+  @apply transition-all duration-200;
+}
+
+/* Table styles */
+.table-header {
+  @apply bg-surface-800/50 text-gray-400 text-sm font-medium uppercase tracking-wider;
+}
+
+.table-row {
+  @apply border-b border-surface-700/50 hover:bg-surface-800/30 transition-colors duration-200;
+}
+
+/* Animation utilities */
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+  
+  .no-print {
+    display: none;
+  }
+}
