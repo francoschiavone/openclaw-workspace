@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimulAI — Digital Twins + AI Simulation Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================
+           CSS RESET & BASE
+           ======================================== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Color Palette */
+            --color-bg-primary: #0a0a0f;
+            --color-bg-secondary: #12121a;
+            --color-bg-tertiary: #1a1a25;
+            --color-bg-card: #15151f;
+            
+            --color-gradient-start: #6366f1;
+            --color-gradient-mid: #8b5cf6;
+            --color-gradient-end: #06b6d4;
+            
+            --color-text-primary: #ffffff;
+            --color-text-secondary: #a1a1aa;
+            --color-text-muted: #71717a;
+            
+            --color-accent-blue: #3b82f6;
+            --color-accent-purple: #8b5cf6;
+            --color-accent-teal: #14b8a6;
+            --color-accent-cyan: #06b6d4;
+            
+            --color-border: rgba(255, 255, 255, 0.08);
+            --color-border-hover: rgba(255, 255, 255, 0.15);
+            
+            /* Typography */
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            
+            /* Spacing */
+            --section-padding: 120px;
+            --container-max: 1200px;
+            
+            /* Animations */
+            --transition-fast: 0.2s ease;
+            --transition-medium: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ========================================
+           UTILITY CLASSES
+           ======================================== */
+        .container {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section {
+            padding: var(--section-padding) 0;
+            position: relative;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--color-gradient-start) 0%, var(--color-gradient-mid) 50%, var(--color-gradient-end) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-border {
+            position: relative;
+        }
+
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-end));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+
+        /* ========================================
+           ANIMATIONS
+           ======================================== */
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100vh) translateX(20px);
+                opacity: 0;
+            }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ========================================
+           NAVIGATION
+           ======================================== */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 20px 0;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color var(--transition-fast);
+        }
+
+        .nav-links a:hover {
+            color: var(--color-text-primary);
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-mid));
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.3);
+        }
+
+        /* ========================================
+           HERO SECTION
+           ======================================== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+
+        .hero-background {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 20% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+        }
+
+        .hero-gradient-orb {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .hero-gradient-orb.orb-1 {
+            top: -200px;
+            right: -100px;
+            background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-mid));
+        }
+
+        .hero-gradient-orb.orb-2 {
+            bottom: -200px;
+            left: -100px;
+            background: linear-gradient(135deg, var(--color-gradient-end), var(--color-accent-teal));
+            animation-delay: -4s;
+        }
+
+        .particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--color-gradient-end);
+            border-radius: 50%;
+            animation: particleFloat 15s linear infinite;
+        }
+
+        .hero-content {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--color-accent-purple);
+            margin-bottom: 32px;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .hero-badge-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--color-accent-teal);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s ease 0.1s forwards;
+            opacity: 0;
+        }
+
+        .hero-tagline {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            margin-bottom: 16px;
+            animation: fadeInUp 0.8s ease 0.2s forwards;
+            opacity: 0;
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+            color: var(--color-text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            animation: fadeInUp 0.8s ease 0.3s forwards;
+            opacity: 0;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.4s forwards;
+            opacity: 0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-mid));
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--color-text-primary);
+            padding: 16px 32px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            border: 1px solid var(--color-border);
+            transition: border-color var(--transition-fast), background var(--transition-fast);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--color-border-hover);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* ========================================
+           SECTION HEADERS
+           ======================================== */
+        .section-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-accent-purple);
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+
+        .section-description {
+            font-size: 1.125rem;
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ========================================
+           WHAT IS IT SECTION
+           ======================================== */
+        .what-is {
+            background: var(--color-bg-secondary);
+        }
+
+        .what-is-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-bottom: 80px;
+        }
+
+        .what-is-card {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            transition: transform var(--transition-medium), border-color var(--transition-medium);
+        }
+
+        .what-is-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--color-border-hover);
+        }
+
+        .what-is-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-end));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+        }
+
+        .what-is-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .what-is-card p {
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Flow Diagram */
+        .flow-diagram {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 20px;
+            padding: 48px;
+        }
+
+        .flow-diagram-title {
+            text-align: center;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            margin-bottom: 40px;
+        }
+
+        .flow-steps {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .flow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .flow-step-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--color-bg-tertiary);
+            border: 2px solid var(--color-border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: border-color var(--transition-fast);
+        }
+
+        .flow-step:hover .flow-step-icon {
+            border-color: var(--color-accent-purple);
+        }
+
+        .flow-step-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            text-align: center;
+        }
+
+        .flow-arrow {
+            color: var(--color-text-muted);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        /* ========================================
+           USE CASES SECTION
+           ======================================== */
+        .use-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .use-case-card {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: transform var(--transition-medium), border-color var(--transition-medium);
+        }
+
+        .use-case-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--color-border-hover);
+        }
+
+        .use-case-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-gradient-start), var(--color-gradient-end));
+            opacity: 0;
+            transition: opacity var(--transition-medium);
+        }
+
+        .use-case-card:hover::before {
+            opacity: 1;
+        }
+
+        .use-case-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .use-case-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .use-case-quote {
+            color: var(--color-text-secondary);
+            font-size: 1rem;
+            font-style: italic;
+            line-height: 1.7;
+            padding-left: 16px;
+            border-left: 3px solid var(--color-accent-purple);
+        }
+
+        /* ========================================
+           HOW IT WORKS SECTION
+           ======================================== */
+        .how-it-works {
+            background: var(--color-bg-secondary);
+        }
+
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            position: relative;
+        }
+
+        .steps-container::before {
+            content: '';
+            position: absolute;
+            top: 60px;
+            left: 15%;
+            right: 15%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--color-gradient-start), var(--color-gradient-mid), var(--color-gradient-end));
+            opacity: 0.3;
+        }
+
+        .step-card {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 32px;
+            background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-mid));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .step-card p {
+            color: var(--color-text-secondary);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        /* ========================================
+           MARKET OPPORTUNITY SECTION
+           ======================================== */
+        .market {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .market-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .market-content h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+        }
+
+        .market-content p {
+            font-size: 1.125rem;
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+            margin-bottom: 32px;
+        }
+
+        .market-highlight {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(6, 182, 212, 0.1));
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 12px;
+            padding: 24px;
+            font-size: 1.125rem;
+            font-weight: 500;
+        }
+
+        .market-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .market-stat {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .market-stat-value {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        .market-stat-label {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            font-weight: 500;
+        }
+
+        .market-stat-sublabel {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            margin-top: 8px;
+        }
+
+        /* ========================================
+           COMPETITIVE ADVANTAGE SECTION
+           ======================================== */
+        .competitive {
+            background: var(--color-bg-secondary);
+        }
+
+        .comparison-table {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .comparison-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 16px;
+            padding: 24px 32px;
+            background: var(--color-bg-tertiary);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .comparison-header span {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+        }
+
+        .comparison-header span:first-child {
+            color: var(--color-text-primary);
+        }
+
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 16px;
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--color-border);
+            align-items: center;
+        }
+
+        .comparison-row:last-child {
+            border-bottom: none;
+        }
+
+        .comparison-row.highlight {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(6, 182, 212, 0.05));
+        }
+
+        .comparison-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .comparison-value {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+        }
+
+        .comparison-row.highlight .comparison-name {
+            color: var(--color-accent-purple);
+        }
+
+        .comparison-row.highlight .comparison-value {
+            color: var(--color-accent-teal);
+            font-weight: 500;
+        }
+
+        .check-icon {
+            color: var(--color-accent-teal);
+        }
+
+        .cross-icon {
+            color: #ef4444;
+        }
+
+        /* ========================================
+           TECH STACK SECTION
+           ======================================== */
+        .tech-stack-grid {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 48px;
+        }
+
+        .tech-item {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 16px;
+            padding: 24px 32px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: transform var(--transition-medium), border-color var(--transition-medium);
+        }
+
+        .tech-item:hover {
+            transform: translateY(-4px);
+            border-color: var(--color-border-hover);
+        }
+
+        .tech-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--color-bg-tertiary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .tech-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .tech-subtitle {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+        }
+
+        .tech-footer {
+            text-align: center;
+            padding: 24px 32px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(6, 182, 212, 0.05));
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .tech-footer p {
+            font-size: 1.125rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* ========================================
+           TEAM SECTION
+           ======================================== */
+        .team {
+            background: var(--color-bg-secondary);
+        }
+
+        .team-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .team-member {
+            text-align: center;
+            max-width: 280px;
+        }
+
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-end));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+        }
+
+        .team-avatar::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-end));
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .team-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .team-role {
+            font-size: 0.9rem;
+            color: var(--color-accent-purple);
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .team-bio {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        /* ========================================
+           CTA SECTION
+           ======================================== */
+        .cta {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-background {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse 60% 40% at 50% 100%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse 40% 30% at 20% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse 40% 30% at 80% 50%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .cta h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+        }
+
+        .cta p {
+            font-size: 1.25rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 40px;
+        }
+
+        .cta-form {
+            display: flex;
+            gap: 16px;
+            max-width: 500px;
+            margin: 0 auto 32px;
+        }
+
+        .cta-input {
+            flex: 1;
+            padding: 16px 24px;
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            color: var(--color-text-primary);
+            font-size: 1rem;
+            font-family: var(--font-family);
+            outline: none;
+            transition: border-color var(--transition-fast);
+        }
+
+        .cta-input:focus {
+            border-color: var(--color-accent-purple);
+        }
+
+        .cta-input::placeholder {
+            color: var(--color-text-muted);
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 48px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--color-text-secondary);
+        }
+
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.125rem;
+        }
+
+        /* ========================================
+           FOOTER
+           ======================================== */
+        .footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--color-border);
+            text-align: center;
+        }
+
+        .footer p {
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ========================================
+           RESPONSIVE DESIGN
+           ======================================== */
+        @media (max-width: 1024px) {
+            .what-is-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .steps-container::before {
+                display: none;
+            }
+            
+            .market-grid {
+                grid-template-columns: 1fr;
+                gap: 48px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --section-padding: 80px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .use-cases-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .steps-container {
+                grid-template-columns: 1fr;
+                gap: 48px;
+            }
+            
+            .market-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-header,
+            .comparison-row {
+                grid-template-columns: 1.5fr 1fr 1fr;
+            }
+            
+            .comparison-header span:last-child,
+            .comparison-row .comparison-value:last-child {
+                display: none;
+            }
+            
+            .cta-form {
+                flex-direction: column;
+            }
+            
+            .flow-steps {
+                flex-direction: column;
+            }
+            
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="logo gradient-text">SimulAI</div>
+            <ul class="nav-links">
+                <li><a href="#what-is">Qué es</a></li>
+                <li><a href="#use-cases">Casos de uso</a></li>
+                <li><a href="#how-it-works">Cómo funciona</a></li>
+                <li><a href="#market">Mercado</a></li>
+                <li><a href="#tech">Tecnología</a></li>
+            </ul>
+            <a href="#contact" class="nav-cta">Contactar</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background"></div>
+        <div class="hero-gradient-orb orb-1"></div>
+        <div class="hero-gradient-orb orb-2"></div>
+        <div class="particles" id="particles"></div>
+        
+        <div class="hero-content container">
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                Digital Twins + AI Simulation Platform
+            </div>
+            <h1 class="hero-title">
+                <span class="gradient-text">SimulAI</span>
+            </h1>
+            <p class="hero-tagline">Simulá el impacto de tus decisiones antes de moverlas</p>
+            <p class="hero-subtitle">Plataforma de Digital Twins + AI Simulation para industria. Transformá datos en predicciones y predicciones en decisiones inteligentes.</p>
+            <div class="hero-cta-group">
+                <a href="#contact" class="btn-primary">
+                    Solicitar Demo
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <a href="#what-is" class="btn-secondary">Conocer más</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- What Is It Section -->
+    <section class="section what-is" id="what-is">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Plataforma</span>
+                <h2 class="section-title">¿Qué es <span class="gradient-text">SimulAI</span>?</h2>
+                <p class="section-description">La combinación perfecta de gemelos digitales e inteligencia artificial para tomar decisiones sin riesgos.</p>
+            </div>
+
+            <div class="what-is-grid">
+                <div class="what-is-card animate-on-scroll">
+                    <div class="what-is-icon">🔄</div>
+                    <h3>Digital Twin</h3>
+                    <p>Réplica virtual en tiempo real de tu operación. Cada sensor, cada máquina, cada proceso replicado digitalmente con precisión milimétrica.</p>
+                </div>
+                <div class="what-is-card animate-on-scroll">
+                    <div class="what-is-icon">🧠</div>
+                    <h3>AI Simulation</h3>
+                    <p>El cerebro que predice y optimiza. Machine learning avanzado que aprende de tus datos y simula miles de escenarios en segundos.</p>
+                </div>
+                <div class="what-is-card animate-on-scroll">
+                    <div class="what-is-icon">⚡</div>
+                    <h3>Decisiones Sin Riesgo</h3>
+                    <p>Probá cambios en el gemelo digital antes de implementarlos. Fallá virtualmente, triunfá en la realidad.</p>
+                </div>
+            </div>
+
+            <div class="flow-diagram animate-on-scroll">
+                <p class="flow-diagram-title">Flujo de datos: Del mundo real a decisiones inteligentes</p>
+                <div class="flow-steps">
+                    <div class="flow-step">
+                        <div class="flow-step-icon">🌍</div>
+                        <span class="flow-step-label">Mundo Físico</span>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">📡</div>
+                        <span class="flow-step-label">Sensores</span>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">🔮</div>
+                        <span class="flow-step-label">Digital Twin</span>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">🤖</div>
+                        <span class="flow-step-label">AI Brain</span>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">💡</div>
+                        <span class="flow-step-label">Insights</span>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">✅</div>
+                        <span class="flow-step-label">Decisiones</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section class="section" id="use-cases">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Casos de Uso</span>
+                <h2 class="section-title">Industrias que <span class="gradient-text">transformamos</span></h2>
+                <p class="section-description">Soluciones específicas para los desafíos más complejos de cada industria.</p>
+            </div>
+
+            <div class="use-cases-grid">
+                <div class="use-case-card animate-on-scroll">
+                    <div class="use-case-icon">🏭</div>
+                    <h3 class="use-case-title">Manufacturing</h3>
+                    <p class="use-case-quote">"Tu máquina #3 va a fallar en 48hs. Causa: filtro sucio. Mantenimiento preventivo agendado automáticamente."</p>
+                </div>
+                <div class="use-case-card animate-on-scroll">
+                    <div class="use-case-icon">⚡</div>
+                    <h3 class="use-case-title">Energía</h3>
+                    <p class="use-case-quote">"Optimizá generación renovable con predicción de demanda. Ahorro estimado: 23% en costos operativos."</p>
+                </div>
+                <div class="use-case-card animate-on-scroll">
+                    <div class="use-case-icon">🚚</div>
+                    <h3 class="use-case-title">Supply Chain</h3>
+                    <p class="use-case-quote">"Simulá 1000 escenarios de distribución en minutos. Ruta óptima identificada: 15% reducción en tiempos de entrega."</p>
+                </div>
+                <div class="use-case-card animate-on-scroll">
+                    <div class="use-case-icon">🏗️</div>
+                    <h3 class="use-case-title">Construcción</h3>
+                    <p class="use-case-quote">"Monitoreá edificios en tiempo real desde tu oficina. Alerta temprana de problemas estructurales antes de que sean críticos."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="section how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Proceso</span>
+                <h2 class="section-title">¿Cómo <span class="gradient-text">funciona</span>?</h2>
+                <p class="section-description">De tus datos a decisiones inteligentes en tres pasos simples.</p>
+            </div>
+
+            <div class="steps-container">
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">1</div>
+                    <h3>Conectá tus datos</h3>
+                    <p>Integrá sensores, ERPs, SCADA, bases de datos y cualquier fuente de datos. Nuestra plataforma se adapta a tu infraestructura existente.</p>
+                </div>
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">2</div>
+                    <h3>Creá gemelos digitales</h3>
+                    <p>Modelá tus activos físicos en el mundo virtual. Desde máquinas individuales hasta plantas completas, todo replicado con precisión.</p>
+                </div>
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">3</div>
+                    <h3>Simulá, predecí, optimizá</h3>
+                    <p>Nuestra AI analiza patrones, predice fallos y optimiza operaciones. Tomá decisiones basadas en datos, no en intuición.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Market Opportunity Section -->
+    <section class="section market" id="market">
+        <div class="container">
+            <div class="market-grid">
+                <div class="market-content animate-on-scroll">
+                    <span class="section-label">Oportunidad</span>
+                    <h2>Un mercado que <span class="gradient-text">explota</span></h2>
+                    <p>El mercado de Digital Twins está creciendo a tasas sin precedentes. Las empresas que adopten esta tecnología ahora tendrán una ventaja competitiva masiva en los próximos años.</p>
+                    <div class="market-highlight">
+                        "El mercado de agentes AI está saturado. <strong>Simulación es el próximo wave.</strong>"
+                    </div>
+                </div>
+                <div class="market-stats">
+                    <div class="market-stat animate-on-scroll">
+                        <div class="market-stat-value gradient-text">$21B</div>
+                        <div class="market-stat-label">Mercado 2025</div>
+                        <div class="market-stat-sublabel">Tamaño actual del mercado</div>
+                    </div>
+                    <div class="market-stat animate-on-scroll">
+                        <div class="market-stat-value gradient-text">$150B</div>
+                        <div class="market-stat-label">Mercado 2030</div>
+                        <div class="market-stat-sublabel">Proyección a 5 años</div>
+                    </div>
+                    <div class="market-stat animate-on-scroll">
+                        <div class="market-stat-value gradient-text">48%</div>
+                        <div class="market-stat-label">CAGR</div>
+                        <div class="market-stat-sublabel">Tasa de crecimiento anual</div>
+                    </div>
+                    <div class="market-stat animate-on-scroll">
+                        <div class="market-stat-value gradient-text">7x</div>
+                        <div class="market-stat-label">ROI Promedio</div>
+                        <div class="market-stat-sublabel">Retorno de inversión</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Competitive Advantage Section -->
+    <section class="section competitive" id="competitive">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Ventaja Competitiva</span>
+                <h2 class="section-title">¿Por qué <span class="gradient-text">elegirnos</span>?</h2>
+                <p class="section-description">Compará y descubrí por qué somos la mejor opción para tu empresa.</p>
+            </div>
+
+            <div class="comparison-table animate-on-scroll">
+                <div class="comparison-header">
+                    <span>Característica</span>
+                    <span>Siemens</span>
+                    <span>Azure DT</span>
+                    <span>SimulAI</span>
+                </div>
+                <div class="comparison-row">
+                    <span class="comparison-name">Costo de implementación</span>
+                    <span class="comparison-value">$$$$</span>
+                    <span class="comparison-value">$$$</span>
+                    <span class="comparison-value">$$ ✓</span>
+                </div>
+                <div class="comparison-row">
+                    <span class="comparison-name">Tiempo de deployment</span>
+                    <span class="comparison-value">6-18 meses</span>
+                    <span class="comparison-value">3-6 meses</span>
+                    <span class="comparison-value">Días ✓</span>
+                </div>
+                <div class="comparison-row highlight">
+                    <span class="comparison-name">AI nativa</span>
+                    <span class="comparison-value"><span class="cross-icon">✗</span></span>
+                    <span class="comparison-value"><span class="cross-icon">✗</span></span>
+                    <span class="comparison-value"><span class="check-icon">✓</span></span>
+                </div>
+                <div class="comparison-row highlight">
+                    <span class="comparison-name">Solución vertical</span>
+                    <span class="comparison-value"><span class="cross-icon">✗</span></span>
+                    <span class="comparison-value"><span class="cross-icon">✗</span></span>
+                    <span class="comparison-value"><span class="check-icon">✓</span></span>
+                </div>
+                <div class="comparison-row">
+                    <span class="comparison-name">Vendor lock-in</span>
+                    <span class="comparison-value">Alto</span>
+                    <span class="comparison-value">Alto</span>
+                    <span class="comparison-value">Ninguno ✓</span>
+                </div>
+                <div class="comparison-row">
+                    <span class="comparison-name">Open source base</span>
+                    <span class="comparison-value"><span class="cross-icon">✗</span></span>
+                    <span class="comparison-value"><span class="cross-icon">✗</span></span>
+                    <span class="comparison-value"><span class="check-icon">✓</span></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section class="section" id="tech">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Tecnología</span>
+                <h2 class="section-title">Stack <span class="gradient-text">tecnológico</span></h2>
+                <p class="section-description">Construido con las mejores tecnologías open source, potenciado con AI propietaria.</p>
+            </div>
+
+            <div class="tech-stack-grid">
+                <div class="tech-item animate-on-scroll">
+                    <div class="tech-icon">🔷</div>
+                    <div>
+                        <div class="tech-name">Eclipse Ditto</div>
+                        <div class="tech-subtitle">Digital Twin Framework</div>
+                    </div>
+                </div>
+                <div class="tech-item animate-on-scroll">
+                    <div class="tech-icon">🐍</div>
+                    <div>
+                        <div class="tech-name">FastAPI</div>
+                        <div class="tech-subtitle">Backend Framework</div>
+                    </div>
+                </div>
+                <div class="tech-item animate-on-scroll">
+                    <div class="tech-icon">⚛️</div>
+                    <div>
+                        <div class="tech-name">React</div>
+                        <div class="tech-subtitle">Frontend Framework</div>
+                    </div>
+                </div>
+                <div class="tech-item animate-on-scroll">
+                    <div class="tech-icon">🎮</div>
+                    <div>
+                        <div class="tech-name">Three.js</div>
+                        <div class="tech-subtitle">3D Visualization</div>
+                    </div>
+                </div>
+                <div class="tech-item animate-on-scroll">
+                    <div class="tech-icon">🤖</div>
+                    <div>
+                        <div class="tech-name">AI/ML Engine</div>
+                        <div class="tech-subtitle">Proprietary</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tech-footer animate-on-scroll">
+                <p><strong>Open source base</strong> + <strong class="gradient-text">AI propietaria</strong> = Lo mejor de ambos mundos</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="section team" id="team">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Equipo</span>
+                <h2 class="section-title">Las mentes detrás de <span class="gradient-text">SimulAI</span></h2>
+                <p class="section-description">Combinamos experiencia técnica de clase mundial con visión de negocio.</p>
+            </div>
+
+            <div class="team-grid">
+                <div class="team-member animate-on-scroll">
+                    <div class="team-avatar">👨‍💻</div>
+                    <h3 class="team-name">Franco</h3>
+                    <p class="team-role">CTO / Tech Lead</p>
+                    <p class="team-bio">AI Engineer con experiencia en ML, sistemas distribuidos y arquitectura cloud. Apasionado por crear tecnología que resuelve problemas reales de la industria.</p>
+                </div>
+                <div class="team-member animate-on-scroll">
+                    <div class="team-avatar">👥</div>
+                    <h3 class="team-name">Tu equipo</h3>
+                    <p class="team-role">Co-fundadores</p>
+                    <p class="team-bio">Buscamos co-fundadores con experiencia en ventas enterprise, operations y fundraising para escalar SimulAI globalmente.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section cta" id="contact">
+        <div class="cta-background"></div>
+        <div class="container">
+            <div class="cta-content animate-on-scroll">
+                <h2>¿Listo para el <span class="gradient-text">futuro</span>?</h2>
+                <p>Agendá una demo y descubrí cómo SimulAI puede transformar tu operación industrial.</p>
+                
+                <form class="cta-form" onsubmit="event.preventDefault(); alert('¡Gracias! Te contactaremos pronto.');">
+                    <input type="email" class="cta-input" placeholder="tu@email.com" required>
+                    <button type="submit" class="btn-primary">Solicitar Demo</button>
+                </form>
+
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <span>hola@simulai.dev</span>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <span>Rosario, Argentina</span>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">🌐</div>
+                        <span>simulai.dev</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 SimulAI. Hecho con 💜 en Rosario, Argentina.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Particle effect for hero section
+        function createParticles() {
+            const container = document.getElementById('particles');
+            if (!container) return;
+            
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.bottom = '-10px';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particle.style.opacity = Math.random() * 0.5 + 0.2;
+                particle.style.width = (Math.random() * 4 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                container.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar background on scroll
+        const nav = document.querySelector('.nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.style.background = 'rgba(10, 10, 15, 0.95)';
+            } else {
+                nav.style.background = 'rgba(10, 10, 15, 0.8)';
+            }
+        });
+    </script>
+</body>
+</html>

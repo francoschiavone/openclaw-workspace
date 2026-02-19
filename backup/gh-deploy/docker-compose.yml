@@ -1,0 +1,235 @@
+# Eclipse Ditto Digital Twins Platform
+# Production-ready docker-compose configuration
+
+version: "3.8"
+
+services:
+  # ============================================
+  # MongoDB - Ditto's persistence layer
+  # ============================================
+  mongodb:
+    image: mongo:7.0
+    container_name: ditto-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ditto
+      MONGO_INITDB_ROOT_PASSWORD: ditto
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - ditto-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  # ============================================
+  # Eclipse Ditto - Policies Service
+  # Manages access control policies
+  # ============================================
+  policies:
+    image: eclipse/ditto-policies:${DITTO_VERSION:-3.8.0}
+    container_name: ditto-policies
+    restart: unless-stopped
+    environment:
+      - MONGO_DB_URI=mongodb://ditto:ditto@mongodb:27017/ditto?ssl=false
+      - MONGO_DB_CONNECTION_POOL_SIZE=20
+      - MONGO_DB_READ_PREFERENCE=primaryPreferred
+      - BIND_HOSTNAME=0.0.0.0
+      - JAVA_TOOL_OPTIONS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0
+    networks:
+      - ditto-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost:8080/health || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ============================================
+  # Eclipse Ditto - Things Service
+  # Manages digital twin entities
+  # ============================================
+  things:
+    image: eclipse/ditto-things:${DITTO_VERSION:-3.8.0}
+    container_name: ditto-things
+    restart: unless-stopped
+    environment:
+      - MONGO_DB_URI=mongodb://ditto:ditto@mongodb:27017/ditto?ssl=false
+      - MONGO_DB_CONNECTION_POOL_SIZE=20
+      - MONGO_DB_READ_PREFERENCE=primaryPreferred
+      - BIND_HOSTNAME=0.0.0.0
+      - JAVA_TOOL_OPTIONS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0
+    networks:
+      - ditto-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      policies:
+        condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost:8080/health || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ============================================
+  # Eclipse Ditto - Things Search Service
+  # Provides search capabilities
+  # ============================================
+  things-search:
+    image: eclipse/ditto-things-search:${DITTO_VERSION:-3.8.0}
+    container_name: ditto-things-search
+    restart: unless-stopped
+    environment:
+      - MONGO_DB_URI=mongodb://ditto:ditto@mongodb:27017/ditto?ssl=false
+      - MONGO_DB_CONNECTION_POOL_SIZE=20
+      - MONGO_DB_READ_PREFERENCE=primaryPreferred
+      - BIND_HOSTNAME=0.0.0.0
+      - JAVA_TOOL_OPTIONS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0
+    networks:
+      - ditto-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      things:
+        condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost:8080/health || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ============================================
+  # Eclipse Ditto - Connectivity Service
+  # Manages connections to external systems (MQTT, AMQP, etc.)
+  # ============================================
+  connectivity:
+    image: eclipse/ditto-connectivity:${DITTO_VERSION:-3.8.0}
+    container_name: ditto-connectivity
+    restart: unless-stopped
+    environment:
+      - MONGO_DB_URI=mongodb://ditto:ditto@mongodb:27017/ditto?ssl=false
+      - MONGO_DB_CONNECTION_POOL_SIZE=20
+      - MONGO_DB_READ_PREFERENCE=primaryPreferred
+      - BIND_HOSTNAME=0.0.0.0
+      - JAVA_TOOL_OPTIONS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0
+    networks:
+      - ditto-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      policies:
+        condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost:8080/health || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ============================================
+  # Eclipse Ditto - Gateway Service
+  # HTTP/WebSocket API entry point
+  # ============================================
+  gateway:
+    image: eclipse/ditto-gateway:${DITTO_VERSION:-3.8.0}
+    container_name: ditto-gateway
+    restart: unless-stopped
+    environment:
+      - MONGO_DB_URI=mongodb://ditto:ditto@mongodb:27017/ditto?ssl=false
+      - MONGO_DB_CONNECTION_POOL_SIZE=20
+      - MONGO_DB_READ_PREFERENCE=primaryPreferred
+      - BIND_HOSTNAME=0.0.0.0
+      - ENABLE_PRE_AUTHENTICATION=false
+      # DevOps password for admin access
+      - JAVA_TOOL_OPTIONS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Dditto.gateway.authentication.devops.password=dittoPwd
+    ports:
+      - "8080:8080"  # HTTP API
+      - "8081:8081"  # WebSocket
+    networks:
+      - ditto-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      policies:
+        condition: service_healthy
+      things:
+        condition: service_healthy
+      things-search:
+        condition: service_healthy
+      connectivity:
+        condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost:8080/health || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+
+  # ============================================
+  # Eclipse Mosquitto - MQTT Broker
+  # For IoT device connectivity
+  # ============================================
+  mosquitto:
+    image: eclipse-mosquitto:2.0.20
+    container_name: ditto-mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"  # MQTT
+      - "9001:9001"  # WebSocket
+    volumes:
+      - ./mosquitto/config:/mosquitto/config:ro
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+    networks:
+      - ditto-network
+    healthcheck:
+      test: mosquitto_sub -t '$$SYS/#' -C 1 -i healthcheck -W 3 || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ============================================
+  # Python Backend API
+  # Custom FastAPI layer on top of Ditto
+  # ============================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ditto-backend
+    restart: unless-stopped
+    environment:
+      - DITTO_API_URL=http://gateway:8080
+      - DITTO_WS_URL=ws://gateway:8081
+      - DITTO_DEVOPS_USER=devops
+      - DITTO_DEVOPS_PASSWORD=dittoPwd
+      - MQTT_BROKER_URL=mqtt://mosquitto:1883
+      - LOG_LEVEL=INFO
+    ports:
+      - "8000:8000"
+    networks:
+      - ditto-network
+    depends_on:
+      gateway:
+        condition: service_healthy
+      mosquitto:
+        condition: service_healthy
+
+networks:
+  ditto-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  mosquitto_data:
+  mosquitto_log:
