@@ -22,7 +22,7 @@ Last update: 2026-02-18T22:50Z
 - Contact: Iván (software salesman)
 
 ## Obsidian Vault
-- Cloned at `obsidian/` in workspace, synced every 6h via cron
+- Cloned at `obsidian/` in workspace, synced every 5min via cron
 - Structure: 00-Inbox, 01-Journal, 02-LumberFi, 03-Career, 04-Personal, 05-Resources, 06-Archive, 99-Templates
 - "Note this" → create in appropriate folder; quick capture → 00-Inbox
 
@@ -37,7 +37,7 @@ Last update: 2026-02-18T22:50Z
 - `memory/bank/`: topic files (projects, infra, decisions, research-index)
 - Vector search: LOCAL embeddings (embeddinggemma-300m, GGUF, ~329MB in workspace/.cache/)
 - Hybrid search: BM25 + vector (0.3/0.7), sqlite-vec accelerated
-- Cron: backup workspace → GitHub daily 3AM, Obsidian sync every 6h
+- Cron: backup workspace → GitHub daily 3AM, Obsidian sync every 10min
 
 ## Pending
 - Phase 3 memory: reflect jobs in heartbeats, QMD backend

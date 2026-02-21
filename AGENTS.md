@@ -186,7 +186,7 @@ openclaw-workspace/
 
 ### Obsidian Vault (Franco's notes)
 The vault is cloned in your workspace: `/home/node/.openclaw/workspace/obsidian/`
-Synced with GitHub every 6h via cron. Remote: `francoschiavone/obsidian`
+Synced with GitHub every 5 minutes via cron. Remote: `francoschiavone/obsidian`
 
 #### Vault structure
 ```
