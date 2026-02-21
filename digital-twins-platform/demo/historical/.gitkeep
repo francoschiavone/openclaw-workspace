@@ -1,0 +1,31 @@
+# Historical Data Directory
+
+This directory contains generated historical sensor data for the Digital Twins demo.
+
+## Files
+
+- `twin-*_history.csv` - Historical readings for each digital twin
+- `generation_summary.json` - Metadata about generated data
+- `INCIDENTS.md` - Documentation of simulated incidents
+
+## Generate Data
+
+Run from the demo directory:
+
+```bash
+python generate_history.py
+```
+
+Options:
+- `--days 30` - Number of days to generate (default: 30)
+- `--start-date YYYY-MM-DD` - Start date for historical data
+- `--output historical` - Output directory
+
+## CSV Format
+
+```csv
+timestamp,sensor_id,sensor_name,unit,value,status
+2025-01-15T00:00:00+00:00,s001-temp,Spindle Temperature,°C,42.5,normal
+```
+
+Status values: `normal`, `warning`, `critical`

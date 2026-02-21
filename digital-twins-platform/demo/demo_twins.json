@@ -1,0 +1,396 @@
+{
+  "twins": [
+    {
+      "id": "twin-001",
+      "name": "CNC Milling Machine Alpha",
+      "type": "machine",
+      "subtype": "cnc_mill",
+      "location": {
+        "building": "Factory-A",
+        "floor": 1,
+        "area": "Production Line 1",
+        "coordinates": {"x": 12.5, "y": 8.3}
+      },
+      "sensors": [
+        {"id": "s001-temp", "name": "Spindle Temperature", "unit": "°C", "min": 20, "max": 120, "current_value": 45.2, "warning_threshold": 80, "critical_threshold": 100},
+        {"id": "s001-vib", "name": "Vibration Level", "unit": "mm/s", "min": 0, "max": 50, "current_value": 2.8, "warning_threshold": 15, "critical_threshold": 25},
+        {"id": "s001-rpm", "name": "Spindle Speed", "unit": "RPM", "min": 0, "max": 12000, "current_value": 8500},
+        {"id": "s001-power", "name": "Power Consumption", "unit": "kW", "min": 0, "max": 45, "current_value": 18.5},
+        {"id": "s001-load", "name": "Load Percentage", "unit": "%", "min": 0, "max": 100, "current_value": 65}
+      ],
+      "status": "operational",
+      "metadata": {
+        "manufacturer": "Haas Automation",
+        "model": "VF-2SS",
+        "install_date": "2022-03-15",
+        "last_maintenance": "2025-11-20",
+        "serial_number": "HVF2SS-2022-031542",
+        "firmware_version": "3.42.1"
+      },
+      "children": ["twin-001-spindle", "twin-001-coolant"],
+      "parent": null
+    },
+    {
+      "id": "twin-001-spindle",
+      "name": "CNC Alpha - Spindle Unit",
+      "type": "machine",
+      "subtype": "spindle",
+      "location": {
+        "building": "Factory-A",
+        "floor": 1,
+        "area": "Production Line 1"
+      },
+      "sensors": [
+        {"id": "s001s-temp", "name": "Bearing Temperature", "unit": "°C", "min": 20, "max": 90, "current_value": 52.1, "warning_threshold": 70, "critical_threshold": 85},
+        {"id": "s001s-hours", "name": "Operating Hours", "unit": "h", "min": 0, "max": 50000, "current_value": 8756}
+      ],
+      "status": "operational",
+      "metadata": {
+        "manufacturer": "GMN",
+        "model": "HCS-230",
+        "install_date": "2022-03-15",
+        "last_maintenance": "2025-08-10"
+      },
+      "children": [],
+      "parent": "twin-001"
+    },
+    {
+      "id": "twin-001-coolant",
+      "name": "CNC Alpha - Coolant System",
+      "type": "machine",
+      "subtype": "coolant",
+      "location": {
+        "building": "Factory-A",
+        "floor": 1,
+        "area": "Production Line 1"
+      },
+      "sensors": [
+        {"id": "s001c-flow", "name": "Flow Rate", "unit": "L/min", "min": 0, "max": 50, "current_value": 32.5, "warning_threshold": 15, "critical_threshold": 5},
+        {"id": "s001c-temp", "name": "Coolant Temperature", "unit": "°C", "min": 10, "max": 60, "current_value": 28.3, "warning_threshold": 45, "critical_threshold": 55},
+        {"id": "s001c-level", "name": "Tank Level", "unit": "%", "min": 0, "max": 100, "current_value": 78, "warning_threshold": 20, "critical_threshold": 10}
+      ],
+      "status": "operational",
+      "metadata": {
+        "manufacturer": "Tormach",
+        "model": "Cool-CNC-500",
+        "install_date": "2022-03-15",
+        "last_maintenance": "2025-12-05"
+      },
+      "children": [],
+      "parent": "twin-001"
+    },
+    {
+      "id": "twin-002",
+      "name": "Robotic Arm Beta",
+      "type": "machine",
+      "subtype": "robotic_arm",
+      "location": {
+        "building": "Factory-A",
+        "floor": 1,
+        "area": "Assembly Station 3",
+        "coordinates": {"x": 25.0, "y": 12.0}
+      },
+      "sensors": [
+        {"id": "s002-temp", "name": "Motor Temperature", "unit": "°C", "min": 20, "max": 100, "current_value": 48.7, "warning_threshold": 75, "critical_threshold": 90},
+        {"id": "s002-load", "name": "Payload Weight", "unit": "kg", "min": 0, "max": 50, "current_value": 12.3},
+        {"id": "s002-cycles", "name": "Cycle Count", "unit": "cycles", "min": 0, "max": 10000000, "current_value": 2456789},
+        {"id": "s002-accuracy", "name": "Position Accuracy", "unit": "mm", "min": 0, "max": 5, "current_value": 0.05, "warning_threshold": 0.5, "critical_threshold": 1.0},
+        {"id": "s002-speed", "name": "Movement Speed", "unit": "m/s", "min": 0, "max": 3, "current_value": 1.8},
+        {"id": "s002-power", "name": "Power Consumption", "unit": "kW", "min": 0, "max": 15, "current_value": 4.2}
+      ],
+      "status": "operational",
+      "metadata": {
+        "manufacturer": "FANUC",
+        "model": "M-20iD/25",
+        "install_date": "2021-06-10",
+        "last_maintenance": "2025-10-15",
+        "serial_number": "FNC-M20-2021-061025",
+        "firmware_version": "R-30iB Plus"
+      },
+      "children": [],
+      "parent": null
+    },
+    {
+      "id": "twin-003",
+      "name": "Conveyor Belt Gamma",
+      "type": "machine",
+      "subtype": "conveyor",
+      "location": {
+        "building": "Factory-A",
+        "floor": 1,
+        "area": "Production Line 1",
+        "coordinates": {"x": 35.0, "y": 5.0}
+      },
+      "sensors": [
+        {"id": "s003-speed", "name": "Belt Speed", "unit": "m/s", "min": 0, "max": 2, "current_value": 0.85},
+        {"id": "s003-temp", "name": "Motor Temperature", "unit": "°C", "min": 20, "max": 100, "current_value": 55.2, "warning_threshold": 70, "critical_threshold": 85},
+        {"id": "s003-tension", "name": "Belt Tension", "unit": "N", "min": 100, "max": 5000, "current_value": 2200, "warning_threshold": 1000, "critical_threshold": 500},
+        {"id": "s003-throughput", "name": "Items Per Minute", "unit": "items/min", "min": 0, "max": 200, "current_value": 85},
+        {"id": "s003-vib", "name": "Vibration Level", "unit": "mm/s", "min": 0, "max": 30, "current_value": 1.2, "warning_threshold": 10, "critical_threshold": 20},
+        {"id": "s003-hours", "name": "Operating Hours", "unit": "h", "min": 0, "max": 100000, "current_value": 45230}
+      ],
+      "status": "operational",
+      "metadata": {
+        "manufacturer": "Dorner",
+        "model": "3200 Series",
+        "install_date": "2020-09-22",
+        "last_maintenance": "2025-09-30",
+        "serial_number": "DOR-3200-2020-0922"
+      },
+      "children": [],
+      "parent": null
+    },
+    {
+      "id": "twin-004",
+      "name": "HVAC System North",
+      "type": "hvac",
+      "subtype": "central_air",
+      "location": {
+        "building": "Factory-A",
+        "floor": 2,
+        "area": "Mechanical Room North",
+        "coordinates": {"x": 10.0, "y": 40.0}
+      },
+      "sensors": [
+        {"id": "s004-temp-in", "name": "Inlet Temperature", "unit": "°C", "min": -10, "max": 50, "current_value": 22.5},
+        {"id": "s004-temp-out", "name": "Outlet Temperature", "unit": "°C", "min": -10, "max": 50, "current_value": 18.2},
+        {"id": "s004-humidity", "name": "Humidity", "unit": "%RH", "min": 0, "max": 100, "current_value": 45},
+        {"id": "s004-flow", "name": "Airflow Rate", "unit": "m³/h", "min": 0, "max": 50000, "current_value": 32000, "warning_threshold": 10000, "critical_threshold": 5000},
+        {"id": "s004-pressure", "name": "Duct Pressure", "unit": "Pa", "min": 0, "max": 1000, "current_value": 350, "warning_threshold": 800, "critical_threshold": 950},
+        {"id": "s004-power", "name": "Power Consumption", "unit": "kW", "min": 0, "max": 150, "current_value": 65},
+        {"id": "s004-filter", "name": "Filter Status", "unit": "%", "min": 0, "max": 100, "current_value": 72, "warning_threshold": 30, "critical_threshold": 15}
+      ],
+      "status": "operational",
+      "metadata": {
+        "manufacturer": "Carrier",
+        "model": "50XC",
+        "install_date": "2019-04-12",
+        "last_maintenance": "2025-12-10",
+        "serial_number": "CAR-50XC-2019-0412",
+        "cooling_capacity": "120 kW"
+      },
+      "children": ["twin-004-compressor", "twin-004-fan"],
+      "parent": null
+    },
+    {
+      "id": "twin-004-compressor",
+      "name": "HVAC North - Compressor",
+      "type": "hvac",
+      "subtype": "compressor",
+      "location": {
+        "building": "Factory-A",
+        "floor": 2,
+        "area": "Mechanical Room North"
+      },
+      "sensors": [
+        {"id": "s004c-temp", "name": "Discharge Temperature", "unit": "°C", "min": 20, "max": 120, "current_value": 75.5, "warning_threshold": 95, "critical_threshold": 110},
+        {"id": "s004c-pressure", "name": "Discharge Pressure", "unit": "bar", "min": 0, "max": 30, "current_value": 15.2, "warning_threshold": 25, "critical_threshold": 28},
+        {"id": "s004c-rpm", "name": "Compressor Speed", "unit": "RPM", "min": 0, "max": 3600, "current_value": 2850},
+        {"id": "s004c-hours", "name": "Operating Hours", "unit": "h", "min": 0, "max": 100000, "current_value": 42350}
+      ],
+      "status": "operational",
+      "metadata": {
+        "manufacturer": "Copeland",
+        "model": "ZP295",
+        "install_date": "2019-04-12",
+        "last_maintenance": "2025-06-20"
+      },
+      "children": [],
+      "parent": "twin-004"
+    },
+    {
+      "id": "twin-004-fan",
+      "name": "HVAC North - Supply Fan",
+      "type": "hvac",
+      "subtype": "fan",
+      "location": {
+        "building": "Factory-A",
+        "floor": 2,
+        "area": "Mechanical Room North"
+      },
+      "sensors": [
+        {"id": "s004f-rpm", "name": "Fan Speed", "unit": "RPM", "min": 0, "max": 1800, "current_value": 1200},
+        {"id": "s004f-vib", "name": "Vibration Level", "unit": "mm/s", "min": 0, "max": 20, "current_value": 1.8, "warning_threshold": 8, "critical_threshold": 15},
+        {"id": "s004f-power", "name": "Motor Power", "unit": "kW", "min": 0, "max": 25, "current_value": 12.5}
+      ],
+      "status": "operational",
+      "metadata": {
+        "manufacturer": " ebm-papst",
+        "model": "R4E400-AL03",
+        "install_date": "2019-04-12",
+        "last_maintenance": "2025-08-15"
+      },
+      "children": [],
+      "parent": "twin-004"
+    },
+    {
+      "id": "twin-005",
+      "name": "HVAC System South",
+      "type": "hvac",
+      "subtype": "central_air",
+      "location": {
+        "building": "Factory-A",
+        "floor": 2,
+        "area": "Mechanical Room South",
+        "coordinates": {"x": 50.0, "y": 40.0}
+      },
+      "sensors": [
+        {"id": "s005-temp-in", "name": "Inlet Temperature", "unit": "°C", "min": -10, "max": 50, "current_value": 23.1},
+        {"id": "s005-temp-out", "name": "Outlet Temperature", "unit": "°C", "min": -10, "max": 50, "current_value": 18.8},
+        {"id": "s005-humidity", "name": "Humidity", "unit": "%RH", "min": 0, "max": 100, "current_value": 48},
+        {"id": "s005-flow", "name": "Airflow Rate", "unit": "m³/h", "min": 0, "max": 50000, "current_value": 28500, "warning_threshold": 10000, "critical_threshold": 5000},
+        {"id": "s005-pressure", "name": "Duct Pressure", "unit": "Pa", "min": 0, "max": 1000, "current_value": 320, "warning_threshold": 800, "critical_threshold": 950},
+        {"id": "s005-power", "name": "Power Consumption", "unit": "kW", "min": 0, "max": 150, "current_value": 58},
+        {"id": "s005-filter", "name": "Filter Status", "unit": "%", "min": 0, "max": 100, "current_value": 45, "warning_threshold": 30, "critical_threshold": 15}
+      ],
+      "status": "warning",
+      "metadata": {
+        "manufacturer": "Carrier",
+        "model": "50XC",
+        "install_date": "2019-04-12",
+        "last_maintenance": "2025-07-25",
+        "serial_number": "CAR-50XC-2019-0413",
+        "cooling_capacity": "120 kW"
+      },
+      "children": [],
+      "parent": null
+    },
+    {
+      "id": "twin-006",
+      "name": "Power Generator Prime",
+      "type": "generator",
+      "subtype": "diesel_generator",
+      "location": {
+        "building": "Utilities",
+        "floor": 1,
+        "area": "Generator Room",
+        "coordinates": {"x": 5.0, "y": 60.0}
+      },
+      "sensors": [
+        {"id": "s006-power", "name": "Power Output", "unit": "kW", "min": 0, "max": 500, "current_value": 285},
+        {"id": "s006-voltage", "name": "Output Voltage", "unit": "V", "min": 0, "max": 500, "current_value": 480},
+        {"id": "s006-frequency", "name": "Frequency", "unit": "Hz", "min": 0, "max": 100, "current_value": 60, "warning_threshold": 58, "critical_threshold": 55},
+        {"id": "s006-fuel", "name": "Fuel Level", "unit": "%", "min": 0, "max": 100, "current_value": 85, "warning_threshold": 25, "critical_threshold": 10},
+        {"id": "s006-temp", "name": "Engine Temperature", "unit": "°C", "min": 20, "max": 120, "current_value": 82.5, "warning_threshold": 95, "critical_threshold": 110},
+        {"id": "s006-oil", "name": "Oil Pressure", "unit": "bar", "min": 0, "max": 10, "current_value": 4.2, "warning_threshold": 2.0, "critical_threshold": 1.0},
+        {"id": "s006-rpm", "name": "Engine Speed", "unit": "RPM", "min": 0, "max": 2000, "current_value": 1500},
+        {"id": "s006-hours", "name": "Operating Hours", "unit": "h", "min": 0, "max": 100000, "current_value": 12350},
+        {"id": "s006-load", "name": "Load Percentage", "unit": "%", "min": 0, "max": 100, "current_value": 57}
+      ],
+      "status": "operational",
+      "metadata": {
+        "manufacturer": "Caterpillar",
+        "model": "C15",
+        "install_date": "2020-01-15",
+        "last_maintenance": "2025-11-01",
+        "serial_number": "CAT-C15-2020-0115",
+        "rated_power": "500 kW"
+      },
+      "children": [],
+      "parent": null
+    },
+    {
+      "id": "twin-007",
+      "name": "Water Pump Station",
+      "type": "pump",
+      "subtype": "centrifugal_pump",
+      "location": {
+        "building": "Utilities",
+        "floor": 0,
+        "area": "Pump Room",
+        "coordinates": {"x": 15.0, "y": 55.0}
+      },
+      "sensors": [
+        {"id": "s007-flow", "name": "Flow Rate", "unit": "m³/h", "min": 0, "max": 500, "current_value": 285, "warning_threshold": 100, "critical_threshold": 50},
+        {"id": "s007-pressure-in", "name": "Inlet Pressure", "unit": "bar", "min": 0, "max": 10, "current_value": 2.5},
+        {"id": "s007-pressure-out", "name": "Outlet Pressure", "unit": "bar", "min": 0, "max": 20, "current_value": 8.5, "warning_threshold": 5, "critical_threshold": 3},
+        {"id": "s007-temp", "name": "Motor Temperature", "unit": "°C", "min": 20, "max": 100, "current_value": 58.2, "warning_threshold": 75, "critical_threshold": 90},
+        {"id": "s007-power", "name": "Power Consumption", "unit": "kW", "min": 0, "max": 75, "current_value": 42},
+        {"id": "s007-rpm", "name": "Pump Speed", "unit": "RPM", "min": 0, "max": 3000, "current_value": 1780},
+        {"id": "s007-vib", "name": "Vibration Level", "unit": "mm/s", "min": 0, "max": 20, "current_value": 2.1, "warning_threshold": 8, "critical_threshold": 15},
+        {"id": "s007-hours", "name": "Operating Hours", "unit": "h", "min": 0, "max": 100000, "current_value": 34560}
+      ],
+      "status": "operational",
+      "metadata": {
+        "manufacturer": "Grundfos",
+        "model": "CR 90",
+        "install_date": "2021-08-20",
+        "last_maintenance": "2025-10-28",
+        "serial_number": "GRF-CR90-2021-0820",
+        "rated_flow": "350 m³/h"
+      },
+      "children": [],
+      "parent": null
+    },
+    {
+      "id": "twin-008",
+      "name": "Storage Tank A - Raw Material",
+      "type": "tank",
+      "subtype": "chemical_tank",
+      "location": {
+        "building": "Storage-Yard",
+        "floor": 0,
+        "area": "Tank Farm East",
+        "coordinates": {"x": 80.0, "y": 20.0}
+      },
+      "sensors": [
+        {"id": "s008-level", "name": "Tank Level", "unit": "%", "min": 0, "max": 100, "current_value": 72, "warning_threshold": 15, "critical_threshold": 5},
+        {"id": "s008-level-abs", "name": "Absolute Level", "unit": "L", "min": 0, "max": 50000, "current_value": 36000},
+        {"id": "s008-temp", "name": "Liquid Temperature", "unit": "°C", "min": -20, "max": 80, "current_value": 24.5},
+        {"id": "s008-pressure", "name": "Internal Pressure", "unit": "mbar", "min": 900, "max": 1100, "current_value": 1013, "warning_threshold": 1050, "critical_threshold": 1080},
+        {"id": "s008-ph", "name": "pH Level", "unit": "pH", "min": 0, "max": 14, "current_value": 7.2},
+        {"id": "s008-density", "name": "Density", "unit": "kg/m³", "min": 800, "max": 1500, "current_value": 1050}
+      ],
+      "status": "operational",
+      "metadata": {
+        "manufacturer": "Snyder Industries",
+        "model": "CT-50000",
+        "install_date": "2018-05-10",
+        "last_maintenance": "2025-06-15",
+        "serial_number": "SND-CT50-2018-0510",
+        "capacity": "50000 L",
+        "material": "Polyethylene"
+      },
+      "children": [],
+      "parent": null
+    },
+    {
+      "id": "twin-009",
+      "name": "Storage Tank B - Finished Product",
+      "type": "tank",
+      "subtype": "product_tank",
+      "location": {
+        "building": "Storage-Yard",
+        "floor": 0,
+        "area": "Tank Farm West",
+        "coordinates": {"x": 85.0, "y": 60.0}
+      },
+      "sensors": [
+        {"id": "s009-level", "name": "Tank Level", "unit": "%", "min": 0, "max": 100, "current_value": 45, "warning_threshold": 15, "critical_threshold": 5},
+        {"id": "s009-level-abs", "name": "Absolute Level", "unit": "L", "min": 0, "max": 75000, "current_value": 33750},
+        {"id": "s009-temp", "name": "Liquid Temperature", "unit": "°C", "min": -20, "max": 80, "current_value": 22.8},
+        {"id": "s009-pressure", "name": "Internal Pressure", "unit": "mbar", "min": 900, "max": 1100, "current_value": 1015, "warning_threshold": 1050, "critical_threshold": 1080},
+        {"id": "s009-valve", "name": "Outlet Valve Position", "unit": "%", "min": 0, "max": 100, "current_value": 100},
+        {"id": "s009-flow", "name": "Outflow Rate", "unit": "L/min", "min": 0, "max": 500, "current_value": 125}
+      ],
+      "status": "operational",
+      "metadata": {
+        "manufacturer": "Snyder Industries",
+        "model": "CT-75000",
+        "install_date": "2019-03-22",
+        "last_maintenance": "2025-09-10",
+        "serial_number": "SND-CT75-2019-0322",
+        "capacity": "75000 L",
+        "material": "Stainless Steel 316"
+      },
+      "children": [],
+      "parent": null
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "created": "2025-01-15T10:00:00Z",
+    "facility": "Digital Twins Demo Facility",
+    "description": "Sample digital twins for industrial equipment demonstration"
+  }
+}
