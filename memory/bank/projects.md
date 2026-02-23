@@ -24,5 +24,16 @@
 - `schiavone.ai` and `francoschiavone.ai` — purchased, pending setup
 - Pending: email `franco@schiavone.ai`
 
+## GLM-5 Subagent Fix
+- **Status**: Pasos 2 y 3 listos para aplicar, Paso 1 pendiente Franco
+- **Paso 1** ⏳: Actualizar OpenClaw de 2026.2.15 → 2026.2.21 (Franco desde el host)
+  - `docker exec -it openclaw-franco openclaw update` o `openclaw update`
+- **Paso 2**: Configurar fallbacks en subagents: `{ primary: "zai/glm-5", fallbacks: ["zai/glm-4.7", "anthropic/claude-sonnet-4-5"] }`
+- **Paso 3**: Parchear bug #18453 — agregar "abort" a timeout patterns en pi-embedded-helpers
+- GitHub issue: openclaw/openclaw#18453
+- Deep dive reports completados:
+  - `document-intelligence-consulting-market-2025-2026.md` ✅
+  - `ai-automation-agency-research-2025-2026.md` ✅
+
 ## Klondike (Crypto)
 - Signal analysis: `klondike_audit_data.md`, `klondike_margin_signals_investigation.md`, `klondike_scalping_analysis.md`

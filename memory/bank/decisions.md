@@ -49,12 +49,25 @@ When Franco requests a behavior change ("from now on...", "always do...", "never
 - iCloud monitor: cron at 2:15 AM, checks `.icloud-auth-date`
 - GitHub backup: cron at 3:00 AM, now with delivery=announce
 
-## Dream Journal (2026-02-19)
-- When Franco sends a message (audio or text) indicating it's a dream, save it to `memory/bank/dream-journal.md`
-- Format: date + dream content
-- Persistent in workspace
+## Dream Journal (updated 2026-02-22)
+- Dreams go in Obsidian daily notes: `01-Journal/Daily/YYYY-MM-DD.md` under `## Sueños` section
+- Save as close to Franco's original words as possible — no rewriting, no interpreting, no softening
+- Old location `memory/bank/dream-journal.md` superseded by Obsidian
+
+## Obsidian Vault — AI Content (2026-02-22)
+- Full rules in `memory/bank/obsidian-rules.md`
+- ALL AI-generated content goes under `AI-Drafts/` subfolder, mirroring root structure
+- Exception: dreams go in `01-Journal/Daily/` (part of Franco's journal)
+- Required frontmatter: `source: claw`, `tags: [claw, ...]`
+- `source: claw` stays permanently even after migration to root
+- Franco reviews content in `AI/`, asks to migrate what he likes to root folders
+- NEVER modify Franco's existing notes outside `AI/` without permission
+- Commit messages for AI content prefixed with "AI:"
 
 ## Delegation Model
 - Opus: think, plan, supervise
-- GLM-5: execute clear, self-contained tasks (up to 4 in parallel)
+- GLM-5 (zai): modelo preferido para sub-agentes. Usar siempre como primera opción.
+- Sonnet (anthropic): fallback SOLO cuando GLM-5 falla (abort). No usar como default.
+- Si GLM-5 aborta una tarea, relanzar en Sonnet automáticamente.
 - Active supervision always ON
+- GLM-5 known issue (2026-02-22): tareas con web_search iterativo abortan en ~1-1.5 min. Micro-tareas funcionan bien.
