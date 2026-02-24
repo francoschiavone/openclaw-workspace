@@ -32,7 +32,8 @@
 - GitHub workspace backup → daily 3AM (`GitHub workspace backup`)
 - iCloud backup monitor → daily 2:15 AM (`iCloud backup monitor`)
 - Obsidian vault sync → every 5min (`Obsidian vault sync`)
-- Bass Chiropractic tracking → daily 2PM (`Check Bass Chiropractic tracking`)
+- Bass Chiropractic tracking → daily 2PM ART (job `9eaeaa4b`, isolated agentTurn)
+- ⚠️ All cron jobs backed up in `cron-persistent.json` (workspace root). On restart, verify jobs exist and recreate from this file if missing.
 
 ## GitHub
 - Repos: `francoschiavone/openclaw-workspace` (projects), `francoschiavone/obsidian` (vault)
