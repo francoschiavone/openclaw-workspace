@@ -79,3 +79,31 @@ Franco
 - Tono simpático, pide descuento con humor
 - Adjunta imagen del carrito como prueba del pedido
 - Cierre informal
+
+## 2026-02-25 — Email seguimiento envío a Bass Chiropractic (Josh)
+
+**Contexto:** Order #1353 hecha el 20/02. No llegó tracking. Franco necesita datos para hacer prealerta en Aerobox Miami.
+
+```
+Hi Josh,
+
+Hope you're doing well. I wanted to check on my order #1353 — not sure if the shipping info was already sent and I missed it, so just in case, could you please share:
+
+1. Tracking number
+2. Shipping carrier (USPS, UPS, FedEx, etc.)
+3. Estimated weight of the package
+4. Invoice or declared value
+
+I need this to set up the pre-alert with my freight forwarder in Miami.
+
+Thanks so much, and sorry for any trouble!
+
+Franco
+```
+
+**Notas de estilo:**
+- Educado, no asume que no le mandaron nada ("not sure if I missed it")
+- Lista clara de lo que necesita
+- Explica por qué lo necesita (prealerta)
+- Se disculpa por las molestias
+- Breve y al punto
