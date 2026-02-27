@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumber HRIS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════
+   LUMBER LIGHT THEME — matches real app screenshot
+   Nav: #1e2d3b (dark teal-slate)
+   Content bg: #f5f6f8 (light grey)
+   White cards/panels
+   Accent: #7AECB4 (mint green)
+══════════════════════════════════════════════ */
+:root {
+  /* Nav */
+  --nav-bg:    #1e2d3b;
+  --nav-text:  #c8d6e2;
+  --nav-hover: rgba(255,255,255,.08);
+  --nav-active:#7aecb4;
+  /* Page */
+  --page-bg:   #f0f2f5;
+  --white:     #ffffff;
+  --border:    #e2e6ea;
+  --border2:   #d0d5dd;
+  /* Text */
+  --t1:        #111827;
+  --t2:        #374151;
+  --t3:        #6b7280;
+  --t4:        #9ca3af;
+  /* Brand */
+  --mint:      #7aecb4;
+  --mint2:     #5dd4a0;
+  --mint-bg:   rgba(122,236,180,.1);
+  --mint-brd:  rgba(122,236,180,.25);
+  --blue:      #2563eb;
+  --blue-bg:   rgba(37,99,235,.08);
+  --blue-brd:  rgba(37,99,235,.2);
+  --red:       #dc2626;
+  --red-bg:    rgba(220,38,38,.07);
+  --red-brd:   rgba(220,38,38,.18);
+  --yellow:    #d97706;
+  --yellow-bg: rgba(217,119,6,.07);
+  --yellow-brd:rgba(217,119,6,.2);
+  --orange:    #ea580c;
+  --orange-bg: rgba(234,88,12,.08);
+  --purple:    #7c3aed;
+  /* Nav height */
+  --nav-h: 52px;
+  --sub-h: 44px;
+  --bar-h: 50px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body { font-family: 'Inter', -apple-system, sans-serif; background: var(--page-bg); color: var(--t1); font-size: 13px; display: flex; flex-direction: column; }
+
+/* ── TOP NAV ── */
+.topnav {
+  height: var(--nav-h); background: var(--nav-bg);
+  display: flex; align-items: center; padding: 0 20px;
+  flex-shrink: 0; z-index: 200; gap: 0;
+}
+.logo-wrap { display: flex; align-items: center; gap: 8px; padding-right: 24px; margin-right: 16px; border-right: 1px solid rgba(255,255,255,.1); flex-shrink: 0; }
+.nav-links  { display: flex; gap: 2px; }
+.nav-link   {
+  display: flex; align-items: center; gap: 5px;
+  padding: 6px 12px; border-radius: 5px; font-size: 13px; font-weight: 500;
+  color: var(--nav-text); cursor: pointer; border: none; background: none;
+  font-family: inherit; transition: all .15s; white-space: nowrap;
+}
+.nav-link:hover { background: var(--nav-hover); color: #fff; }
+.nav-link.on    { background: rgba(122,236,180,.15); color: var(--mint); }
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.nav-icon { width: 32px; height: 32px; border-radius: 6px; background: none; border: none; color: var(--nav-text); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+.nav-icon:hover { background: var(--nav-hover); color: #fff; }
+.notif-badge { position: relative; }
+.notif-badge::after { content:'3'; position:absolute; top:-4px; right:-4px; background:var(--red); color:#fff; font-size:9px; font-weight:700; width:14px; height:14px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:1.5px solid var(--nav-bg); }
+.nav-company {
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12);
+  border-radius: 6px; padding: 5px 10px; cursor: pointer;
+  color: #fff; font-size: 12.5px; font-weight: 500; white-space: nowrap;
+}
+.nav-company:hover { background: rgba(255,255,255,.12); }
+
+/* ── MODULE WRAPPER (all content below nav) ── */
+.module { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.module-page { flex: 1; display: none; flex-direction: column; overflow: hidden; }
+.module-page.active { display: flex; }
+
+/* ── SUBNAV (HRIS tabs) ── */
+.subnav {
+  height: var(--sub-h); background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 20px; gap: 2px;
+  flex-shrink: 0; z-index: 199;
+}
+.sub-link {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 500;
+  color: var(--t3); cursor: pointer; border: none; background: none;
+  font-family: inherit; transition: all .15s; white-space: nowrap;
+  position: relative;
+}
+.sub-link:hover { color: var(--t1); background: #f5f6f8; }
+.sub-link.on { color: var(--blue); }
+.sub-link.on::after { content:''; position:absolute; bottom:-8px; left:14px; right:14px; height:2px; background:var(--blue); border-radius:2px 2px 0 0; }
+.sub-badge { font-size:9px; font-weight:700; background:var(--red); color:#fff; padding:1px 5px; border-radius:10px; min-width:16px; text-align:center; }
+.sub-right { margin-left:auto; display:flex; align-items:center; gap:8px; }
+
+/* ── TOOLBAR (org chart) ── */
+.toolbar {
+  height: var(--bar-h); background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 20px; gap: 10px;
+  flex-shrink: 0;
+}
+.view-toggle { display:flex; background:#f0f2f5; border:1px solid var(--border2); border-radius:7px; padding:3px; gap:2px; }
+.vt-btn { padding:4px 13px; border-radius:5px; font-size:12.5px; font-weight:600; cursor:pointer; border:none; background:none; color:var(--t3); font-family:inherit; transition:all .15s; white-space:nowrap; }
+.vt-btn.on { background:var(--white); color:var(--t1); box-shadow:0 1px 3px rgba(0,0,0,.1); }
+.ptabs { display:flex; gap:2px; }
+.ptab { padding:5px 13px; border-radius:6px; font-size:12.5px; font-weight:500; cursor:pointer; border:none; background:none; color:var(--t3); font-family:inherit; transition:all .15s; white-space:nowrap; }
+.ptab:hover { color:var(--t1); background:#f5f6f8; }
+.ptab.on { background:var(--mint-bg); color:#15803d; border:1px solid var(--mint-brd); }
+.tsep { width:1px; height:22px; background:var(--border); flex-shrink:0; }
+.legend { display:flex; align-items:center; gap:10px; font-size:11.5px; color:var(--t3); }
+.leg { display:flex; align-items:center; gap:4px; }
+.legdot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.tbar-right { margin-left:auto; display:flex; align-items:center; gap:7px; }
+
+/* ── BUTTONS ── */
+.btn { display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border-radius:7px; font-size:12.5px; font-weight:600; cursor:pointer; border:none; font-family:inherit; transition:all .15s; white-space:nowrap; }
+.btn-mint   { background:var(--mint); color:#0a4023; }
+.btn-mint:hover { background:var(--mint2); }
+.btn-white  { background:var(--white); color:var(--t2); border:1px solid var(--border2); }
+.btn-white:hover { background:#f9fafb; color:var(--t1); }
+.btn-blue   { background:var(--blue); color:#fff; }
+.btn-blue:hover { background:#1d4ed8; }
+.btn-sm { padding:5px 11px; font-size:12px; }
+.btn-xs { padding:4px 9px; font-size:11px; }
+
+/* ── CANVAS ── */
+.canvas-wrap { flex:1; overflow:hidden; position:relative; cursor:grab; user-select:none; background:var(--page-bg); }
+.canvas-wrap.panning { cursor:grabbing; }
+.canvas { position:absolute; transform-origin:0 0; will-change:transform; }
+.svg-lines { position:absolute; top:0; left:0; pointer-events:none; overflow:visible; }
+
+/* ── ORG NODES ── */
+.node {
+  position:absolute; background:var(--white); border:1px solid var(--border);
+  border-radius:10px; padding:10px 13px; cursor:pointer;
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
+  transition:border-color .15s, box-shadow .15s, transform .12s;
+}
+.node:hover { border-color:#93c5fd; box-shadow:0 0 0 3px rgba(37,99,235,.1), 0 2px 8px rgba(0,0,0,.1); transform:translateY(-1px); z-index:5; }
+.node.ntype-pm     { border-color:rgba(37,99,235,.3); background:#fafbff; }
+.node.ntype-exec   { border-color:rgba(122,236,180,.4); background:#fafffe; }
+.node.ntype-foreman{ border-color:rgba(122,236,180,.35); background:#f8fffe; }
+.crew-tab { position:absolute; top:-11px; left:10px; font-size:9px; font-weight:700; letter-spacing:.7px; text-transform:uppercase; padding:0 7px; border-radius:3px; background:var(--white); border:1px solid var(--border); }
+.n-label  { font-size:9px; font-weight:700; letter-spacing:.9px; text-transform:uppercase; margin-bottom:3px; }
+.n-name   { font-size:12.5px; font-weight:600; color:var(--t1); display:flex; align-items:center; justify-content:space-between; gap:4px; }
+.n-name-t { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
+.cert-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.n-trade  { font-size:11px; color:var(--t2); margin-top:1px; }
+.n-role   { font-size:10.5px; color:var(--t3); margin-top:1px; }
+.n-foot   { margin-top:5px; padding-top:5px; border-top:1px solid var(--border); font-size:10px; display:flex; align-items:center; gap:4px; }
+.n-foot.ok   { color:#15803d; }
+.n-foot.warn { color:var(--t3); }
+
+/* ── CONNECTORS ── */
+.c-solid { stroke:#94a3b8; stroke-width:1.5; fill:none; }
+.c-dashed { stroke:#c3d4e8; stroke-width:1.5; fill:none; stroke-dasharray:5 4; }
+
+/* ── STATUS BAR ── */
+.statusbar { position:absolute; top:12px; left:50%; transform:translateX(-50%); background:var(--white); border:1px solid var(--border2); border-radius:20px; padding:5px 16px; font-size:11.5px; color:var(--t2); display:flex; align-items:center; gap:10px; z-index:100; white-space:nowrap; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+.sbsep { width:1px; height:12px; background:var(--border); }
+
+/* ── ZOOM ── */
+.zoom-ctrl { position:absolute; bottom:20px; right:20px; display:flex; flex-direction:column; gap:4px; z-index:100; }
+.zbtn { width:34px; height:34px; background:var(--white); border:1px solid var(--border2); border-radius:7px; color:var(--t3); font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+.zbtn:hover { background:#f9fafb; color:var(--t1); }
+.zlbl { background:var(--white); border:1px solid var(--border); border-radius:5px; font-size:11px; color:var(--t3); padding:3px 0; text-align:center; font-family:monospace; box-shadow:0 1px 2px rgba(0,0,0,.05); }
+
+/* ── PANEL ── */
+.overlay { position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:500; display:none; align-items:flex-start; justify-content:flex-end; }
+.overlay.open { display:flex; }
+.panel { width:420px; height:100vh; background:var(--white); border-left:1px solid var(--border); overflow-y:auto; display:flex; flex-direction:column; animation:panelIn .18s ease; box-shadow:-4px 0 20px rgba(0,0,0,.1); }
+@keyframes panelIn { from { transform:translateX(100%); } to { transform:translateX(0); } }
+.panel-head { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; position:sticky; top:0; background:var(--white); z-index:10; gap:12px; }
+.panel-close { background:#f0f2f5; border:1px solid var(--border2); border-radius:6px; padding:4px 10px; cursor:pointer; color:var(--t2); font-size:12px; font-family:inherit; transition:all .15s; }
+.panel-close:hover { background:#e5e7eb; color:var(--t1); }
+.panel-body { padding:18px; flex:1; }
+.psec { margin-bottom:20px; }
+.psec-title { font-size:10px; font-weight:700; color:var(--t3); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+
+/* pills */
+.pill { display:inline-flex; align-items:center; gap:3px; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:600; white-space:nowrap; }
+.p-mint   { background:var(--mint-bg);   color:#15803d; border:1px solid var(--mint-brd); }
+.p-red    { background:var(--red-bg);    color:var(--red); border:1px solid var(--red-brd); }
+.p-yellow { background:var(--yellow-bg); color:var(--yellow); border:1px solid var(--yellow-brd); }
+.p-blue   { background:var(--blue-bg);   color:var(--blue); border:1px solid var(--blue-brd); }
+.p-orange { background:var(--orange-bg); color:var(--orange); border:1px solid rgba(234,88,12,.2); }
+.p-ghost  { background:#f5f6f8; color:var(--t2); border:1px solid var(--border2); }
+
+/* rows */
+.cert-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:12.5px; }
+.cert-row:last-child { border-bottom:none; }
+.worker-row { display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--border); cursor:pointer; transition:all .1s; }
+.worker-row:last-child { border-bottom:none; }
+.worker-row:hover { margin:0 -18px; padding:9px 18px; background:#f8fafc; border-radius:6px; }
+
+/* info grid */
+.info-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-bottom:14px; }
+.info-cell { background:#f8fafc; border:1px solid var(--border); border-radius:8px; padding:10px 12px; }
+.info-val  { font-size:20px; font-weight:700; line-height:1; color:var(--t1); }
+.info-lbl  { font-size:10px; color:var(--t3); margin-top:3px; }
+
+/* alerts */
+.alert { display:flex; align-items:flex-start; gap:8px; padding:10px 13px; border-radius:8px; margin-bottom:12px; font-size:12.5px; line-height:1.5; }
+.al-red    { background:var(--red-bg);    border:1px solid var(--red-brd);    color:var(--red); }
+.al-yellow { background:var(--yellow-bg); border:1px solid var(--yellow-brd); color:var(--yellow); }
+.al-green  { background:var(--mint-bg);   border:1px solid var(--mint-brd);   color:#15803d; }
+.al-blue   { background:var(--blue-bg);   border:1px solid var(--blue-brd);   color:var(--blue); }
+
+/* action buttons */
+.actions { display:flex; flex-direction:column; gap:7px; }
+.action-btn { width:100%; display:flex; align-items:center; gap:9px; padding:10px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; border:none; font-family:inherit; transition:all .15s; text-align:left; }
+.ab-mint  { background:var(--mint); color:#0a4023; }
+.ab-mint:hover { background:var(--mint2); }
+.ab-white { background:var(--white); color:var(--t2); border:1px solid var(--border2); }
+.ab-white:hover { background:#f9fafb; color:var(--t1); }
+.ab-red   { background:var(--red-bg); color:var(--red); border:1px solid var(--red-brd); }
+.ab-red:hover { background:rgba(220,38,38,.12); }
+.action-icon { width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+.ai-mint   { background:var(--mint-bg); }
+.ai-white  { background:#f0f2f5; }
+.ai-red    { background:var(--red-bg); }
+.ai-yellow { background:var(--yellow-bg); }
+.ai-blue   { background:var(--blue-bg); }
+.ab-sub { font-size:11px; opacity:.6; font-weight:400; }
+
+/* proto note */
+.proto-note { background:#fefce8; border:1px dashed #fbbf24; border-radius:6px; padding:8px 11px; font-size:11px; color:#92400e; margin-top:8px; line-height:1.5; }
+
+/* avatar */
+.av { border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0; }
+.av-mint   { background:linear-gradient(135deg,#7aecb4,#34d399); color:#0a4023; }
+.av-pink   { background:linear-gradient(135deg,#fda4af,#f472b6); color:#4a0020; }
+.av-blue   { background:linear-gradient(135deg,#93c5fd,#3b82f6); color:#1e3a5f; }
+.av-orange { background:linear-gradient(135deg,#fdba74,#f97316); color:#431407; }
+.av-teal   { background:linear-gradient(135deg,#67e8f9,#0891b2); color:#0c4a6e; }
+.av-yellow { background:linear-gradient(135deg,#fde68a,#f59e0b); color:#451a03; }
+
+/* ── OTHER MODULE PAGES ── */
+.page-content { flex:1; overflow-y:auto; padding:28px; }
+.page-header { margin-bottom:24px; }
+.page-title { font-size:22px; font-weight:700; color:var(--t1); }
+.page-sub   { font-size:13px; color:var(--t3); margin-top:4px; }
+
+.card { background:var(--white); border:1px solid var(--border); border-radius:10px; box-shadow:0 1px 3px rgba(0,0,0,.05); }
+.card-head { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.card-title { font-size:14px; font-weight:600; }
+.card-body  { padding:18px; }
+
+/* Dashboard grid */
+.dash-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+.stat-card { background:var(--white); border:1px solid var(--border); border-radius:10px; padding:16px 18px; box-shadow:0 1px 3px rgba(0,0,0,.05); }
+.stat-num  { font-size:28px; font-weight:700; line-height:1; }
+.stat-lbl  { font-size:12px; color:var(--t3); margin-top:4px; }
+.stat-delta{ font-size:11px; margin-top:6px; font-weight:600; }
+
+/* LMS table */
+.tbl { width:100%; border-collapse:collapse; font-size:12.5px; }
+.tbl th { text-align:left; font-size:11px; font-weight:700; color:var(--t3); text-transform:uppercase; letter-spacing:.5px; padding:10px 14px; border-bottom:2px solid var(--border); background:#f8fafc; }
+.tbl td { padding:11px 14px; border-bottom:1px solid var(--border); color:var(--t2); vertical-align:middle; }
+.tbl tr:hover td { background:#f8fafc; }
+.tbl tr:last-child td { border-bottom:none; }
+.progress-bar-wrap { background:#e5e7eb; border-radius:20px; height:7px; width:80px; }
+.progress-bar { background:var(--mint); border-radius:20px; height:7px; }
+
+/* BFax cards */
+.bfax-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.bfax-card { background:var(--white); border:1px solid var(--border); border-radius:10px; padding:14px 16px; box-shadow:0 1px 3px rgba(0,0,0,.04); }
+.bfax-card.warn { border-color:rgba(220,38,38,.25); background:#fff9f9; }
+.worker-list { display:flex; flex-direction:column; gap:8px; }
+.wl-row { display:flex; align-items:center; gap:8px; padding:7px 0; border-bottom:1px solid var(--border); font-size:12.5px; }
+.wl-row:last-child { border-bottom:none; }
+
+/* Performance cards */
+.perf-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+.rating-star { color:#f59e0b; }
+.divider { height:1px; background:var(--border); margin:14px 0; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════ TOP NAV ══════════════════════ -->
+<nav class="topnav">
+  <div class="logo-wrap">
+    <svg width="100" height="26" viewBox="0 0 125 32" fill="none">
+      <!-- Lumber spiral mark in mint -->
+      <path d="M0.57 12.66C1.47 12.66 2.38 12.66 3.29 12.66C4.07 12.66 4.69 12.66 4.69 12.66C4.61 12.97 4.53 13.24 4.47 13.51C4.12 15.06 4.04 16.63 4.24 18.21C4.38 19.34 4.66 20.43 5.08 21.48C5.57 22.73 6.25 23.87 7.08 24.92C7.54 25.49 8.05 26.03 8.59 26.52C9.25 27.11 9.96 27.63 10.71 28.09C11.62 28.63 12.57 29.06 13.58 29.38C14.41 29.64 15.26 29.84 16.14 29.91C16.49 29.94 16.83 29.95 17.18 29.98C18.53 30.07 19.88 30.01 21.23 30.02C22.82 30.03 24.42 30.02 26.01 30.02L26.29 30.07C26.23 30.12 26.17 30.17 26.10 30.21C25.39 30.55 24.68 30.87 23.90 31.03C23.51 31.12 23.11 31.18 22.72 31.26C22.09 31.39 21.46 31.55 20.85 31.77C20.66 31.85 20.45 31.87 20.24 31.92L19.99 32H19.41L19.14 31.92C18.66 31.88 18.19 31.92 17.71 32H17.28C17.20 31.97 16.45 31.91 15.13 31.78C14.44 31.71 13.76 31.55 13.10 31.35C12.86 31.28 12.63 31.26 12.39 31.34C11.90 31.51 11.44 31.40 11.06 31.06C10.90 30.91 10.76 30.73 10.62 30.55C10.52 30.42 10.40 30.32 10.26 30.24C9.76 29.96 9.27 29.66 8.78 29.37C8.17 28.96 7.86 28.77 7.19 28.40C6.39 27.94 5.65 27.39 4.92 26.83C4.50 26.15 4.28 25.51 4.11 25.07C3.96 24.61 3.68 24.22 3.40 23.82C3.20 23.38 3.04 22.93 2.91 22.36C2.86 22.00 2.69 21.46 2.54 21.06C2.36 20.64 2.10 20.13 1.94 19.98C1.78 19.84 1.64 19.67 1.35 19.29C1.21 18.84 1.15 18.37 1.09 17.85C1.03 17.33 0.96 16.81 0.86 16.15C0.75 15.49 0.64 14.84 0.57 12.66Z" fill="#7AECB4"/>
+      <path d="M30.25 20.43C30.31 20.19 30.35 19.98 30.41 19.77C30.65 18.87 30.76 17.96 30.80 17.04C30.85 15.76 30.72 14.51 30.41 13.27C30.17 12.28 29.82 11.33 29.35 10.42C28.87 9.48 28.29 8.60 27.59 7.79C26.71 6.76 25.71 5.88 24.57 5.16C23.47 4.45 22.29 3.92 21.03 3.56C20.21 3.32 19.38 3.17 18.53 3.09C18.10 3.04 17.66 3.02 17.23 3.02C14.53 3.01 11.84 3.01 9.15 3.01H8.82C8.94 2.89 9.08 2.86 9.21 2.83C9.66 2.71 10.11 2.58 10.57 2.48C10.96 2.39 11.30 2.20 11.64 1.98C12.06 1.71 12.50 1.52 13.02 1.58C13.20 1.60 13.36 1.54 13.50 1.39C13.74 1.12 14.05 0.95 14.40 0.84C14.75 0.73 15.11 0.64 15.47 0.54C15.95 0.40 16.43 0.28 16.91 0.14C17.42 0.00 17.93 -0.08 18.44 0.11C18.63 0.18 18.82 0.29 19.00 0.39C19.25 0.52 19.51 0.60 19.79 0.59C20.05 0.59 20.31 0.56 20.56 0.56C20.80 0.56 21.03 0.59 21.26 0.62C21.51 0.65 21.76 0.70 22.00 0.72C22.14 0.73 22.28 0.72 22.40 0.68C22.87 0.52 23.29 0.57 23.68 0.88C24.44 1.47 25.19 2.06 25.95 2.65C26.08 2.75 26.21 2.84 26.38 2.86C26.79 2.91 27.11 3.12 27.39 3.43C27.95 4.04 28.51 4.63 29.06 5.24C29.39 5.61 29.65 6.02 29.71 6.52C29.74 6.73 29.84 6.90 29.98 7.05C30.25 7.34 30.51 7.64 30.80 7.91C31.06 8.16 31.27 8.43 31.42 8.76C31.72 9.40 32.02 10.04 32.31 10.69C32.55 11.22 32.61 11.78 32.60 12.35C32.59 12.71 32.70 13.05 32.77 13.39C32.86 13.54 32.97 13.86 33.09 13.93C33.28 14.32 33.37 14.81 33.37 15.68C33.38 16.11 33.39 16.54 33.40 16.97C33.41 17.45 33.32 17.91 33.05 18.33C32.95 18.59 32.95 18.85 33.09 18.94C33.32 19.10 33.44 19.33 33.43 19.61C33.43 19.83 33.40 20.05 33.37 20.28C33.35 20.42 33.31 20.45 33.13 20.45C32.62 20.45 32.11 20.45 31.60 20.45C31.23 20.45 30.87 20.45 30.50 20.45C30.43 20.43 30.35 20.43 30.25 20.43Z" fill="#7AECB4"/>
+      <path d="M3.38 6.79C3.50 6.70 3.63 6.60 3.75 6.50C4.02 6.27 4.29 6.03 4.56 5.81C4.91 5.51 5.31 5.35 5.79 5.41C6.14 5.46 6.45 5.33 6.70 5.10C6.82 4.98 6.96 4.96 7.11 4.96C10.54 4.97 13.96 4.98 17.38 4.96C19.21 4.95 20.92 5.38 22.55 6.18C23.39 6.60 24.16 7.14 24.87 7.75C26.15 8.84 27.13 10.15 27.84 11.66C28.27 12.59 28.58 13.57 28.74 14.59C29.04 16.44 28.92 18.26 28.35 20.05C28.31 20.17 28.26 20.29 28.22 20.42C27.53 20.42 26.85 20.42 26.15 20.42C26.22 20.22 26.28 20.04 26.35 19.86C26.67 19.04 26.86 18.18 26.93 17.30C27.01 16.04 26.90 14.81 26.50 13.60C26.20 12.68 25.79 11.82 25.23 11.03C24.60 10.13 23.84 9.36 22.95 8.71C21.86 7.91 20.64 7.40 19.33 7.10C18.75 6.96 18.15 6.89 17.55 6.89C16.24 6.88 14.93 6.86 13.62 6.86C10.31 6.86 6.99 6.86 3.69 6.86C3.59 6.86 3.50 6.86 3.40 6.86C3.39 6.84 3.39 6.81 3.38 6.79Z" fill="#7AECB4"/>
+      <path d="M8.44 12.66C8.41 12.76 8.41 12.82 8.38 12.88C8.17 13.38 8.00 13.91 7.88 14.44C7.69 15.33 7.62 16.23 7.68 17.14C7.77 18.59 8.18 19.95 8.89 21.21C9.43 22.17 10.11 23.03 10.96 23.75C11.52 24.23 12.11 24.66 12.76 25.00C13.54 25.42 14.35 25.71 15.20 25.91C15.90 26.07 16.61 26.14 17.32 26.14C20.56 26.14 23.79 26.16 27.03 26.16C28.11 26.17 29.20 26.16 30.28 26.16C30.36 26.16 30.44 26.16 30.57 26.16C30.52 26.26 30.51 26.32 30.47 26.35C30.03 26.77 29.58 27.18 29.13 27.58C28.99 27.71 28.84 27.84 28.69 27.96C28.62 28.01 28.52 28.03 28.42 28.05C28.35 28.07 28.28 28.05 28.21 28.05C24.77 28.05 21.34 28.05 17.91 28.05C17.41 28.05 16.91 28.07 16.41 28.05C15.62 28.01 14.86 27.85 14.10 27.64C12.70 27.23 11.42 26.59 10.27 25.71C9.04 24.77 8.03 23.63 7.26 22.30C6.44 20.87 5.94 19.34 5.77 17.70C5.60 16.08 5.78 14.49 6.28 12.94C6.29 12.89 6.31 12.85 6.32 12.80C6.35 12.71 6.40 12.66 6.51 12.66C7.14 12.66 7.78 12.66 8.44 12.66Z" fill="#7AECB4"/>
+      <path d="M21.59 20.42C21.74 20.21 21.87 20.04 22.00 19.86C22.48 19.24 22.77 18.54 22.94 17.79C23.31 16.14 23.01 14.60 22.05 13.22C21.23 12.02 20.08 11.26 18.67 10.90C18.08 10.75 17.47 10.70 16.87 10.70C11.79 10.70 6.72 10.70 1.64 10.70C1.54 10.70 1.44 10.70 1.33 10.70C1.33 10.39 1.33 10.11 1.34 9.83C1.35 9.44 1.55 9.14 1.81 8.88C1.84 8.85 1.89 8.84 1.94 8.83C1.99 8.82 2.06 8.83 2.13 8.83C7.05 8.83 11.97 8.83 16.89 8.83C17.28 8.83 17.66 8.75 18.05 8.83C18.51 8.91 18.98 8.96 19.43 9.09C20.47 9.38 21.41 9.87 22.24 10.57C23.12 11.31 23.83 12.20 24.32 13.25C24.64 13.95 24.86 14.68 24.96 15.45C25.08 16.32 25.06 17.18 24.88 18.05C24.72 18.81 24.45 19.54 24.09 20.22C24.01 20.37 23.92 20.44 23.75 20.43C23.10 20.42 22.45 20.43 21.81 20.43C21.75 20.43 21.68 20.42 21.59 20.42Z" fill="#7AECB4"/>
+      <path d="M12.96 12.68C12.84 12.85 12.74 12.99 12.64 13.12C12.02 13.95 11.66 14.87 11.56 15.89C11.42 17.31 11.73 18.63 12.56 19.81C13.53 21.18 14.86 21.97 16.51 22.24C16.85 22.29 17.20 22.31 17.55 22.31C22.61 22.32 27.66 22.31 32.72 22.31H33.07C33.03 22.49 33.00 22.64 32.96 22.79C32.82 23.25 32.62 23.67 32.36 24.06C32.08 24.20 31.88 24.20 17.80 24.20C17.44 24.20 17.08 24.23 16.71 24.21C16.04 24.16 15.39 24.02 14.75 23.79C13.48 23.35 12.41 22.62 11.52 21.62C10.69 20.69 10.13 19.63 9.83 18.44C9.46 17.03 9.50 15.63 9.92 14.24C10.07 13.74 10.27 13.27 10.53 12.81C10.77 12.66 11.46 12.66 12.84 12.66H12.96Z" fill="#7AECB4"/>
+      <path d="M21.17 16.52C21.18 18.70 19.37 20.39 17.29 20.38C15.19 20.37 13.44 18.68 13.44 16.52C13.43 14.37 15.23 12.55 17.50 12.66C19.44 12.75 21.18 14.36 21.17 16.52ZM19.22 16.52C19.24 15.39 18.26 14.57 17.28 14.59C16.25 14.61 15.40 15.47 15.38 16.50C15.37 17.57 16.29 18.43 17.29 18.44C18.24 18.44 19.24 17.66 19.22 16.52Z" fill="#7AECB4"/>
+      <!-- LUMBER wordmark in white -->
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M43 22.796V9H45.232V20.63H52.391V22.796H43ZM65.993 9V16.844C65.993 18.813 65.439 20.363 64.418 21.423C63.398 22.482 61.96 23 60.289 23C58.636 23 57.204 22.482 56.185 21.439C55.165 20.395 54.604 18.873 54.604 16.955V9H56.835V16.863C56.835 18.195 57.181 19.179 57.762 19.827C58.339 20.471 59.195 20.834 60.326 20.834C61.417 20.834 62.26 20.499 62.832 19.882C63.408 19.263 63.761 18.304 63.761 16.955V9H65.993ZM69.499 22.796V9H71.564L75.984 15.76L80.405 9H82.469V22.796H80.238V13.193L76.213 19.235H75.719L71.694 13.209V22.796H69.499ZM86.182 22.796V9H91.995C93.52 9 94.776 9.448 95.598 10.265C96.203 10.904 96.536 11.691 96.536 12.634V12.671C96.536 14.114 95.865 15.031 95.067 15.601C95.54 15.819 95.975 16.099 96.331 16.462C96.899 17.042 97.244 17.813 97.244 18.810V18.847C97.244 20.088 96.726 21.096 95.818 21.780C94.923 22.454 93.677 22.796 92.231 22.796H86.182ZM100.203 22.796V9H110.194V11.148H102.435V14.769H109.376V16.916H102.435V20.648H110.285V22.796H100.203ZM113.284 22.796V9H119.152C120.79 9 122.156 9.506 123.049 10.417C123.748 11.131 124.147 12.146 124.147 13.264V13.301C124.147 14.478 123.746 15.436 123.055 16.147C122.506 16.711 121.789 17.105 120.982 17.339L125 22.796H122.241L118.552 17.751H115.516V22.796H113.284ZM88.396 11.129V14.787H91.759C92.569 14.787 93.207 14.599 93.632 14.278C94.042 13.968 94.286 13.512 94.286 12.875V12.838C94.286 12.318 94.089 11.912 93.717 11.624C93.331 11.326 92.723 11.129 91.868 11.129H88.396ZM88.396 16.898V20.667H92.268C93.178 20.667 93.868 20.460 94.319 20.127C94.756 19.805 94.995 19.348 94.995 18.754V18.717C94.995 18.146 94.769 17.719 94.316 17.415C93.840 17.096 93.084 16.898 92.013 16.898H88.396ZM115.516 11.166V15.622H119.025C119.915 15.622 120.639 15.388 121.131 14.998C121.613 14.616 121.897 14.066 121.897 13.357V13.320C121.897 12.637 121.646 12.120 121.195 11.763C120.731 11.395 120.014 11.166 119.043 11.166H115.516Z" fill="white"/>
+    </svg>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link" onclick="switchModule('time')">Time <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="nav-link" onclick="switchModule('pay')">Pay <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="nav-link" onclick="switchModule('scheduler')">Scheduler <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="nav-link" onclick="switchModule('resources')">Resources <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="nav-link on" id="nl-hris" onclick="switchModule('hris')">HR <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="nav-link" onclick="switchModule('reports')">Reports <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="nav-link" onclick="">Documents <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="nav-link" onclick="">Forms <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+  <div class="nav-right">
+    <button class="nav-icon notif-badge">
+      <svg width="18" height="18" fill="none" viewBox="0 0 20 20"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 2a.75.75 0 01.75.75v.55A6.5 6.5 0 0115 8.5v3l1.3 1.75a.75.75 0 01-.59 1.21H4.29a.75.75 0 01-.59-1.21L5 11.5V8.5A6.5 6.5 0 019.25 3.3v-.55A.75.75 0 0110 2zM8.35 17a1.75 1.75 0 003.3 0H8.35z" fill="var(--nav-text)"/></svg>
+    </button>
+    <button class="nav-icon">
+      <svg width="18" height="18" fill="none" viewBox="0 0 20 20"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" fill="var(--nav-text)"/></svg>
+    </button>
+    <div class="nav-company" onclick="">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="white"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4zm2 0v12h10V4H6zm2 2h6v2H8V6zm0 4h6v2H8v-2zm0 4h6v2H8v-2z" clip-rule="evenodd"/></svg>
+      BigCat Construction
+      <svg width="11" height="11" fill="none" stroke="white" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════ MODULE CONTAINER ══════════════════════ -->
+<div class="module">
+
+  <!-- ═══ HRIS MODULE ═══ -->
+  <div class="module-page active" id="mod-hris">
+    <!-- subnav -->
+    <div class="subnav">
+      <button class="sub-link" id="sl-dashboard" onclick="setSubpage('dashboard')">Dashboard</button>
+      <button class="sub-link" id="sl-lms"       onclick="setSubpage('lms')">LMS &amp; Training <span class="sub-badge">7</span></button>
+      <button class="sub-link" id="sl-builderfax"onclick="setSubpage('builderfax')">BuilderFax</button>
+      <button class="sub-link" id="sl-performance"onclick="setSubpage('performance')">Performance</button>
+      <button class="sub-link on" id="sl-orgchart"onclick="setSubpage('orgchart')">Org Chart</button>
+      <button class="sub-link" id="sl-analytics" onclick="setSubpage('analytics')">Analytics</button>
+      <button class="sub-link" id="sl-employees" onclick="setSubpage('employees')">Employees</button>
+    </div>
+
+    <!-- ── Org Chart subpage ── -->
+    <div class="module-page active" id="sp-orgchart" style="display:flex;flex-direction:column;">
+      <div class="toolbar">
+        <div class="view-toggle">
+          <button class="vt-btn" id="vc" onclick="setView('corp')">Corporate</button>
+          <button class="vt-btn on" id="vp" onclick="setView('proj')">Project / Crew</button>
+        </div>
+        <div class="tsep"></div>
+        <div class="ptabs" id="ptabs">
+          <button class="ptab on" onclick="setPrj(0,this)">🏗 Riverside Tower</button>
+          <button class="ptab"    onclick="setPrj(1,this)">⚙ Mesa Verde</button>
+          <button class="ptab"    onclick="setPrj(2,this)">🌉 Harbor Bridge</button>
+          <button class="ptab"    onclick="setPrj(3,this)">🏙 Downtown Commons</button>
+        </div>
+        <div class="tbar-right">
+          <div class="legend">
+            <div class="leg"><div class="legdot" style="background:#16a34a"></div>Current</div>
+            <div class="leg"><div class="legdot" style="background:#d97706"></div>Expiring</div>
+            <div class="leg"><div class="legdot" style="background:#dc2626"></div>Expired</div>
+            <div class="leg"><div class="legdot" style="background:#d1d5db"></div>No BFax</div>
+          </div>
+          <div class="tsep"></div>
+          <button class="btn btn-white btn-sm" onclick="fitCanvas()">⊡ Fit</button>
+          <button class="btn btn-white btn-sm" onclick="resetCanvas()">↺ Reset</button>
+          <button class="btn btn-mint btn-sm">+ Add Worker</button>
+        </div>
+      </div>
+      <!-- canvas -->
+      <div class="canvas-wrap" id="cWrap">
+        <div class="canvas" id="canvas">
+          <svg class="svg-lines" id="svgLines" width="6000" height="5000"></svg>
+          <div id="nodes"></div>
+        </div>
+        <div class="statusbar" id="sbar">
+          <span style="font-weight:700;color:var(--t1)" id="sbProj">—</span>
+          <div class="sbsep"></div><span id="sbW">—</span>
+          <div class="sbsep"></div><span id="sbC">—</span>
+          <div class="sbsep" id="sbISep"></div><span id="sbI" style="color:var(--red)"></span>
+          <div class="sbsep"></div><span id="sbComp"></span>
+        </div>
+        <div class="zoom-ctrl">
+          <button class="zbtn" onclick="applyZoom(1.2)">+</button>
+          <div class="zlbl" id="zLbl">100%</div>
+          <button class="zbtn" onclick="applyZoom(0.83)">−</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Dashboard subpage ── -->
+    <div class="module-page" id="sp-dashboard">
+      <div class="page-content">
+        <div class="page-header"><div class="page-title">HRIS Dashboard</div><div class="page-sub">BigCat Construction · All Projects · Feb 24, 2026</div></div>
+        <div class="dash-grid">
+          <div class="stat-card"><div class="stat-num" style="color:var(--t1)">247</div><div class="stat-lbl">Total Workforce</div><div class="stat-delta" style="color:#15803d">↑ 12 this month</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:#dc2626">14</div><div class="stat-lbl">Cert Issues</div><div class="stat-delta" style="color:#dc2626">↑ 3 since last week</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:#d97706">31</div><div class="stat-lbl">BFax Not Connected</div><div class="stat-delta" style="color:var(--t3)">13% of workforce</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:#15803d">91%</div><div class="stat-lbl">Cert Compliance</div><div class="stat-delta" style="color:#15803d">↑ 2% from last month</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="card"><div class="card-head"><span class="card-title">Projects Overview</span><button class="btn btn-white btn-xs">View All</button></div><div class="card-body">
+            <div class="worker-list">
+              <div class="wl-row"><div class="av av-mint" style="width:28px;height:28px;font-size:10px">RT</div><div style="flex:1"><div style="font-weight:600;font-size:12.5px">Riverside Tower</div><div style="font-size:11px;color:var(--t3)">8 workers · 2 crews · Phase 2</div></div><span class="pill p-yellow">2 issues</span></div>
+              <div class="wl-row"><div class="av av-orange" style="width:28px;height:28px;font-size:10px">MV</div><div style="flex:1"><div style="font-weight:600;font-size:12.5px">Mesa Verde Industrial</div><div style="font-size:11px;color:var(--t3)">7 workers · 2 crews · Phase 1</div></div><span class="pill p-yellow">2 expiring</span></div>
+              <div class="wl-row"><div class="av av-blue" style="width:28px;height:28px;font-size:10px">HB</div><div style="flex:1"><div style="font-weight:600;font-size:12.5px">Harbor Bridge Restoration</div><div style="font-size:11px;color:var(--t3)">5 workers · 1 crew · Phase 3</div></div><span class="pill p-mint">All current</span></div>
+              <div class="wl-row"><div class="av av-pink" style="width:28px;height:28px;font-size:10px">DC</div><div style="flex:1"><div style="font-weight:600;font-size:12.5px">Downtown Commons</div><div style="font-size:11px;color:var(--t3)">9 workers · 3 crews · Phase 2</div></div><span class="pill p-red">1 missing cert</span></div>
+            </div>
+          </div></div>
+          <div class="card"><div class="card-head"><span class="card-title">Upcoming Renewals</span><button class="btn btn-white btn-xs">View All</button></div><div class="card-body">
+            <div class="worker-list">
+              <div class="wl-row"><div style="flex:1"><div style="font-weight:600;font-size:12.5px">Amy Larsen — First Aid</div><div style="font-size:11px;color:var(--t3)">Riverside · Crew A</div></div><span class="pill p-yellow">6 days</span></div>
+              <div class="wl-row"><div style="flex:1"><div style="font-weight:600;font-size:12.5px">Kevin Park — OSHA 10</div><div style="font-size:11px;color:var(--t3)">Riverside · Crew B</div></div><span class="pill p-yellow">11 days</span></div>
+              <div class="wl-row"><div style="flex:1"><div style="font-weight:600;font-size:12.5px">Sandra Chen — Forklift</div><div style="font-size:11px;color:var(--t3)">Mesa Verde · Crew A</div></div><span class="pill p-yellow">14 days</span></div>
+              <div class="wl-row"><div style="flex:1"><div style="font-weight:600;font-size:12.5px">Liam Chen — OSHA 10</div><div style="font-size:11px;color:var(--t3)">Mesa Verde · Crew B</div></div><span class="pill p-yellow">18 days</span></div>
+              <div class="wl-row"><div style="flex:1"><div style="font-weight:600;font-size:12.5px">Walt Johnson — OSHA 10</div><div style="font-size:11px;color:var(--t3)">Harbor Bridge · Crew A</div></div><span class="pill p-yellow">22 days</span></div>
+            </div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LMS & Training subpage ── -->
+    <div class="module-page" id="sp-lms">
+      <div class="page-content">
+        <div class="page-header" style="display:flex;align-items:flex-end;justify-content:space-between"><div><div class="page-title">LMS &amp; Training</div><div class="page-sub">Learning management · certifications · auto-enrollment</div></div><button class="btn btn-mint">+ Assign Course</button></div>
+        <div class="dash-grid">
+          <div class="stat-card"><div class="stat-num" style="color:var(--t1)">7</div><div class="stat-lbl">Courses In Progress</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:#dc2626">14</div><div class="stat-lbl">Cert Issues Needing Renewal</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:#15803d">83%</div><div class="stat-lbl">Avg Completion Rate</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:var(--t1)">42</div><div class="stat-lbl">Courses Completed YTD</div></div>
+        </div>
+        <div class="card"><div class="card-head"><span class="card-title">Active Enrollments</span><div style="display:flex;gap:8px"><button class="btn btn-white btn-xs">Filter</button><button class="btn btn-white btn-xs">Export</button></div></div><div class="card-body" style="padding:0">
+          <table class="tbl">
+            <thead><tr><th>Worker</th><th>Course</th><th>Project · Crew</th><th>Enrolled</th><th>Due</th><th>Progress</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av av-blue" style="width:24px;height:24px;font-size:9px">AL</div>Amy Larsen</div></td><td>First Aid / CPR Renewal</td><td>Riverside · Crew A</td><td>Feb 15</td><td style="color:#d97706;font-weight:600">Mar 2</td><td><div class="progress-bar-wrap"><div class="progress-bar" style="width:60%"></div></div></td><td><span class="pill p-yellow">In Progress</span></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av av-blue" style="width:24px;height:24px;font-size:9px">KP</div>Kevin Park</div></td><td>OSHA 10 Construction</td><td>Riverside · Crew B</td><td>Feb 10</td><td style="color:#d97706;font-weight:600">Mar 7</td><td><div class="progress-bar-wrap"><div class="progress-bar" style="width:35%"></div></div></td><td><span class="pill p-yellow">In Progress</span></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av av-blue" style="width:24px;height:24px;font-size:9px">SC</div>Sandra Chen</div></td><td>Forklift Operator Renewal</td><td>Mesa Verde · Crew A</td><td>Feb 18</td><td style="color:#d97706;font-weight:600">Mar 10</td><td><div class="progress-bar-wrap"><div class="progress-bar" style="width:20%"></div></div></td><td><span class="pill p-yellow">In Progress</span></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av av-orange" style="width:24px;height:24px;font-size:9px">LC</div>Liam Chen</div></td><td>OSHA 10 Construction</td><td>Mesa Verde · Crew B</td><td>Feb 20</td><td style="color:#d97706;font-weight:600">Mar 14</td><td><div class="progress-bar-wrap"><div class="progress-bar" style="width:10%"></div></div></td><td><span class="pill p-yellow">In Progress</span></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av av-pink" style="width:24px;height:24px;font-size:9px">JM</div>Jose Mendez</div></td><td>OSHA 10 Renewal</td><td>Riverside · Crew A</td><td>Feb 8</td><td style="color:#dc2626;font-weight:600">OVERDUE</td><td><div class="progress-bar-wrap"><div class="progress-bar" style="width:0%;background:#dc2626"></div></div></td><td><span class="pill p-red">Overdue</span></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av av-yellow" style="width:24px;height:24px;font-size:9px">LR</div>Luis Reyes</div></td><td>OSHA 10 Construction (New)</td><td>Riverside · Crew A</td><td>Feb 24</td><td>Mar 24</td><td><div class="progress-bar-wrap"><div class="progress-bar" style="width:0%"></div></div></td><td><span class="pill p-ghost">Not Started</span></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av av-teal" style="width:24px;height:24px;font-size:9px">MA</div>Michelle Albion</div></td><td>OSHA 10 Renewal</td><td>Downtown · Crew B</td><td>Feb 22</td><td>Mar 20</td><td><div class="progress-bar-wrap"><div class="progress-bar" style="width:5%"></div></div></td><td><span class="pill p-yellow">In Progress</span></td></tr>
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- ── BuilderFax subpage ── -->
+    <div class="module-page" id="sp-builderfax">
+      <div class="page-content">
+        <div class="page-header" style="display:flex;align-items:flex-end;justify-content:space-between"><div><div class="page-title">BuilderFax</div><div class="page-sub">Digital credential wallet · live cert sync · worker identity</div></div><button class="btn btn-mint">📲 Bulk Invite</button></div>
+        <div class="dash-grid">
+          <div class="stat-card"><div class="stat-num" style="color:#15803d">216</div><div class="stat-lbl">BFax Connected</div><div class="stat-delta" style="color:#15803d">87% of workforce</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:#d97706">31</div><div class="stat-lbl">Not Connected</div><div class="stat-delta" style="color:var(--t3)">Missing cert sync</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:var(--t1)">183</div><div class="stat-lbl">Wallets Auto-Synced</div><div class="stat-delta" style="color:var(--t3)">Last sync: 2hrs ago</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:#dc2626">8</div><div class="stat-lbl">Invite Bounced (SMS)</div><div class="stat-delta" style="color:#dc2626">Check phone numbers</div></div>
+        </div>
+        <div class="alert al-yellow"><span>⚠</span><div><strong>5 workers with expired certs are not connected to BuilderFax.</strong> Their certifications cannot be auto-synced. Invite them now or upload credentials manually.</div></div>
+        <div class="bfax-grid">
+          <div class="bfax-card warn"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><span style="font-weight:700">Not Connected</span><span class="pill p-red">5 workers</span></div>
+            <div class="worker-list">
+              <div class="wl-row"><div class="av av-pink" style="width:24px;height:24px;font-size:9px">JM</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Jose Mendez</div><div style="font-size:10.5px;color:var(--t3)">Riverside · Crew A · Expired cert</div></div><button class="btn btn-white btn-xs">Invite</button></div>
+              <div class="wl-row"><div class="av av-yellow" style="width:24px;height:24px;font-size:9px">LR</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Luis Reyes</div><div style="font-size:10.5px;color:var(--t3)">Riverside · Crew A · No certs</div></div><button class="btn btn-white btn-xs">Invite</button></div>
+              <div class="wl-row"><div class="av av-blue" style="width:24px;height:24px;font-size:9px">KP</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Kevin Park</div><div style="font-size:10.5px;color:var(--t3)">Riverside · Crew B · Expiring</div></div><button class="btn btn-white btn-xs">Invite</button></div>
+              <div class="wl-row"><div class="av av-orange" style="width:24px;height:24px;font-size:9px">LC</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Liam Chen</div><div style="font-size:10.5px;color:var(--t3)">Mesa Verde · Crew B · Expiring</div></div><button class="btn btn-white btn-xs">Invite</button></div>
+              <div class="wl-row"><div class="av av-yellow" style="width:24px;height:24px;font-size:9px">SO</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Sam Ortiz</div><div style="font-size:10.5px;color:var(--t3)">Downtown · Crew A · No certs</div></div><button class="btn btn-white btn-xs">Invite</button></div>
+            </div>
+          </div>
+          <div class="bfax-card"><div style="font-weight:700;margin-bottom:10px">Recently Connected ✓</div>
+            <div class="worker-list">
+              <div class="wl-row"><div class="av av-mint" style="width:24px;height:24px;font-size:9px">MT</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Marcus Torres</div><div style="font-size:10.5px;color:var(--t3)">Synced 3 certs · Feb 22</div></div><span class="pill p-mint">Synced</span></div>
+              <div class="wl-row"><div class="av av-mint" style="width:24px;height:24px;font-size:9px">CV</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Carlos Vega</div><div style="font-size:10.5px;color:var(--t3)">Synced 1 cert · Feb 21</div></div><span class="pill p-mint">Synced</span></div>
+              <div class="wl-row"><div class="av av-orange" style="width:24px;height:24px;font-size:9px">BT</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Ben Torres</div><div style="font-size:10.5px;color:var(--t3)">Synced 2 certs · Feb 20</div></div><span class="pill p-mint">Synced</span></div>
+              <div class="wl-row"><div class="av av-teal" style="width:24px;height:24px;font-size:9px">AM</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Arka Mukherjee</div><div style="font-size:10.5px;color:var(--t3)">Synced 2 certs · Feb 19</div></div><span class="pill p-mint">Synced</span></div>
+            </div>
+          </div>
+          <div class="bfax-card"><div style="font-weight:700;margin-bottom:10px">Cert Sync Health</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>Auto-sync success</span><span style="font-weight:600;color:#15803d">98%</span></div><div class="progress-bar-wrap" style="width:100%;height:8px"><div class="progress-bar" style="width:98%"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>Wallets verified</span><span style="font-weight:600">183 / 216</span></div><div class="progress-bar-wrap" style="width:100%;height:8px"><div class="progress-bar" style="width:85%"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>Workforce connected</span><span style="font-weight:600;color:#15803d">87%</span></div><div class="progress-bar-wrap" style="width:100%;height:8px"><div class="progress-bar" style="width:87%"></div></div></div>
+              <div class="divider"></div>
+              <div style="font-size:11.5px;color:var(--t3)">Last full sync: 2hrs ago · Next: in 22hrs</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Performance subpage ── -->
+    <div class="module-page" id="sp-performance">
+      <div class="page-content">
+        <div class="page-header" style="display:flex;align-items:flex-end;justify-content:space-between"><div><div class="page-title">Performance</div><div class="page-sub">Reviews · incidents · commendations · ratings</div></div><button class="btn btn-mint">+ Start Review Cycle</button></div>
+        <div class="dash-grid">
+          <div class="stat-card"><div class="stat-num" style="color:var(--t1)">12</div><div class="stat-lbl">Reviews In Progress</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:#d97706">8</div><div class="stat-lbl">Reviews Overdue</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:#dc2626">3</div><div class="stat-lbl">Incidents (30d)</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:#15803d">4.2<span style="font-size:14px"> ★</span></div><div class="stat-lbl">Avg Worker Rating</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="card"><div class="card-head"><span class="card-title">Recent Commendations</span></div><div class="card-body">
+            <div class="worker-list">
+              <div class="wl-row"><div class="av av-mint" style="width:28px;height:28px;font-size:10px">RB</div><div style="flex:1"><div style="font-weight:600;font-size:12.5px">Roberto Baez</div><div style="font-size:11px;color:var(--t3)">Zero incidents 6 months · Harbor Bridge</div><div style="font-size:11px;color:#d97706;margin-top:2px">★★★★★ Feb 20 by Mike Reyes</div></div></div>
+              <div class="wl-row"><div class="av av-orange" style="width:28px;height:28px;font-size:10px">MT</div><div style="flex:1"><div style="font-weight:600;font-size:12.5px">Marcus Torres</div><div style="font-size:11px;color:var(--t3)">Led crew in foreman absence · Riverside</div><div style="font-size:11px;color:#d97706;margin-top:2px">★★★★★ Feb 18 by Francisco Ramos</div></div></div>
+              <div class="wl-row"><div class="av av-pink" style="width:28px;height:28px;font-size:10px">AF</div><div style="flex:1"><div style="font-weight:600;font-size:12.5px">Anna Fischer</div><div style="font-size:11px;color:var(--t3)">Completed rigging cert ahead of schedule</div><div style="font-size:11px;color:#d97706;margin-top:2px">★★★★☆ Feb 15 by Mike Reyes</div></div></div>
+            </div>
+          </div></div>
+          <div class="card"><div class="card-head"><span class="card-title">Recent Incidents</span></div><div class="card-body">
+            <div class="worker-list">
+              <div class="wl-row"><div class="av av-pink" style="width:28px;height:28px;font-size:10px">JM</div><div style="flex:1"><div style="font-weight:600;font-size:12.5px">Jose Mendez</div><div style="font-size:11px;color:var(--t3)">3rd incident in 90 days · Riverside</div><div style="font-size:11px;color:#dc2626;margin-top:2px">⚠ Feb 22 — Safety Protocol Violation</div></div><span class="pill p-red">Action Req.</span></div>
+              <div class="wl-row"><div class="av av-yellow" style="width:28px;height:28px;font-size:10px">TG</div><div style="flex:1"><div style="font-weight:600;font-size:12.5px">Tom Garrett</div><div style="font-size:11px;color:var(--t3)">Minor near-miss · Mesa Verde</div><div style="font-size:11px;color:#d97706;margin-top:2px">⚠ Feb 14 — Near Miss Report</div></div><span class="pill p-yellow">Reviewing</span></div>
+              <div class="wl-row"><div class="av av-blue" style="width:28px;height:28px;font-size:10px">CB</div><div style="flex:1"><div style="font-weight:600;font-size:12.5px">Caleb Ross</div><div style="font-size:11px;color:var(--t3)">Equipment damage report · Downtown</div><div style="font-size:11px;color:var(--t3);margin-top:2px">⚠ Feb 10 — Property Damage</div></div><span class="pill p-ghost">Closed</span></div>
+            </div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Analytics subpage ── -->
+    <div class="module-page" id="sp-analytics">
+      <div class="page-content">
+        <div class="page-header"><div class="page-title">Analytics</div><div class="page-sub">Workforce insights · cert trends · compliance reporting</div></div>
+        <div class="dash-grid">
+          <div class="stat-card"><div class="stat-num">91%</div><div class="stat-lbl">Overall Cert Compliance</div><div class="stat-delta" style="color:#15803d">↑ 4% YoY</div></div>
+          <div class="stat-card"><div class="stat-num">4.8</div><div class="stat-lbl">Avg Safety Score</div><div class="stat-delta" style="color:#15803d">↑ 0.3 from last quarter</div></div>
+          <div class="stat-card"><div class="stat-num">2.1%</div><div class="stat-lbl">Turnover Rate (90d)</div><div class="stat-delta" style="color:#15803d">↓ Industry avg: 4.8%</div></div>
+          <div class="stat-card"><div class="stat-num">$42K</div><div class="stat-lbl">Training Investment YTD</div></div>
+        </div>
+        <div class="alert al-blue"><span>ℹ</span><div><strong>Analytics prototype note:</strong> Full charts, trend lines, and exportable reports will be implemented with real data integration. This view shows KPI summary cards as a design reference.</div></div>
+      </div>
+    </div>
+
+    <!-- ── Employees subpage ── -->
+    <div class="module-page" id="sp-employees">
+      <div class="page-content">
+        <div class="page-header" style="display:flex;align-items:flex-end;justify-content:space-between"><div><div class="page-title">Employees</div><div class="page-sub">All workers · 247 total · BigCat Construction</div></div><div style="display:flex;gap:8px"><button class="btn btn-white">⬇ Export</button><button class="btn btn-mint">+ Add Employee</button></div></div>
+        <div class="card"><div class="card-head"><span class="card-title">Employee List</span><div style="display:flex;gap:8px"><input type="text" placeholder="Search by name..." style="padding:5px 11px;border:1px solid var(--border2);border-radius:6px;font-size:12.5px;font-family:inherit;color:var(--t1);background:var(--white);outline:none"><button class="btn btn-white btn-sm">⊟ Filters</button><button class="btn btn-white btn-sm">Edit Columns</button></div></div>
+        <div class="card-body" style="padding:0"><table class="tbl">
+          <thead><tr><th></th><th>First Name</th><th>Last Name</th><th>Job Title</th><th>Project</th><th>Union</th><th>BFax</th><th>Cert Status</th></tr></thead>
+          <tbody>
+            <tr><td><input type="checkbox"></td><td style="font-weight:600">Francisco</td><td>Ramos</td><td>General Foreman</td><td>Riverside Tower</td><td>IBEW Local 11</td><td><span class="pill p-mint">✓ Connected</span></td><td><span class="pill p-mint">Current</span></td></tr>
+            <tr><td><input type="checkbox"></td><td style="font-weight:600">Marcus</td><td>Torres</td><td>Jrny. Electrician</td><td>Riverside Tower</td><td>IBEW Local 11</td><td><span class="pill p-mint">✓ Connected</span></td><td><span class="pill p-mint">Current</span></td></tr>
+            <tr><td><input type="checkbox"></td><td style="font-weight:600">Jose</td><td>Mendez</td><td>Laborer</td><td>Riverside Tower</td><td>LIUNA Local 300</td><td><span class="pill p-orange">Not connected</span></td><td><span class="pill p-red">Expired</span></td></tr>
+            <tr><td><input type="checkbox"></td><td style="font-weight:600">Amy</td><td>Larsen</td><td>Apprentice</td><td>Riverside Tower</td><td>—</td><td><span class="pill p-mint">✓ Connected</span></td><td><span class="pill p-yellow">Expiring</span></td></tr>
+            <tr><td><input type="checkbox"></td><td style="font-weight:600">Luis</td><td>Reyes</td><td>Laborer</td><td>Riverside Tower</td><td>—</td><td><span class="pill p-orange">Not connected</span></td><td><span class="pill p-red">Missing</span></td></tr>
+            <tr><td><input type="checkbox"></td><td style="font-weight:600">David</td><td>Kim</td><td>Electrical Lead</td><td>Riverside Tower</td><td>IBEW Local 11</td><td><span class="pill p-mint">✓ Connected</span></td><td><span class="pill p-mint">Current</span></td></tr>
+            <tr><td><input type="checkbox"></td><td style="font-weight:600">Sarah</td><td>Moore</td><td>Jrny. Electrician</td><td>Riverside Tower</td><td>IBEW Local 11</td><td><span class="pill p-mint">✓ Connected</span></td><td><span class="pill p-mint">Current</span></td></tr>
+          </tbody>
+        </table></div>
+        <div style="padding:12px 18px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:12px;color:var(--t3)">Showing 1–25 of 247 employees</span>
+          <div style="display:flex;gap:4px">
+            <button class="btn btn-white btn-xs">‹</button>
+            <button class="btn btn-mint btn-xs">1</button>
+            <button class="btn btn-white btn-xs">2</button>
+            <button class="btn btn-white btn-xs">3</button>
+            <span style="padding:4px 6px;font-size:11px;color:var(--t3)">...</span>
+            <button class="btn btn-white btn-xs">10</button>
+            <button class="btn btn-white btn-xs">›</button>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /mod-hris -->
+
+  <!-- ═══ OTHER TOP-LEVEL MODULES (placeholder pages) ═══ -->
+  <div class="module-page" id="mod-time">
+    <div style="padding:28px"><div class="page-title">Time</div><div class="page-sub" style="margin-top:4px">Timesheets · clock-in/out · overtime tracking</div><div class="alert al-blue" style="margin-top:20px"><span>ℹ</span><div>Time module prototype — navigate to <strong>HR</strong> in the top nav to return to HRIS.</div></div></div>
+  </div>
+  <div class="module-page" id="mod-pay">
+    <div style="padding:28px"><div class="page-title">Pay</div><div class="page-sub" style="margin-top:4px">Payroll · prevailing wage · direct deposit</div><div class="alert al-blue" style="margin-top:20px"><span>ℹ</span><div>Pay module prototype.</div></div></div>
+  </div>
+  <div class="module-page" id="mod-scheduler">
+    <div style="padding:28px"><div class="page-title">Scheduler</div><div class="page-sub" style="margin-top:4px">Crew scheduling · shift management · assignments</div><div class="alert al-blue" style="margin-top:20px"><span>ℹ</span><div>Scheduler module prototype.</div></div></div>
+  </div>
+  <div class="module-page" id="mod-resources">
+    <div style="padding:28px"><div class="page-title">Resources</div><div class="page-sub" style="margin-top:4px">Equipment · tools · material tracking</div><div class="alert al-blue" style="margin-top:20px"><span>ℹ</span><div>Resources module prototype.</div></div></div>
+  </div>
+  <div class="module-page" id="mod-reports">
+    <div style="padding:28px"><div class="page-title">Reports</div><div class="page-sub" style="margin-top:4px">Employee census · cert reports · payroll reports</div><div class="alert al-blue" style="margin-top:20px"><span>ℹ</span><div>Reports module prototype.</div></div></div>
+  </div>
+
+</div><!-- /module -->
+
+<!-- ═══ DETAIL PANEL ═══ -->
+<div class="overlay" id="overlay" onclick="maybeClose(event)">
+  <div class="panel" onclick="event.stopPropagation()">
+    <div class="panel-head">
+      <div style="flex:1;min-width:0">
+        <div id="pTitle" style="font-weight:700;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+        <div id="pSub"   style="font-size:12px;color:var(--t3);margin-top:2px"></div>
+      </div>
+      <button class="panel-close" onclick="closePanel()">✕ Close</button>
+    </div>
+    <div class="panel-body" id="pBody"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+const CS = {
+  current:  { col:'#16a34a', pill:'p-mint',   lbl:'Current'  },
+  expiring: { col:'#d97706', pill:'p-yellow', lbl:'Expiring' },
+  expired:  { col:'#dc2626', pill:'p-red',    lbl:'Expired'  },
+  missing:  { col:'#dc2626', pill:'p-red',    lbl:'Missing'  },
+  none:     { col:'#d1d5db', pill:'p-ghost',  lbl:'—'        },
+};
+const cc = s => (CS[s]||CS.none).col;
+const pll = s => `<span class="pill ${(CS[s]||CS.none).pill}">${(CS[s]||CS.none).lbl}</span>`;
+const ini = n => n.split(' ').map(w=>w[0]).join('').slice(0,2);
+
+const PROJECTS = [
+  { name:'Riverside Tower', emoji:'🏗', phase:'Structural / MEP Phase 2',
+    pm:{ name:'Paula Rodriguez',role:'Project Manager',trade:'Management',av:'av-blue',cs:'current',bfax:true,bio:'Sr. PM · 8yrs · Riverside + Harbor',certs:[{n:'OSHA 30',s:'current'},{n:'PMP',s:'current'}] },
+    crews:[
+      { label:'Crew A',trade:'General',col:'#16a34a',
+        fm:{ name:'Francisco Ramos',role:'General Foreman',trade:'General',av:'av-teal',cs:'current',bfax:true,bio:'12yrs · IBEW Steward',union:'IBEW Local 11',certs:[{n:'OSHA 30',s:'current'},{n:'Competent Person',s:'current'},{n:'Rigging',s:'current'}] },
+        workers:[
+          {name:'Marcus Torres', role:'Jrny. Electrician',trade:'Electrical',av:'av-orange',cs:'current', bfax:true, union:'IBEW Local 11', bio:'5yrs',certs:[{n:'OSHA 30',s:'current'},{n:'NCCER L3',s:'current'},{n:'CA C-10',s:'current'}]},
+          {name:'Amy Larsen',    role:'Apprentice',       trade:'Electrical',av:'av-blue',  cs:'expiring',bfax:true, union:null,          bio:'Yr 2 apprentice',certs:[{n:'OSHA 10',s:'current'},{n:'First Aid',s:'expiring'}]},
+          {name:'Carlos Vega',   role:'Jrny. Carpenter',  trade:'Carpentry', av:'av-mint',  cs:'current', bfax:true, union:'UBC Local 55', bio:'7yrs',certs:[{n:'OSHA 10',s:'current'},{n:'Scaffold',s:'current'}]},
+          {name:'Jose Mendez',   role:'Laborer',           trade:'General',   av:'av-pink',  cs:'expired', bfax:false,union:'LIUNA Local 300',bio:'2yrs · 3 incidents',certs:[{n:'OSHA 10',s:'expired'}]},
+          {name:'Luis Reyes',    role:'Laborer',           trade:'General',   av:'av-yellow',cs:'missing', bfax:false,union:null,          bio:'New hire Feb 2026',certs:[]},
+        ]},
+      { label:'Crew B',trade:'Electrical',col:'#2563eb',
+        fm:{ name:'David Kim',role:'Electrical Lead',trade:'Electrical',av:'av-teal',cs:'current',bfax:true,bio:'9yrs · IBEW Lead',union:'IBEW Local 11',certs:[{n:'OSHA 30',s:'current'},{n:'CA C-10',s:'current'},{n:'Arc Flash',s:'current'}] },
+        workers:[
+          {name:'Sarah Moore',role:'Jrny. Electrician',trade:'Electrical',av:'av-mint',  cs:'current', bfax:true, union:'IBEW Local 11',bio:'4yrs',certs:[{n:'OSHA 10',s:'current'},{n:'CA C-10',s:'current'}]},
+          {name:'Kevin Park', role:'Apprentice',       trade:'Electrical',av:'av-blue',  cs:'expiring',bfax:false,union:null,          bio:'Yr 1',certs:[{n:'OSHA 10',s:'expiring'}]},
+          {name:'Nina Walsh', role:'Jrny. Carpenter',  trade:'Carpentry', av:'av-orange',cs:'current', bfax:true, union:'UBC Local 55', bio:'6yrs',certs:[{n:'OSHA 10',s:'current'},{n:'Forklift',s:'current'}]},
+        ]},
+    ]},
+  { name:'Mesa Verde Industrial',emoji:'⚙',phase:'Mechanical / Electrical Phase 1',
+    pm:{ name:'Oliver Nash',role:'Project Manager',trade:'Management',av:'av-orange',cs:'current',bfax:true,bio:'Mesa Verde lead',certs:[{n:'OSHA 30',s:'current'}] },
+    crews:[
+      { label:'Crew A',trade:'General',col:'#16a34a',
+        fm:{ name:'David Freeman',role:'General Foreman',trade:'General',av:'av-teal',cs:'current',bfax:true,bio:'General Foreman · Mesa Verde',union:'LIUNA Local 300',certs:[{n:'OSHA 30',s:'current'},{n:'Forklift',s:'current'}] },
+        workers:[
+          {name:'Sandra Chen',  role:'Apprentice',     trade:'Equipment',av:'av-blue',  cs:'expiring',bfax:true, union:null,          bio:'Yr 2',certs:[{n:'Forklift',s:'expiring'},{n:'OSHA 10',s:'current'}]},
+          {name:'Raj Patel',    role:'Jrny. Plumber',  trade:'Plumbing', av:'av-mint',  cs:'current', bfax:true, union:'UA Local 78', bio:'6yrs',certs:[{n:'OSHA 10',s:'current'},{n:'UA License',s:'current'}]},
+          {name:'Tom Garrett',  role:'Laborer',         trade:'General',  av:'av-yellow',cs:'current', bfax:false,union:null,          bio:'3yrs',certs:[{n:'OSHA 10',s:'current'}]},
+          {name:'Maria Santos', role:'Jrny. Carpenter', trade:'Carpentry',av:'av-pink',  cs:'current', bfax:true, union:'UBC Local 55',bio:'5yrs',certs:[{n:'OSHA 10',s:'current'},{n:'Scaffold',s:'current'}]},
+        ]},
+      { label:'Crew B',trade:'Mechanical',col:'#ea580c',
+        fm:{ name:'James Wu',role:'Mechanical Lead',trade:'Mechanical',av:'av-blue',cs:'current',bfax:true,bio:'UA Local 78',union:'UA Local 78',certs:[{n:'OSHA 30',s:'current'},{n:'UA License',s:'current'},{n:'Welding',s:'current'}] },
+        workers:[
+          {name:'Ben Torres',    role:'Jrny. Pipefitter',trade:'Mechanical',av:'av-orange',cs:'current', bfax:true, union:'UA Local 78',bio:'5yrs',certs:[{n:'OSHA 10',s:'current'},{n:'UA License',s:'current'}]},
+          {name:'Liam Chen',     role:'Apprentice',       trade:'Mechanical',av:'av-mint',  cs:'expiring',bfax:false,union:null,        bio:'Yr 1',certs:[{n:'OSHA 10',s:'expiring'}]},
+          {name:'Arka Mukherjee',role:'Jrny. Plumber',    trade:'Plumbing',  av:'av-teal',  cs:'current', bfax:true, union:'UA Local 78',bio:'4yrs',certs:[{n:'OSHA 10',s:'current'},{n:'UA License',s:'current'}]},
+        ]},
+    ]},
+  { name:'Harbor Bridge Restoration',emoji:'🌉',phase:'Structural Rehab Phase 3',
+    pm:{ name:'Paula Rodriguez',role:'Project Manager',trade:'Management',av:'av-blue',cs:'current',bfax:true,bio:'Also manages Riverside',certs:[{n:'OSHA 30',s:'current'}] },
+    crews:[
+      { label:'Crew A',trade:'Structural',col:'#16a34a',
+        fm:{ name:'Mike Reyes',role:'Structural Lead',trade:'Structural',av:'av-orange',cs:'current',bfax:true,bio:'11yrs · Iron Workers',union:'Iron Workers Local 416',certs:[{n:'OSHA 30',s:'current'},{n:'Rigging',s:'current'},{n:'Conf. Space',s:'current'},{n:'Fall Prot.',s:'current'}] },
+        workers:[
+          {name:'Roberto Baez', role:'Jrny. Plumber',  trade:'Plumbing',  av:'av-mint',  cs:'current', bfax:true, union:'UA Local 78',           bio:'Zero incidents 6mo',certs:[{n:'OSHA 10',s:'current'},{n:'Conf. Space',s:'current'}]},
+          {name:'Anna Fischer', role:'Jrny. Carpenter', trade:'Carpentry', av:'av-pink',  cs:'current', bfax:true, union:'UBC Local 55',           bio:'7yrs',certs:[{n:'OSHA 10',s:'current'},{n:'Rigging',s:'current'}]},
+          {name:'Patrick Cruz', role:'Ironworker',      trade:'Structural',av:'av-blue',  cs:'current', bfax:true, union:'Iron Workers Local 416',bio:'5yrs',certs:[{n:'OSHA 10',s:'current'},{n:'Rigging',s:'current'}]},
+          {name:'Jeff Nakamura',role:'Ironworker',      trade:'Structural',av:'av-teal',  cs:'current', bfax:true, union:'Iron Workers Local 416',bio:'3yrs',certs:[{n:'OSHA 10',s:'current'}]},
+          {name:'Walt Johnson', role:'Laborer',          trade:'General',   av:'av-yellow',cs:'expiring',bfax:false,union:null,                    bio:'2yrs',certs:[{n:'OSHA 10',s:'expiring'}]},
+        ]},
+    ]},
+  { name:'Downtown Commons',emoji:'🏙',phase:'Interior Fit-Out Phase 2',
+    pm:{ name:'Rachel Kim',role:'Project Manager',trade:'Management',av:'av-pink',cs:'current',bfax:true,bio:'Downtown Commons lead',certs:[{n:'OSHA 30',s:'current'}] },
+    crews:[
+      { label:'Crew A',trade:'General',  col:'#16a34a',
+        fm:{ name:'Ernie Lopez',role:'General Foreman',trade:'General',av:'av-teal',cs:'current',bfax:true,bio:'General Foreman · Downtown',union:'LIUNA Local 300',certs:[{n:'OSHA 30',s:'current'},{n:'Competent Person',s:'current'}] },
+        workers:[
+          {name:'Chris Baker',role:'Crew Lead',         trade:'General',   av:'av-orange',cs:'current',bfax:true, union:'LIUNA Local 300',bio:'4yrs',certs:[{n:'OSHA 10',s:'current'}]},
+          {name:'Dana White', role:'Jrny. Electrician', trade:'Electrical',av:'av-mint',  cs:'current',bfax:true, union:'IBEW Local 11', bio:'5yrs',certs:[{n:'OSHA 10',s:'current'},{n:'CA C-10',s:'current'}]},
+          {name:'Sam Ortiz',  role:'Laborer',            trade:'General',   av:'av-yellow',cs:'missing',bfax:false,union:null,           bio:'New hire',certs:[]},
+        ]},
+      { label:'Crew B',trade:'Finishing',col:'#ec4899',
+        fm:{ name:'Lisa Park',role:'Finishing Lead',trade:'Finishing',av:'av-pink',cs:'current',bfax:true,bio:'8yrs · Finishing Lead',union:null,certs:[{n:'OSHA 30',s:'current'},{n:'Lead Abatement',s:'current'}] },
+        workers:[
+          {name:'Nick Alcantara', role:'Jrny. Painter',  trade:'Finishing',av:'av-blue',  cs:'current', bfax:true, union:null,           bio:'6yrs',certs:[{n:'OSHA 10',s:'current'},{n:'Lead Abatement',s:'current'}]},
+          {name:'Michelle Albion',role:'Apprentice',      trade:'Finishing',av:'av-teal',  cs:'expiring',bfax:false,union:null,           bio:'Yr 1',certs:[{n:'OSHA 10',s:'expiring'}]},
+          {name:'Caleb Ross',     role:'Jrny. Carpenter', trade:'Carpentry',av:'av-orange',cs:'current', bfax:true, union:'UBC Local 55', bio:'4yrs',certs:[{n:'OSHA 10',s:'current'}]},
+        ]},
+      { label:'Crew C',trade:'MEP',col:'#2563eb',
+        fm:{ name:'Tony Ruiz',role:'MEP Lead',trade:'MEP',av:'av-orange',cs:'current',bfax:true,bio:'MEP Lead · IBEW',union:'IBEW Local 11',certs:[{n:'OSHA 30',s:'current'},{n:'CA C-10',s:'current'}] },
+        workers:[
+          {name:'Ralph Kim', role:'Jrny. Electrician',trade:'Electrical',av:'av-blue',  cs:'current', bfax:true, union:'IBEW Local 11',bio:'6yrs',certs:[{n:'OSHA 10',s:'current'},{n:'CA C-10',s:'current'}]},
+          {name:'Larry Chen',role:'Jrny. Plumber',    trade:'Plumbing',  av:'av-mint',  cs:'current', bfax:true, union:'UA Local 78',  bio:'5yrs',certs:[{n:'OSHA 10',s:'current'},{n:'UA License',s:'current'}]},
+          {name:'Jim Walsh', role:'Apprentice',        trade:'MEP',       av:'av-yellow',cs:'expiring',bfax:false,union:null,           bio:'Yr 2',certs:[{n:'OSHA 10',s:'expiring'}]},
+        ]},
+    ]},
+];
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+function switchModule(mod) {
+  document.querySelectorAll('.module-page').forEach(p=>{ if(p.id.startsWith('mod-')) p.classList.remove('active'); });
+  document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('on'));
+  document.getElementById('mod-'+(mod==='hris'?'hris':mod)).classList.add('active');
+  document.getElementById('nl-hris').classList.toggle('on', mod==='hris');
+  // trigger repaint for hris
+  if(mod==='hris') { setTimeout(fitCanvas,60); }
+}
+
+function setSubpage(sp) {
+  const hris = document.getElementById('mod-hris');
+  hris.querySelectorAll('.module-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sub-link').forEach(b=>b.classList.remove('on'));
+  document.getElementById('sp-'+sp).classList.add('active');
+  document.getElementById('sl-'+sp).classList.add('on');
+  if(sp==='orgchart') setTimeout(fitCanvas,60);
+}
+
+// ═══════════════════════════════════════
+// ORG CHART LAYOUT
+// ═══════════════════════════════════════
+const NW=155, NW_FM=152, NW_PM=168;
+const NH_PM=72, NH_FM=92, NH_W=80;
+const HGAP=16, CGAP=52, V_PM_FM=64, V_FM_W=54;
+
+let currentView='proj', curPrj=0;
+
+function renderProject(proj) {
+  const nEl=document.getElementById('nodes'), svg=document.getElementById('svgLines');
+  nEl.innerHTML=''; svg.innerHTML='';
+  const cw=proj.crews.map(c=>Math.max(NW_FM, c.workers.length*(NW+HGAP)-HGAP));
+  const totW=cw.reduce((a,b)=>a+b,0)+(proj.crews.length-1)*CGAP;
+  const ox=48,oy=48;
+  const pmX=ox+totW/2-NW_PM/2, pmY=oy;
+  mkNode(nEl,pmX,pmY,NW_PM,NH_PM,'ntype-pm',{lbl:'PROJECT MANAGER',lc:'#2563eb',name:proj.pm.name,trade:proj.pm.trade,role:proj.pm.role,cs:proj.pm.cs,av:proj.pm.av,reports:null,bfax:proj.pm.bfax,cb:()=>panelPm(proj)});
+  const fmY=pmY+NH_PM+V_PM_FM, wY=fmY+NH_FM+V_FM_W;
+  let cx=ox;
+  proj.crews.forEach((crew,ci)=>{
+    const w=cw[ci];
+    const fmX=cx+w/2-NW_FM/2;
+    const fmEl=mkNode(nEl,fmX,fmY,NW_FM,NH_FM,'ntype-foreman',{lbl:crew.label+' · '+crew.trade,lc:crew.col,name:crew.fm.name,trade:crew.fm.trade,role:crew.fm.role,cs:crew.fm.cs,av:crew.fm.av,reports:crew.workers.length,bfax:crew.fm.bfax,cb:()=>panelForeman(crew,proj.name)});
+    const tab=document.createElement('div'); tab.className='crew-tab'; tab.textContent=crew.label; tab.style.color=crew.col; fmEl.appendChild(tab);
+    drawConn(svg,pmX+NW_PM/2,pmY+NH_PM,fmX+NW_FM/2,fmY,false);
+    crew.workers.forEach((wk,wi)=>{
+      const wX=cx+wi*(NW+HGAP);
+      mkNode(nEl,wX,wY,NW,NH_W,'',{lbl:wk.trade,lc:'#6b7280',name:wk.name,trade:wk.trade,role:wk.role,cs:wk.cs,av:wk.av,reports:null,bfax:wk.bfax,cb:()=>panelWorker(wk,crew.fm.name,crew.label,proj.name)});
+      drawConn(svg,fmX+NW_FM/2,fmY+NH_FM,wX+NW/2,wY,true);
+    });
+    cx+=w+CGAP;
+  });
+  const aw=proj.crews.flatMap(c=>c.workers);
+  const ok=aw.filter(w=>w.cs==='current').length, iss=aw.length-ok;
+  const comp=aw.length?Math.round(ok/aw.length*100):100;
+  document.getElementById('sbProj').textContent=proj.name;
+  document.getElementById('sbW').textContent=aw.length+' workers';
+  document.getElementById('sbC').textContent=proj.crews.length+' crew'+(proj.crews.length>1?'s':'');
+  document.getElementById('sbI').textContent=iss>0?iss+' cert issue'+(iss>1?'s':''):'';
+  document.getElementById('sbISep').style.display=iss>0?'':'none';
+  const cEl=document.getElementById('sbComp'); cEl.textContent=comp+'% compliant'; cEl.style.color=comp>=90?'#15803d':comp>=75?'#d97706':'#dc2626';
+  setTimeout(fitCanvas,60);
+}
+
+function renderCorp(){
+  const nEl=document.getElementById('nodes'),svg=document.getElementById('svgLines');
+  nEl.innerHTML=''; svg.innerHTML='';
+  const CW=160,CG=20; const cx=550;
+  const EXECS=[{name:'Strategic Steve',role:'CEO / Owner',av:'av-blue'},{name:'HR Helen',role:'HR Manager',av:'av-mint'},{name:'Safety Sam',role:'Safety Director',av:'av-orange'},{name:'Fiscal Fran',role:'CFO',av:'av-teal'}];
+  const PMS=[{name:'Paula Rodriguez',role:'PM · Riverside/Harbor',av:'av-blue'},{name:'Oliver Nash',role:'PM · Mesa Verde',av:'av-orange'},{name:'Rachel Kim',role:'PM · Downtown',av:'av-pink'}];
+  const compX=cx-CW/2;
+  mkNode(nEl,compX,48,CW,NH_PM,'ntype-pm',{lbl:'COMPANY',lc:'#2563eb',name:'BigCat Construction',trade:'General Contractor',role:'Licensed GC · 4 active projects',cs:'current',av:'av-blue',reports:null,bfax:true,cb:()=>{}});
+  const eY=48+NH_PM+60; const etW=EXECS.length*(CW+CG)-CG; let ex=cx-etW/2;
+  EXECS.forEach(e=>{
+    mkNode(nEl,ex,eY,CW,NH_FM,'ntype-foreman',{lbl:'EXECUTIVE',lc:'#7aecb4',name:e.name,trade:'Leadership',role:e.role,cs:'current',av:e.av,reports:null,bfax:true,cb:()=>{}});
+    drawConn(svg,cx,48+NH_PM,ex+CW/2,eY,false); ex+=CW+CG;
+  });
+  const pmY=eY+NH_FM+58; const pmtW=PMS.length*(CW+CG)-CG; let pmx=cx-pmtW/2;
+  PMS.forEach(p=>{
+    mkNode(nEl,pmx,pmY,CW,NH_W,'',{lbl:'PROJECT MANAGER',lc:'#6b7280',name:p.name,trade:'Management',role:p.role,cs:'current',av:p.av,reports:null,bfax:true,cb:()=>{}});
+    drawConn(svg,cx-etW/2+CW/2,eY+NH_FM,pmx+CW/2,pmY,false); pmx+=CW+CG;
+  });
+  document.getElementById('sbProj').textContent='Corporate View';
+  document.getElementById('sbW').textContent='247 workers';
+  document.getElementById('sbC').textContent='4 projects · 10 crews';
+  document.getElementById('sbI').textContent='';
+  document.getElementById('sbISep').style.display='none';
+  document.getElementById('sbComp').textContent='91% compliant'; document.getElementById('sbComp').style.color='#15803d';
+  setTimeout(fitCanvas,60);
+}
+
+function mkNode(container,x,y,w,h,cls,o){
+  const el=document.createElement('div'); el.className='node '+(cls||'');
+  el.style.cssText=`left:${x}px;top:${y}px;width:${w}px;min-height:${h}px;`;
+  const foot=o.reports!==null
+    ?`<div class="n-foot warn"><svg width="11" height="11" fill="none" stroke="#6b7280" viewBox="0 0 24 24" style="flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>${o.reports} direct reports</div>`
+    :o.bfax===true ?`<div class="n-foot ok"><svg width="10" height="10" viewBox="0 0 20 20" fill="#16a34a"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>BuilderFax ✓</div>`
+    :o.bfax===false?`<div class="n-foot warn"><svg width="10" height="10" viewBox="0 0 20 20" fill="#9ca3af"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.414-11.414a1 1 0 00-1.414 0L10 8.586 8.414 7a1 1 0 00-1.414 1.414L8.586 10 7 11.586a1 1 0 101.414 1.414L10 11.414l1.586 1.586a1 1 0 001.414-1.414L11.414 10l1.586-1.586a1 1 0 000-1.414z"/></svg>BFax not connected</div>`
+    :'';
+  el.innerHTML=`
+    ${o.lbl?`<div class="n-label" style="color:${o.lc}">${o.lbl}</div>`:''}
+    <div class="n-name"><span class="n-name-t">${o.name}</span><span class="cert-dot" style="background:${cc(o.cs)}"></span></div>
+    <div class="n-trade">${o.trade}</div>
+    <div class="n-role">${o.role}</div>
+    ${foot}`;
+  el.addEventListener('click',o.cb);
+  container.appendChild(el);
+  return el;
+}
+
+function drawConn(svg,x1,y1,x2,y2,dashed){
+  const mid=(y1+y2)/2, p=document.createElementNS('http://www.w3.org/2000/svg','path');
+  p.setAttribute('d',`M${x1},${y1} C${x1},${mid} ${x2},${mid} ${x2},${y2}`);
+  p.setAttribute('class',dashed?'c-dashed':'c-solid'); svg.appendChild(p);
+}
+
+// ═══════════════════════════════════════
+// PANELS
+// ═══════════════════════════════════════
+function panelWorker(w,fmName,crewLbl,projName){
+  const needRen=w.cs==='expired'||w.cs==='expiring', needBfax=!w.bfax;
+  const al=w.cs==='expired'||w.cs==='missing'
+    ?`<div class="alert al-red"><span>⚠</span><div><strong>Cert issue.</strong> Worker blocked from cert-required assignments by Scheduler.</div></div>`
+    :w.cs==='expiring'
+    ?`<div class="alert al-yellow"><span>◆</span><div><strong>Cert expiring within 30 days.</strong> Assign renewal now.</div></div>`
+    :`<div class="alert al-green"><span>✓</span><div>All certifications current.</div></div>`;
+  const certHtml=w.certs.length
+    ?w.certs.map(c=>`<div class="cert-row"><span style="font-weight:500">${c.n}</span>${pll(c.s)}</div>`).join('')
+    :`<div style="color:var(--t3);font-size:12px;padding:6px 0">No certifications on file.</div>`;
+  openPanel(w.name,`${w.role} · ${crewLbl} · ${projName}`,`
+    <div class="psec"><div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+      <div class="av ${w.av}" style="width:46px;height:46px;font-size:15px">${ini(w.name)}</div>
+      <div><div style="font-weight:700;font-size:15px">${w.name}</div><div style="font-size:12px;color:var(--t2);margin-top:1px">${w.bio}</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px">
+        ${w.union?`<span class="pill p-blue">${w.union}</span>`:`<span class="pill p-ghost">Non-union</span>`}
+        ${w.bfax?`<span class="pill p-mint">✓ BuilderFax</span>`:`<span class="pill p-orange">BFax not connected</span>`}
+      </div></div></div>${al}</div>
+    <div class="psec"><div class="psec-title">Project &amp; Crew</div>
+      <div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:11px 13px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12.5px">
+        <div><div style="color:var(--t3);font-size:11px">Project</div><div style="font-weight:600;margin-top:1px">${projName}</div></div>
+        <div><div style="color:var(--t3);font-size:11px">Crew</div><div style="font-weight:600;margin-top:1px">${crewLbl}</div></div>
+        <div><div style="color:var(--t3);font-size:11px">Foreman</div><div style="font-weight:600;margin-top:1px">${fmName}</div></div>
+        <div><div style="color:var(--t3);font-size:11px">Trade</div><div style="font-weight:600;margin-top:1px">${w.trade}</div></div>
+      </div></div>
+    <div class="psec"><div class="psec-title">Certifications</div>${certHtml}</div>
+    <div class="psec"><div class="psec-title">Actions</div><div class="actions">
+      ${needRen?`<button class="action-btn ab-mint"><div class="action-icon ai-mint">📚</div><div><div>Assign Renewal Course</div><div class="ab-sub">Auto-enroll in LMS · notify worker</div></div></button>`:''}
+      ${needBfax?`<button class="action-btn ab-mint"><div class="action-icon ai-mint">📲</div><div><div>Send BuilderFax Invite (SMS)</div></div></button>`:''}
+      <button class="action-btn ab-white"><div class="action-icon ai-white">📋</div><div><div>Start Performance Review</div><div class="ab-sub">Assign to ${fmName}</div></div></button>
+      <button class="action-btn ab-white"><div class="action-icon ai-white">⭐</div><div><div>Log Commendation</div></div></button>
+      <button class="action-btn ab-white"><div class="action-icon ai-white">👤</div><div><div>View Full Employee Profile</div></div></button>
+      <button class="action-btn ab-white"><div class="action-icon ai-blue">📅</div><div><div>View in Scheduler</div></div></button>
+      <button class="action-btn ab-red"><div class="action-icon ai-red">⚠</div><div><div>Log Incident</div></div></button>
+    </div></div>`);
+}
+
+function panelForeman(crew,projName){
+  const aw=crew.workers; const iss=aw.filter(w=>w.cs!=='current').length; const bfaxMiss=aw.filter(w=>!w.bfax).length;
+  const comp=aw.length?Math.round(aw.filter(w=>w.cs==='current').length/aw.length*100):100;
+  openPanel(crew.fm.name,`${crew.label} · ${crew.fm.role} · ${projName}`,`
+    <div class="psec"><div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+      <div class="av ${crew.fm.av}" style="width:46px;height:46px;font-size:15px">${ini(crew.fm.name)}</div>
+      <div><div style="font-weight:700;font-size:15px">${crew.fm.name}</div><div style="font-size:12px;color:var(--t2)">${crew.fm.bio}</div>
+      <div style="display:flex;gap:5px;margin-top:6px">
+        ${crew.fm.union?`<span class="pill p-blue">${crew.fm.union}</span>`:''}
+        <span class="pill p-mint">✓ BuilderFax</span>
+      </div></div></div>
+      ${iss>0?`<div class="alert al-red"><span>⚠</span><div><strong>${iss} worker${iss>1?'s':''}</strong> have cert issues in ${crew.label}.</div></div>`:''}
+    </div>
+    <div class="psec"><div class="psec-title">Foreman Certifications</div>
+      ${crew.fm.certs.map(c=>`<div class="cert-row"><span style="font-weight:500">${c.n}</span>${pll(c.s)}</div>`).join('')}
+    </div>
+    <div class="psec"><div class="psec-title">${crew.label} Summary</div>
+      <div class="info-grid">
+        <div class="info-cell"><div class="info-val">${aw.length}</div><div class="info-lbl">Workers</div></div>
+        <div class="info-cell"><div class="info-val" style="color:${comp>=90?'#15803d':comp>=75?'#d97706':'#dc2626'}">${comp}%</div><div class="info-lbl">Cert compliant</div></div>
+        <div class="info-cell"><div class="info-val" style="color:${iss>0?'#dc2626':'#15803d'}">${iss}</div><div class="info-lbl">Cert issues</div></div>
+        <div class="info-cell"><div class="info-val" style="color:#15803d">${aw.filter(w=>w.bfax).length}/${aw.length}</div><div class="info-lbl">BFax connected</div></div>
+      </div>
+    </div>
+    <div class="psec"><div class="psec-title">${crew.label} Workers</div>
+      ${aw.map(w=>`<div class="worker-row" onclick='drillWorker(${JSON.stringify(w).replace(/"/g,"'")},"${crew.fm.name}","${crew.label}","${projName}")'>
+        <div style="display:flex;align-items:center;gap:9px">
+          <div class="av ${w.av}" style="width:26px;height:26px;font-size:10px">${ini(w.name)}</div>
+          <div><div style="font-size:12.5px;font-weight:500">${w.name}</div><div style="font-size:11.5px;color:var(--t2)">${w.trade} · ${w.role}</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          ${w.bfax?`<svg width="12" height="12" viewBox="0 0 20 20" fill="#16a34a"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>`:`<svg width="12" height="12" viewBox="0 0 20 20" fill="#d1d5db"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.414-11.414a1 1 0 00-1.414 0L10 8.586 8.414 7a1 1 0 00-1.414 1.414L8.586 10 7 11.586a1 1 0 101.414 1.414L10 11.414l1.586 1.586a1 1 0 001.414-1.414L11.414 10l1.586-1.586a1 1 0 000-1.414z"/></svg>`}
+          <span class="cert-dot" style="background:${cc(w.cs)};width:8px;height:8px"></span>
+        </div></div>`).join('')}
+    </div>
+    <div class="psec"><div class="psec-title">Actions</div><div class="actions">
+      <button class="action-btn ab-mint"><div class="action-icon ai-mint">📋</div><div><div>Start ${crew.label} Review Cycle</div></div></button>
+      <button class="action-btn ab-white"><div class="action-icon ai-white">📚</div><div><div>Assign Crew-Wide Training</div></div></button>
+      ${bfaxMiss>0?`<button class="action-btn ab-white"><div class="action-icon ai-mint">📲</div><div><div>Bulk BFax Invite (${bfaxMiss} missing)</div></div></button>`:''}
+      <button class="action-btn ab-white"><div class="action-icon ai-blue">📅</div><div><div>View ${crew.label} Schedule</div></div></button>
+      <button class="action-btn ab-white"><div class="action-icon ai-white">📊</div><div><div>Crew Performance Report</div></div></button>
+    </div></div>`);
+}
+
+function panelPm(proj){
+  const aw=proj.crews.flatMap(c=>c.workers);
+  const iss=aw.filter(w=>w.cs!=='current').length, bfaxMiss=aw.filter(w=>!w.bfax).length;
+  const comp=aw.length?Math.round(aw.filter(w=>w.cs==='current').length/aw.length*100):100;
+  openPanel(proj.pm.name,`Project Manager · ${proj.name}`,`
+    <div class="psec"><div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+      <div class="av ${proj.pm.av}" style="width:46px;height:46px;font-size:15px">${ini(proj.pm.name)}</div>
+      <div><div style="font-weight:700;font-size:15px">${proj.pm.name}</div><div style="font-size:12px;color:var(--t2)">${proj.pm.bio}</div></div></div></div>
+    <div class="psec"><div class="psec-title">Project Overview — ${proj.name}</div>
+      <div style="font-size:12px;color:var(--t2);margin-bottom:10px">${proj.phase}</div>
+      <div class="info-grid">
+        <div class="info-cell"><div class="info-val">${aw.length}</div><div class="info-lbl">Workers</div></div>
+        <div class="info-cell"><div class="info-val" style="color:${comp>=90?'#15803d':comp>=75?'#d97706':'#dc2626'}">${comp}%</div><div class="info-lbl">Cert compliant</div></div>
+        <div class="info-cell"><div class="info-val" style="color:${iss>0?'#dc2626':'#15803d'}">${iss}</div><div class="info-lbl">Cert issues</div></div>
+        <div class="info-cell"><div class="info-val">${proj.crews.length}</div><div class="info-lbl">Active crews</div></div>
+      </div>
+    </div>
+    <div class="psec"><div class="psec-title">Crews</div>
+      ${proj.crews.map(c=>`<div class="worker-row">
+        <div><div style="font-size:12.5px;font-weight:600">${c.label} — ${c.fm.name}</div><div style="font-size:11.5px;color:var(--t2)">${c.trade} · ${c.workers.length} workers</div></div>
+        <span class="cert-dot" style="background:${cc(c.fm.cs)};width:8px;height:8px"></span></div>`).join('')}
+    </div>
+    <div class="psec"><div class="psec-title">Actions</div><div class="actions">
+      <button class="action-btn ab-mint"><div class="action-icon ai-mint">📋</div><div><div>Start Project Review Cycle</div></div></button>
+      <button class="action-btn ab-white"><div class="action-icon ai-white">📊</div><div><div>Project Workforce Report</div></div></button>
+      <button class="action-btn ab-white"><div class="action-icon ai-blue">📅</div><div><div>View Project Schedule</div></div></button>
+      ${bfaxMiss>0?`<button class="action-btn ab-white"><div class="action-icon ai-mint">📲</div><div><div>Bulk BFax Invite (${bfaxMiss})</div></div></button>`:''}
+      <button class="action-btn ab-white"><div class="action-icon ai-white">📚</div><div><div>Project-Wide Training</div></div></button>
+    </div></div>`);
+}
+
+window.drillWorker = function(data,fm,crew,proj){
+  if(typeof data==='object') panelWorker(data,fm,crew,proj);
+};
+
+function openPanel(title,sub,body){
+  document.getElementById('pTitle').textContent=title;
+  document.getElementById('pSub').textContent=sub;
+  document.getElementById('pBody').innerHTML=body;
+  document.getElementById('overlay').classList.add('open');
+}
+function closePanel(){ document.getElementById('overlay').classList.remove('open'); }
+function maybeClose(e){ if(e.target===document.getElementById('overlay')) closePanel(); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closePanel(); });
+
+// ═══════════════════════════════════════
+// VIEW SWITCHING
+// ═══════════════════════════════════════
+function setView(v){
+  currentView=v;
+  document.getElementById('vc').classList.toggle('on',v==='corp');
+  document.getElementById('vp').classList.toggle('on',v==='proj');
+  const tabs=document.getElementById('ptabs');
+  tabs.style.opacity=v==='proj'?'1':'.35'; tabs.style.pointerEvents=v==='proj'?'':'none';
+  if(v==='proj') renderProject(PROJECTS[curPrj]); else renderCorp();
+}
+function setPrj(i,btn){
+  curPrj=i; document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('on')); btn.classList.add('on');
+  if(currentView==='proj') renderProject(PROJECTS[i]);
+}
+
+// ═══════════════════════════════════════
+// PAN / ZOOM
+// ═══════════════════════════════════════
+let sc=1,px=40,py=40,drag=false,lx=0,ly=0;
+function applyT(){
+  document.getElementById('canvas').style.transform=`translate(${px}px,${py}px) scale(${sc})`;
+  document.getElementById('zLbl').textContent=Math.round(sc*100)+'%';
+}
+function applyZoom(f,mx,my){
+  const wrap=document.getElementById('cWrap');
+  if(mx===undefined){mx=wrap.offsetWidth/2;my=wrap.offsetHeight/2;}
+  const prev=sc; sc=Math.max(.2,Math.min(2.5,sc*f));
+  px=mx-(mx-px)*(sc/prev); py=my-(my-py)*(sc/prev); applyT();
+}
+function fitCanvas(){
+  const wrap=document.getElementById('cWrap'), nodes=document.querySelectorAll('.node');
+  if(!nodes.length) return;
+  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
+  nodes.forEach(n=>{const l=parseInt(n.style.left)||0,t=parseInt(n.style.top)||0; x0=Math.min(x0,l);y0=Math.min(y0,t);x1=Math.max(x1,l+(n.offsetWidth||155));y1=Math.max(y1,t+(n.offsetHeight||90));});
+  const pad=60,cw=x1-x0+pad*2,ch=y1-y0+pad*2,ww=wrap.offsetWidth,wh=wrap.offsetHeight;
+  sc=Math.max(.2,Math.min(1.1,Math.min(ww/cw,wh/ch)));
+  px=(ww-cw*sc)/2-x0*sc+pad*sc; py=(wh-ch*sc)/2-y0*sc+pad*sc; applyT();
+}
+function resetCanvas(){sc=1;px=40;py=40;applyT();}
+
+const cw=document.getElementById('cWrap');
+cw.addEventListener('mousedown',e=>{if(e.target.closest('.node'))return;drag=true;lx=e.clientX;ly=e.clientY;cw.classList.add('panning');});
+window.addEventListener('mousemove',e=>{if(!drag)return;px+=e.clientX-lx;py+=e.clientY-ly;lx=e.clientX;ly=e.clientY;applyT();});
+window.addEventListener('mouseup',()=>{drag=false;cw.classList.remove('panning');});
+cw.addEventListener('wheel',e=>{e.preventDefault();const r=cw.getBoundingClientRect();applyZoom(e.deltaY>0?.9:1.1,e.clientX-r.left,e.clientY-r.top);},{passive:false});
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+renderProject(PROJECTS[0]);
+</script>
+</body>
+</html>

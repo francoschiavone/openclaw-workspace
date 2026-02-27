@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumber HRIS — Org Chart v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* ── Lumber exact tokens ── */
+  --bg:        #101828;
+  --s1:        #1a2332;
+  --s2:        #1f2d3d;
+  --s3:        #253447;
+  --b1:        #2d3f55;
+  --b2:        #344054;
+  --t1:        #f2f4f7;
+  --t2:        #98a2b3;
+  --t3:        #667085;
+  --mint:      #7aecb4;
+  --mint2:     #5dd4a0;
+  --mintd:     rgba(122,236,180,.13);
+  --mintd2:    rgba(122,236,180,.06);
+  --pink:      #ffa6f5;
+  --pinkd:     rgba(255,166,245,.12);
+  --blue:      #3b82f6;
+  --blued:     rgba(59,130,246,.13);
+  --red:       #ef4444;
+  --redd:      rgba(239,68,68,.13);
+  --yellow:    #eab308;
+  --yellowd:   rgba(234,179,8,.13);
+  --orange:    #f97316;
+  --oranged:   rgba(249,115,22,.13);
+  --purple:    #8b5cf6;
+  --purpled:   rgba(139,92,246,.13);
+  --nav:       52px;
+  --sub:       44px;
+  --bar:       52px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--t1);
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* ─────────────── TOP NAV ─────────────── */
+.topnav {
+  height: var(--nav);
+  background: var(--s1);
+  border-bottom: 1px solid var(--b1);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  flex-shrink: 0;
+  z-index: 200;
+  gap: 0;
+}
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 28px;
+  margin-right: 20px;
+  border-right: 1px solid var(--b1);
+  flex-shrink: 0;
+}
+.hris-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  background: var(--pinkd);
+  color: var(--pink);
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+.nav-links { display: flex; gap: 2px; }
+.nav-link {
+  display: flex; align-items: center; gap: 5px;
+  padding: 6px 12px; border-radius: 6px;
+  font-size: 13px; font-weight: 500; color: var(--t2);
+  cursor: pointer; border: none; background: none;
+  font-family: inherit; transition: all .15s; white-space: nowrap;
+}
+.nav-link:hover { background: var(--s2); color: var(--t1); }
+.nav-link.on  { background: var(--mintd); color: var(--mint); }
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.icon-btn {
+  width: 32px; height: 32px; border-radius: 6px;
+  background: none; border: none; color: var(--t2);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.icon-btn:hover { background: var(--s2); color: var(--t1); }
+.nav-av {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--mint), var(--pink));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--bg);
+  cursor: pointer; flex-shrink: 0;
+}
+
+/* ─────────────── SUBNAV ─────────────── */
+.subnav {
+  height: var(--sub);
+  background: var(--s1);
+  border-bottom: 1px solid var(--b1);
+  display: flex; align-items: center;
+  padding: 0 20px; gap: 2px;
+  flex-shrink: 0; z-index: 199;
+}
+.sub-link {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 6px;
+  font-size: 13px; font-weight: 500; color: var(--t2);
+  cursor: pointer; border: none; background: none;
+  font-family: inherit; transition: all .15s; white-space: nowrap;
+  position: relative;
+}
+.sub-link:hover { color: var(--t1); }
+.sub-link.on { color: var(--mint); }
+.sub-link.on::after {
+  content: ''; position: absolute;
+  bottom: -9px; left: 14px; right: 14px;
+  height: 2px; background: var(--mint); border-radius: 2px 2px 0 0;
+}
+.sub-badge {
+  font-size: 10px; font-weight: 700; background: var(--red);
+  color: #fff; padding: 1px 5px; border-radius: 10px; min-width: 17px; text-align: center;
+}
+.persona-pill {
+  margin-left: auto; display: flex; align-items: center; gap: 6px;
+  background: var(--s2); border: 1px solid var(--b2);
+  border-radius: 20px; padding: 3px 10px 3px 4px;
+  cursor: pointer; transition: all .15s;
+}
+.persona-pill:hover { border-color: var(--mint); }
+.persona-av {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; color: var(--bg);
+}
+.persona-name { font-size: 12px; font-weight: 600; }
+
+/* ─────────────── TOOLBAR ─────────────── */
+.toolbar {
+  height: var(--bar);
+  background: var(--s1);
+  border-bottom: 1px solid var(--b1);
+  display: flex; align-items: center;
+  padding: 0 20px; gap: 10px;
+  flex-shrink: 0; z-index: 198;
+}
+.view-toggle {
+  display: flex; background: var(--s2);
+  border: 1px solid var(--b1); border-radius: 8px; padding: 3px; gap: 2px;
+}
+.vt-btn {
+  padding: 5px 14px; border-radius: 6px;
+  font-size: 12.5px; font-weight: 600;
+  cursor: pointer; border: none; background: none;
+  color: var(--t2); font-family: inherit; transition: all .15s; white-space: nowrap;
+}
+.vt-btn.on { background: var(--s3); color: var(--t1); }
+.tsep { width: 1px; height: 22px; background: var(--b1); flex-shrink: 0; }
+.proj-tabs { display: flex; gap: 2px; }
+.ptab {
+  padding: 5px 13px; border-radius: 6px;
+  font-size: 12.5px; font-weight: 500;
+  cursor: pointer; border: none; background: none;
+  color: var(--t2); font-family: inherit; transition: all .15s; white-space: nowrap;
+}
+.ptab:hover { color: var(--t1); }
+.ptab.on { background: var(--mintd); color: var(--mint); }
+.ptab.disabled { opacity: .35; pointer-events: none; }
+.legend {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 11.5px; color: var(--t3);
+}
+.leg { display: flex; align-items: center; gap: 4px; }
+.legdot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.tbar-right { margin-left: auto; display: flex; align-items: center; gap: 7px; }
+/* Lumber-style buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 7px;
+  font-size: 12.5px; font-weight: 600;
+  cursor: pointer; border: none; font-family: inherit;
+  transition: all .15s; white-space: nowrap;
+}
+.btn-mint  { background: var(--mint); color: var(--bg); }
+.btn-mint:hover { background: var(--mint2); }
+.btn-ghost { background: var(--s2); color: var(--t2); border: 1px solid var(--b2); }
+.btn-ghost:hover { background: var(--s3); color: var(--t1); }
+.btn-sm { padding: 5px 11px; font-size: 12px; }
+.btn-xs { padding: 4px 9px; font-size: 11.5px; }
+
+/* ─────────────── CANVAS ─────────────── */
+.canvas-wrap {
+  flex: 1; overflow: hidden; position: relative;
+  cursor: grab; user-select: none;
+}
+.canvas-wrap.panning { cursor: grabbing; }
+.canvas {
+  position: absolute; transform-origin: 0 0;
+  will-change: transform;
+}
+.svg-lines {
+  position: absolute; top: 0; left: 0;
+  pointer-events: none; overflow: visible;
+}
+
+/* ─────────────── ORG NODES ─────────────── */
+.node {
+  position: absolute;
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s, transform .12s;
+}
+.node:hover {
+  border-color: var(--mint);
+  box-shadow: 0 0 0 3px var(--mintd);
+  transform: translateY(-1px);
+  z-index: 5;
+}
+.node.ntype-pm       { border-color: rgba(59,130,246,.35); background: rgba(59,130,246,.05); }
+.node.ntype-exec     { border-color: rgba(255,166,245,.25); background: rgba(255,166,245,.04); }
+.node.ntype-foreman  { border-color: rgba(122,236,180,.22); background: rgba(122,236,180,.03); }
+
+/* crew-label tab sitting above foreman node */
+.crew-tab {
+  position: absolute;
+  top: -11px; left: 10px;
+  font-size: 9.5px; font-weight: 700; letter-spacing: .6px;
+  text-transform: uppercase;
+  padding: 0 6px; border-radius: 3px;
+  background: var(--bg); /* "cut" bg */
+}
+
+/* inside a node */
+.n-label  { font-size: 9px; font-weight: 700; letter-spacing: .9px; text-transform: uppercase; margin-bottom: 3px; }
+.n-name   { font-size: 12.5px; font-weight: 600; color: var(--t1); display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+.n-name-t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.cert-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.n-trade  { font-size: 11px; color: var(--t2); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.n-role   { font-size: 10.5px; color: var(--t3); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.n-foot   { margin-top: 5px; padding-top: 5px; border-top: 1px solid var(--b1); font-size: 10px; color: var(--t3); display: flex; align-items: center; gap: 5px; }
+.n-foot.bfax-ok  { color: var(--mint); }
+.n-foot.bfax-no  { color: var(--t3); }
+
+/* connector lines */
+.conn-pm  { stroke: var(--b2); stroke-width: 1.5; fill: none; }
+.conn-fm  { stroke: rgba(122,236,180,.25); stroke-width: 1.5; fill: none; stroke-dasharray: 5 4; }
+
+/* ─────────────── STATUS BAR ─────────────── */
+.statusbar {
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  background: var(--s1); border: 1px solid var(--b2);
+  border-radius: 20px; padding: 5px 16px;
+  font-size: 11.5px; color: var(--t2);
+  display: flex; align-items: center; gap: 10px;
+  z-index: 100; white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0,0,0,.4);
+}
+.sbsep { width: 1px; height: 12px; background: var(--b2); }
+
+/* ─────────────── ZOOM ─────────────── */
+.zoom-ctrl {
+  position: absolute; bottom: 20px; right: 20px;
+  display: flex; flex-direction: column; gap: 4px; z-index: 100;
+}
+.zbtn {
+  width: 34px; height: 34px; background: var(--s1);
+  border: 1px solid var(--b2); border-radius: 7px;
+  color: var(--t2); font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s; font-family: inherit;
+}
+.zbtn:hover { background: var(--s2); color: var(--t1); }
+.zlbl {
+  background: var(--s1); border: 1px solid var(--b1);
+  border-radius: 5px; font-size: 11px; color: var(--t3);
+  padding: 3px 0; text-align: center; font-family: monospace;
+}
+
+/* ─────────────── DETAIL PANEL ─────────────── */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 500; display: none;
+  align-items: flex-start; justify-content: flex-end;
+}
+.overlay.open { display: flex; }
+.panel {
+  width: 410px; height: 100vh;
+  background: var(--s1); border-left: 1px solid var(--b1);
+  overflow-y: auto; display: flex; flex-direction: column;
+  animation: panelIn .18s ease;
+}
+@keyframes panelIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+.panel-head {
+  padding: 15px 18px; border-bottom: 1px solid var(--b1);
+  display: flex; align-items: flex-start; justify-content: space-between;
+  position: sticky; top: 0; background: var(--s1); z-index: 10; gap: 12px;
+}
+.panel-close {
+  background: var(--s2); border: 1px solid var(--b2);
+  border-radius: 6px; padding: 4px 10px;
+  cursor: pointer; color: var(--t2); font-size: 12px; font-family: inherit;
+  flex-shrink: 0; transition: all .15s;
+}
+.panel-close:hover { background: var(--s3); color: var(--t1); }
+.panel-body { padding: 18px; flex: 1; }
+.psec { margin-bottom: 20px; }
+.psec-title {
+  font-size: 10px; font-weight: 700; color: var(--t3);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+}
+
+/* ─── panel pills ─── */
+.pill {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 2px 8px; border-radius: 20px;
+  font-size: 11px; font-weight: 600; white-space: nowrap;
+}
+.pill::before.dot { content:''; width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block; }
+.p-mint   { background: var(--mintd);   color: var(--mint); }
+.p-red    { background: var(--redd);    color: #f87171; }
+.p-yellow { background: var(--yellowd); color: #fde047; }
+.p-blue   { background: var(--blued);   color: #60a5fa; }
+.p-orange { background: var(--oranged); color: #fb923c; }
+.p-purple { background: var(--purpled); color: #a78bfa; }
+.p-ghost  { background: var(--s2); color: var(--t2); border: 1px solid var(--b2); }
+
+/* ─── panel rows ─── */
+.cert-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0; border-bottom: 1px solid var(--b1); font-size: 12.5px;
+}
+.cert-row:last-child { border-bottom: none; }
+.worker-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 0; border-bottom: 1px solid var(--b1);
+  cursor: pointer; transition: all .1s;
+}
+.worker-row:last-child { border-bottom: none; }
+.worker-row:hover { margin: 0 -18px; padding: 9px 18px; background: var(--s2); border-radius: 6px; }
+
+/* ─── panel info grid ─── */
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 14px; }
+.info-cell { background: var(--s2); border: 1px solid var(--b1); border-radius: 7px; padding: 10px 12px; }
+.info-val  { font-size: 20px; font-weight: 700; line-height: 1; }
+.info-lbl  { font-size: 10px; color: var(--t3); margin-top: 3px; }
+
+/* ─── alerts ─── */
+.alert {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 10px 13px; border-radius: 8px; margin-bottom: 12px;
+  font-size: 12.5px; line-height: 1.5;
+}
+.alert-red    { background: var(--redd);    border: 1px solid rgba(239,68,68,.22);  color: #f87171; }
+.alert-yellow { background: var(--yellowd); border: 1px solid rgba(234,179,8,.22);  color: #fde047; }
+.alert-mint   { background: var(--mintd);   border: 1px solid rgba(122,236,180,.22);color: var(--mint); }
+.alert-blue   { background: var(--blued);   border: 1px solid rgba(59,130,246,.22); color: #60a5fa; }
+
+/* ─── actions ─── */
+.actions { display: flex; flex-direction: column; gap: 7px; }
+.action-btn {
+  width: 100%; display: flex; align-items: center; gap: 9px;
+  padding: 10px 14px; border-radius: 8px;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; border: none; font-family: inherit;
+  transition: all .15s; text-align: left;
+}
+.ab-mint  { background: var(--mint); color: var(--bg); }
+.ab-mint:hover { background: var(--mint2); }
+.ab-ghost { background: var(--s2); color: var(--t2); border: 1px solid var(--b2); }
+.ab-ghost:hover { background: var(--s3); color: var(--t1); }
+.ab-red   { background: var(--redd); color: #f87171; border: 1px solid rgba(239,68,68,.2); }
+.ab-red:hover { background: rgba(239,68,68,.2); }
+.action-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.ai-mint   { background: rgba(122,236,180,.15); }
+.ai-ghost  { background: var(--s3); }
+.ai-red    { background: rgba(239,68,68,.15); }
+.ai-yellow { background: rgba(234,179,8,.15); }
+.ai-blue   { background: rgba(59,130,246,.15); }
+.ai-pink   { background: rgba(255,166,245,.12); }
+.ab-sub { font-size: 11px; color: inherit; opacity: .65; font-weight: 400; }
+
+/* ─── proto note ─── */
+.proto-note {
+  background: rgba(255,166,245,.07);
+  border: 1px dashed rgba(255,166,245,.25);
+  border-radius: 6px; padding: 8px 11px;
+  font-size: 11px; color: var(--pink); margin-top: 8px; line-height: 1.5;
+}
+
+/* ─── avatar ─── */
+.av { border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; color: var(--bg); }
+.av-mint   { background: linear-gradient(135deg,#7aecb4,#34d399); }
+.av-pink   { background: linear-gradient(135deg,#ffa6f5,#e879f9); }
+.av-blue   { background: linear-gradient(135deg,#3b82f6,#7c3aed); }
+.av-orange { background: linear-gradient(135deg,#f97316,#dc2626); }
+.av-teal   { background: linear-gradient(135deg,#0e7490,#0284c7); }
+.av-yellow { background: linear-gradient(135deg,#eab308,#f97316); }
+
+/* ─── divider ─── */
+.div { height: 1px; background: var(--b1); margin: 14px 0; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ TOP NAV ═══════════════════════ -->
+<nav class="topnav">
+  <div class="logo-wrap">
+    <!-- Real Lumber wordmark SVG -->
+    <svg width="96" height="25" viewBox="0 0 125 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- spiral mark -->
+      <path d="M0.568 12.656 C1.474 12.658 2.38 12.661 3.288 12.663 C3.669 12.663 4.048 12.663 4.429 12.663 C4.507 12.663 4.585 12.663 4.687 12.663 C4.607 12.972 4.531 13.241 4.471 13.513 C4.119 15.065 4.038 16.626 4.238 18.207 C4.381 19.336 4.665 20.427 5.08 21.48 C5.573 22.726 6.246 23.87 7.084 24.919 C7.545 25.495 8.048 26.029 8.594 26.522 C9.25 27.112 9.959 27.629 10.714 28.086 C11.62 28.632 12.574 29.059 13.579 29.375 C14.412 29.637 15.262 29.836 16.137 29.912 C16.484 29.941 16.831 29.953 17.178 29.977 C18.528 30.072 19.879 30.009 21.229 30.019 C22.822 30.031 24.417 30.021 26.013 30.021 C26.1 30.021 26.185 30.021 26.272 30.021 C26.28 30.036 26.287 30.053 26.294 30.067 C26.229 30.116 26.168 30.174 26.095 30.208 C25.388 30.545 24.677 30.873 23.905 31.034 C23.511 31.116 23.113 31.184 22.72 31.264 C22.086 31.391 21.462 31.546 20.855 31.774 C20.661 31.847 20.447 31.869 20.243 31.917 C20.158 31.939 20.078 31.973 19.995 32 L19.401 32 C19.311 31.973 19.221 31.927 19.13 31.92 C18.652 31.876 18.176 31.922 17.703 32 L17.275 32 C17.22 31.99 17.166 31.973 17.11 31.968 C16.45 31.908 15.789 31.859 15.131 31.784 C14.439 31.706 13.762 31.553 13.096 31.354 C12.856 31.281 12.635 31.262 12.392 31.344 C11.899 31.512 11.445 31.403 11.061 31.06 C10.896 30.912 10.755 30.73 10.619 30.55 C10.52 30.417 10.403 30.32 10.26 30.237 C9.762 29.955 9.269 29.664 8.779 29.368 C8.468 29.178 8.176 28.965 7.866 28.773 C7.647 28.637 7.411 28.53 7.188 28.399 C6.392 27.935 5.653 27.386 4.918 26.835 C4.794 26.743 4.689 26.602 4.629 26.459 C4.495 26.15 4.398 25.825 4.279 25.509 C4.109 25.067 3.958 24.613 3.679 24.222 C3.397 23.824 3.201 23.384 3.043 22.928 C2.98 22.746 2.953 22.551 2.914 22.362 C2.88 22.197 2.866 22.027 2.817 21.869 C2.693 21.461 2.543 21.06 2.424 20.65 C2.363 20.439 2.266 20.271 2.101 20.128 C1.938 19.985 1.775 19.836 1.642 19.667 C1.345 19.288 1.212 18.841 1.154 18.37 C1.088 17.85 1.032 17.33 0.957 16.813 C0.86 16.153 0.75 15.495 0.644 14.837 C0.634 14.783 0.598 14.737 0.573 14.688 C0.573 14.64 0.573 14.591 0.573 14.543 C0.692 14.387 0.648 14.203 0.668 14.03 C0.69 13.838 0.682 13.639 0.729 13.455 C0.78 13.253 0.712 13.117 0.573 12.991 C0.568 12.882 0.568 12.77 0.568 12.656 Z" fill="#7AECB4"/>
+      <path d="M30.248 20.434 C30.306 20.186 30.35 19.975 30.408 19.766 C30.651 18.872 30.763 17.959 30.801 17.039 C30.855 15.764 30.719 14.509 30.41 13.27 C30.165 12.277 29.818 11.325 29.352 10.419 C28.868 9.475 28.286 8.596 27.594 7.789 C26.714 6.762 25.712 5.881 24.573 5.155 C23.47 4.45 22.29 3.916 21.03 3.557 C20.211 3.321 19.378 3.168 18.533 3.086 C18.101 3.042 17.664 3.015 17.229 3.015 C14.534 3.008 11.841 3.013 9.145 3.013 C9.048 3.013 8.951 3.013 8.82 3.013 C8.944 2.887 9.082 2.862 9.211 2.828 C9.663 2.709 10.112 2.583 10.568 2.479 C10.962 2.389 11.304 2.202 11.637 1.983 C12.057 1.706 12.501 1.517 13.023 1.575 C13.203 1.595 13.363 1.541 13.499 1.391 C13.742 1.121 14.053 0.946 14.398 0.839 C14.752 0.73 15.109 0.638 15.466 0.538 C15.947 0.405 16.43 0.276 16.914 0.143 C17.419 0.002 17.929 -0.076 18.439 0.109 C18.633 0.179 18.815 0.293 19 0.39 C19.247 0.521 19.51 0.597 19.789 0.592 C20.046 0.587 20.306 0.555 20.563 0.56 C20.797 0.563 21.03 0.592 21.26 0.621 C21.508 0.65 21.756 0.703 22.003 0.723 C22.137 0.733 22.28 0.72 22.404 0.677 C22.87 0.516 23.295 0.575 23.684 0.878 C24.439 1.468 25.194 2.061 25.95 2.653 C26.078 2.753 26.212 2.84 26.379 2.86 C26.792 2.911 27.115 3.122 27.392 3.426 C27.946 4.035 28.511 4.633 29.065 5.244 C29.395 5.609 29.648 6.019 29.711 6.519 C29.738 6.731 29.837 6.903 29.976 7.054 C30.245 7.343 30.508 7.639 30.797 7.908 C31.061 8.156 31.272 8.43 31.423 8.758 C31.719 9.402 32.018 10.045 32.312 10.691 C32.55 11.218 32.613 11.779 32.598 12.347 C32.589 12.712 32.705 13.047 32.773 13.394 C32.783 13.445 32.819 13.501 32.861 13.535 C33.283 13.86 33.366 14.322 33.373 14.812 C33.378 15.104 33.371 15.395 33.375 15.684 C33.38 16.111 33.392 16.541 33.402 16.969 C33.412 17.454 33.324 17.913 33.048 18.328 C32.997 18.406 32.975 18.506 32.95 18.596 C32.914 18.741 32.953 18.848 33.091 18.943 C33.315 19.098 33.436 19.331 33.431 19.606 C33.426 19.832 33.397 20.055 33.368 20.278 C33.349 20.424 33.31 20.446 33.128 20.446 C32.618 20.448 32.108 20.446 31.598 20.446 C31.234 20.446 30.869 20.446 30.505 20.446 C30.427 20.434 30.35 20.434 30.248 20.434 Z" fill="#7AECB4"/>
+      <path d="M3.378 6.794 C3.502 6.696 3.628 6.602 3.75 6.5 C4.019 6.271 4.286 6.034 4.558 5.805 C4.913 5.509 5.313 5.346 5.787 5.409 C6.142 5.458 6.445 5.334 6.695 5.099 C6.824 4.977 6.957 4.963 7.115 4.963 C10.539 4.965 13.961 4.98 17.385 4.958 C19.213 4.946 20.923 5.385 22.547 6.184 C23.39 6.599 24.157 7.136 24.874 7.748 C26.146 8.838 27.127 10.147 27.836 11.658 C28.273 12.59 28.575 13.571 28.74 14.589 C29.041 16.439 28.919 18.258 28.351 20.048 C28.312 20.169 28.264 20.288 28.218 20.419 C27.53 20.419 26.855 20.419 26.146 20.419 C26.219 20.22 26.282 20.04 26.35 19.863 C26.668 19.037 26.865 18.18 26.926 17.301 C27.013 16.043 26.899 14.805 26.501 13.598 C26.2 12.68 25.792 11.815 25.233 11.029 C24.599 10.133 23.842 9.363 22.951 8.714 C21.855 7.915 20.644 7.396 19.33 7.097 C18.747 6.964 18.152 6.893 17.55 6.891 C16.239 6.884 14.93 6.864 13.618 6.862 C10.309 6.857 6.999 6.859 3.689 6.859 C3.594 6.859 3.497 6.859 3.402 6.859 C3.393 6.835 3.386 6.813 3.378 6.794 Z" fill="#7AECB4"/>
+      <path d="M8.441 12.663 C8.414 12.755 8.405 12.819 8.38 12.877 C8.171 13.384 8.001 13.907 7.885 14.443 C7.693 15.332 7.623 16.23 7.681 17.139 C7.773 18.591 8.179 19.951 8.89 21.213 C9.432 22.175 10.114 23.027 10.957 23.751 C11.518 24.232 12.113 24.657 12.764 25.004 C13.536 25.417 14.349 25.713 15.204 25.91 C15.901 26.07 16.605 26.141 17.322 26.141 C20.558 26.145 23.793 26.158 27.03 26.165 C28.113 26.167 29.199 26.165 30.282 26.165 C30.362 26.165 30.439 26.165 30.571 26.165 C30.524 26.255 30.507 26.318 30.469 26.354 C30.027 26.767 29.58 27.175 29.133 27.583 C28.99 27.714 28.844 27.843 28.689 27.957 C28.616 28.01 28.516 28.032 28.424 28.052 C28.353 28.066 28.278 28.054 28.205 28.054 C24.774 28.054 21.345 28.054 17.914 28.054 C17.414 28.054 16.911 28.071 16.411 28.049 C15.624 28.013 14.857 27.855 14.099 27.636 C12.7 27.233 11.425 26.595 10.27 25.708 C9.043 24.768 8.035 23.632 7.263 22.296 C6.438 20.871 5.942 19.336 5.772 17.7 C5.605 16.08 5.78 14.492 6.275 12.94 C6.29 12.894 6.307 12.848 6.319 12.802 C6.348 12.707 6.404 12.658 6.513 12.661 C7.144 12.666 7.776 12.663 8.441 12.663 Z" fill="#7AECB4"/>
+      <path d="M21.591 20.417 C21.744 20.21 21.872 20.036 22.003 19.863 C22.479 19.244 22.773 18.54 22.943 17.787 C23.312 16.138 23.006 14.603 22.052 13.217 C21.229 12.02 20.085 11.257 18.672 10.903 C18.079 10.752 17.475 10.703 16.868 10.703 C11.792 10.701 6.719 10.701 1.644 10.701 C1.54 10.701 1.438 10.701 1.333 10.701 C1.333 10.395 1.329 10.113 1.336 9.832 C1.346 9.443 1.547 9.144 1.812 8.882 C1.841 8.853 1.892 8.836 1.936 8.831 C1.999 8.821 2.064 8.829 2.13 8.829 C7.05 8.829 11.97 8.829 16.892 8.829 C17.278 8.829 17.664 8.754 18.053 8.826 C18.512 8.914 18.983 8.96 19.432 9.089 C20.469 9.382 21.413 9.873 22.241 10.57 C23.125 11.313 23.827 12.199 24.315 13.248 C24.641 13.948 24.862 14.681 24.964 15.446 C25.083 16.318 25.056 17.185 24.879 18.049 C24.721 18.814 24.451 19.535 24.087 20.225 C24.009 20.373 23.919 20.436 23.749 20.434 C23.101 20.424 22.455 20.431 21.807 20.429 C21.746 20.431 21.683 20.424 21.591 20.417 Z" fill="#7AECB4"/>
+      <path d="M12.963 12.683 C12.836 12.853 12.739 12.989 12.637 13.125 C12.021 13.945 11.661 14.873 11.559 15.886 C11.416 17.309 11.732 18.632 12.562 19.807 C13.529 21.177 14.859 21.973 16.511 22.236 C16.853 22.289 17.203 22.311 17.55 22.311 C22.606 22.316 27.662 22.313 32.72 22.313 C32.824 22.313 32.929 22.313 33.072 22.313 C33.031 22.491 32.999 22.644 32.955 22.794 C32.824 23.246 32.623 23.666 32.355 24.057 C32.083 24.2 31.879 24.198 17.802 24.2 C17.441 24.2 17.079 24.229 16.715 24.207 C16.039 24.164 15.389 24.016 14.752 23.795 C13.48 23.353 12.407 22.619 11.515 21.616 C10.695 20.694 10.131 19.635 9.825 18.443 C9.461 17.034 9.505 15.628 9.92 14.237 C10.068 13.741 10.275 13.268 10.527 12.814 C10.585 12.709 10.651 12.661 10.772 12.661 C11.46 12.666 12.147 12.663 12.836 12.663 C12.861 12.663 12.89 12.67 12.963 12.683 Z" fill="#7AECB4"/>
+      <path d="M21.173 16.519 C21.175 18.698 19.374 20.388 17.295 20.378 C15.194 20.368 13.444 18.676 13.436 16.522 C13.429 14.368 15.231 12.551 17.501 12.656 C19.439 12.746 21.175 14.356 21.173 16.519 ZM19.218 16.517 C19.24 15.385 18.257 14.572 17.28 14.591 C16.253 14.613 15.396 15.468 15.381 16.495 C15.367 17.566 16.29 18.428 17.292 18.435 C18.244 18.44 19.24 17.656 19.218 16.517 Z" fill="#7AECB4"/>
+      <!-- wordmark -->
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M43 22.796V9H45.2317V20.6297H52.3907V22.796H43ZM65.9929 9V16.8439C65.9929 18.8129 65.4385 20.3633 64.4184 21.4225C63.398 22.4819 61.9595 23 60.2891 23C58.636 23 57.2039 22.4815 56.1846 21.4385C55.1649 20.3949 54.6035 18.8727 54.6035 16.9552V9H56.8352V16.8625C56.8352 18.1945 57.1805 19.1792 57.762 19.8273C58.339 20.4705 59.195 20.8338 60.3255 20.8338C61.4165 20.8338 62.2595 20.4991 62.8323 19.8824C63.4077 19.263 63.7612 18.3044 63.7612 16.9552V9H65.9929ZM69.499 22.796V9H71.5638L75.9841 15.7596L80.4045 9H82.4692V22.796H80.2375V13.1934L76.2132 19.2347H75.7191L71.6944 13.209V22.796H69.499ZM86.1821 22.796V9H91.9949C93.5196 9 94.7763 9.4476 95.598 10.2654L95.6023 10.2696L95.6063 10.274C96.2033 10.9043 96.5358 11.6911 96.5358 12.6335V12.6706C96.5358 14.1141 95.8646 15.0308 95.0672 15.6007C95.54 15.8186 95.9748 16.0985 96.3307 16.4618C96.8989 17.0419 97.2444 17.8132 97.2444 18.8101V18.8472C97.2444 20.0884 96.726 21.0955 95.8177 21.7798C94.9225 22.4543 93.6767 22.796 92.2311 22.796H86.1821ZM100.203 22.796V9H110.194V11.1477H102.435V14.7685H109.376V16.9162H102.435V20.6483H110.285V22.796H100.203ZM113.284 22.796V9H119.152C120.79 9 122.156 9.5061 123.049 10.4174C123.748 11.1307 124.147 12.1459 124.147 13.2641V13.3012C124.147 14.4784 123.746 15.4362 123.055 16.1469C122.506 16.7114 121.789 17.1046 120.982 17.3394L125 22.796H122.241L118.552 17.7509H115.516V22.796H113.284ZM88.3956 11.1291V14.787H91.7587C92.5685 14.787 93.2066 14.599 93.6317 14.2779C94.0416 13.9682 94.2859 13.5119 94.2859 12.8746V12.8375C94.2859 12.3175 94.0888 11.9116 93.7168 11.624C93.3315 11.3263 92.7227 11.1291 91.8677 11.1291H88.3956ZM88.3956 16.8976V20.6668H92.2674C93.1781 20.6668 93.868 20.4598 94.3189 20.1272C94.7556 19.8051 94.9945 19.348 94.9945 18.7544V18.7173C94.9945 18.1462 94.7688 17.7188 94.3156 17.4153C93.8394 17.0964 93.0835 16.8976 92.013 16.8976H88.3956ZM115.516 11.1662V15.6217H119.025C119.915 15.6217 120.639 15.3877 121.131 14.9977C121.613 14.6157 121.897 14.0663 121.897 13.3569V13.3198C121.897 12.637 121.646 12.1199 121.195 11.7626C120.731 11.3952 120.014 11.1662 119.043 11.1662H115.516Z" fill="#F2F4F7"/>
+    </svg>
+    <span class="hris-badge">HRIS</span>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link">Time<svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="nav-link">Pay<svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="nav-link">Scheduler<svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="nav-link">Resources<svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="nav-link on">HRIS<svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="nav-link">Reports<svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+  <div class="nav-right">
+    <button class="icon-btn" title="Notifications">
+      <svg width="18" height="18" fill="none" viewBox="0 0 20 20"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 1.667a.8.8 0 01.8.8v.745A6.5 6.5 0 0115 8.124v3.254l1.423 1.925a.75.75 0 01-.59 1.208H4.243a.75.75 0 01-.59-1.208L5 11.378V8.124A6.5 6.5 0 019.2 3.212v-.745a.8.8 0 01.8-.8zM8.35 16.949a1.75 1.75 0 003.3 0H8.35z" fill="currentColor"/></svg>
+    </button>
+    <button class="icon-btn" title="Settings">
+      <svg width="18" height="18" fill="none" viewBox="0 0 20 20"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" fill="currentColor"/></svg>
+    </button>
+    <div class="nav-av" id="navAv">HH</div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ SUBNAV ═══════════════════════ -->
+<div class="subnav">
+  <button class="sub-link">Dashboard</button>
+  <button class="sub-link">LMS & Training <span class="sub-badge">7</span></button>
+  <button class="sub-link">BuilderFax</button>
+  <button class="sub-link">Performance</button>
+  <button class="sub-link on">Org Chart</button>
+  <button class="sub-link">Analytics</button>
+  <button class="sub-link">Employees</button>
+  <div class="persona-pill" onclick="nextPersona()" title="Switch persona">
+    <div class="persona-av av-mint" id="pAv" style="width:22px;height:22px;font-size:9px;">HH</div>
+    <span class="persona-name" id="pName">HR Helen</span>
+    <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 20 20"><path d="M5 7.5L10 12.5L15 7.5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+</div>
+
+<!-- ═══════════════════════ TOOLBAR ═══════════════════════ -->
+<div class="toolbar">
+  <!-- View toggle -->
+  <div class="view-toggle">
+    <button class="vt-btn" id="vCorp" onclick="setView('corp')">Corporate</button>
+    <button class="vt-btn on" id="vProj" onclick="setView('proj')">Project / Crew</button>
+  </div>
+  <div class="tsep"></div>
+  <!-- Project tabs -->
+  <div class="proj-tabs" id="projTabs">
+    <button class="ptab on" onclick="setProject(0,this)">🏗 Riverside Tower</button>
+    <button class="ptab"    onclick="setProject(1,this)">⚙ Mesa Verde</button>
+    <button class="ptab"    onclick="setProject(2,this)">🌉 Harbor Bridge</button>
+    <button class="ptab"    onclick="setProject(3,this)">🏙 Downtown Commons</button>
+  </div>
+  <!-- Legend + controls -->
+  <div class="tbar-right">
+    <div class="legend">
+      <div class="leg"><div class="legdot" style="background:var(--mint)"></div>Current</div>
+      <div class="leg"><div class="legdot" style="background:var(--yellow)"></div>Expiring &lt;30d</div>
+      <div class="leg"><div class="legdot" style="background:var(--red)"></div>Expired/missing</div>
+      <div class="leg"><div class="legdot" style="background:var(--t3)"></div>No BFax</div>
+    </div>
+    <div class="tsep"></div>
+    <button class="btn btn-ghost btn-sm" onclick="fitCanvas()">⊡ Fit</button>
+    <button class="btn btn-ghost btn-sm" onclick="resetCanvas()">↺ Reset</button>
+    <button class="btn btn-mint btn-sm" onclick="">+ Add Worker</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════ CANVAS ═══════════════════════ -->
+<div class="canvas-wrap" id="canvasWrap">
+  <div class="canvas" id="canvas">
+    <svg class="svg-lines" id="svgLines" width="6000" height="5000"></svg>
+    <div id="nodes"></div>
+  </div>
+
+  <!-- Status bar -->
+  <div class="statusbar" id="statusbar">
+    <span style="font-weight:700;color:var(--t1)" id="sbProj">Riverside Tower</span>
+    <div class="sbsep"></div>
+    <span id="sbWorkers">—</span>
+    <div class="sbsep"></div>
+    <span id="sbCrews">—</span>
+    <div class="sbsep" id="sbIssueSep"></div>
+    <span id="sbIssues" style="color:var(--red)"></span>
+    <div class="sbsep"></div>
+    <span id="sbComp" style="color:var(--mint)">—</span>
+  </div>
+
+  <!-- Zoom controls -->
+  <div class="zoom-ctrl">
+    <button class="zbtn" onclick="applyZoom(1.2)">+</button>
+    <div class="zlbl" id="zLbl">100%</div>
+    <button class="zbtn" onclick="applyZoom(0.83)">−</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════ DETAIL PANEL ═══════════════════════ -->
+<div class="overlay" id="overlay" onclick="maybeClose(event)">
+  <div class="panel" onclick="event.stopPropagation()">
+    <div class="panel-head">
+      <div style="flex:1;min-width:0">
+        <div id="panelTitle" style="font-weight:700;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+        <div id="panelSub"   style="font-size:12px;color:var(--t2);margin-top:2px"></div>
+      </div>
+      <button class="panel-close" onclick="closePanel()">✕ Close</button>
+    </div>
+    <div class="panel-body" id="panelBody"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════════
+const CSTATUS = {
+  current:  { col:'#7aecb4', label:'Current',  pill:'p-mint'   },
+  expiring: { col:'#eab308', label:'Expiring',  pill:'p-yellow' },
+  expired:  { col:'#ef4444', label:'Expired',   pill:'p-red'    },
+  missing:  { col:'#ef4444', label:'Missing',   pill:'p-red'    },
+  none:     { col:'#667085', label:'—',         pill:'p-ghost'  },
+};
+function cCol(s){ return (CSTATUS[s]||CSTATUS.none).col; }
+function cPill(s,n){ return `<span class="pill ${(CSTATUS[s]||CSTATUS.none).pill}">${n||''}${(CSTATUS[s]||CSTATUS.none).label}</span>`; }
+function ini(name){ return name.split(' ').map(w=>w[0]).join('').slice(0,2); }
+function esc(s){ return String(s).replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+const PROJECTS = [
+  { id:'rt', name:'Riverside Tower', emoji:'🏗', phase:'Structural / MEP Phase 2',
+    pm:{ name:'Paula Rodriguez', role:'Project Manager', trade:'Management', av:'av-blue', cs:'current',
+         bio:'Senior PM · 8 years · Manages Riverside + Harbor', union:null, bfax:true,
+         certs:[{n:'OSHA 30',s:'current'},{n:'PMP Cert',s:'current'}] },
+    crews:[
+      { label:'Crew A', trade:'General',    color:'var(--mint)',
+        foreman:{ name:'Francisco Ramos', role:'General Foreman',   trade:'General',    av:'av-teal',   cs:'current',
+                  bio:'12 years · IBEW Steward', union:'IBEW Local 11', bfax:true,
+                  certs:[{n:'OSHA 30',s:'current'},{n:'Competent Person',s:'current'},{n:'Rigging',s:'current'}] },
+        workers:[
+          { name:'Marcus Torres',  role:'Jrny. Electrician', trade:'Electrical', av:'av-orange', cs:'current',  bfax:true,  union:'IBEW Local 11',  bio:'5 yrs · crew lead candidate', certs:[{n:'OSHA 30',s:'current'},{n:'NCCER Elec L3',s:'current'},{n:'CA C-10',s:'current'}] },
+          { name:'Amy Larsen',     role:'Apprentice',         trade:'Electrical', av:'av-blue',   cs:'expiring', bfax:true,  union:null,             bio:'Yr 2 apprentice · on track',   certs:[{n:'OSHA 10',s:'current'},{n:'First Aid',s:'expiring'}] },
+          { name:'Carlos Vega',    role:'Jrny. Carpenter',    trade:'Carpentry',  av:'av-mint',   cs:'current',  bfax:true,  union:'UBC Local 55',   bio:'7 yrs tenure',                 certs:[{n:'OSHA 10',s:'current'},{n:'Scaffold',s:'current'}] },
+          { name:'Jose Mendez',    role:'Laborer',             trade:'General',    av:'av-pink',   cs:'expired',  bfax:false, union:'LIUNA Local 300',bio:'2 yrs · 3 incidents (90d)',     certs:[{n:'OSHA 10',s:'expired'}] },
+          { name:'Luis Reyes',     role:'Laborer',             trade:'General',    av:'av-yellow', cs:'missing',  bfax:false, union:null,             bio:'New hire Feb 2026 · no certs', certs:[] },
+        ]
+      },
+      { label:'Crew B', trade:'Electrical', color:'var(--blue)',
+        foreman:{ name:'David Kim', role:'Electrical Lead', trade:'Electrical', av:'av-teal', cs:'current',
+                  bio:'9 yrs · IBEW Lead', union:'IBEW Local 11', bfax:true,
+                  certs:[{n:'OSHA 30',s:'current'},{n:'CA C-10',s:'current'},{n:'Arc Flash',s:'current'}] },
+        workers:[
+          { name:'Sarah Moore',  role:'Jrny. Electrician', trade:'Electrical', av:'av-mint',   cs:'current',  bfax:true,  union:'IBEW Local 11', bio:'4 yrs tenure', certs:[{n:'OSHA 10',s:'current'},{n:'CA C-10',s:'current'}] },
+          { name:'Kevin Park',   role:'Apprentice',         trade:'Electrical', av:'av-blue',   cs:'expiring', bfax:false, union:null,            bio:'Yr 1 apprentice',certs:[{n:'OSHA 10',s:'expiring'}] },
+          { name:'Nina Walsh',   role:'Jrny. Carpenter',    trade:'Carpentry',  av:'av-orange', cs:'current',  bfax:true,  union:'UBC Local 55',  bio:'6 yrs tenure', certs:[{n:'OSHA 10',s:'current'},{n:'Forklift',s:'current'}] },
+        ]
+      },
+    ]
+  },
+  { id:'mv', name:'Mesa Verde Industrial', emoji:'⚙', phase:'Mechanical / Electrical Phase 1',
+    pm:{ name:'Oliver Nash', role:'Project Manager', trade:'Management', av:'av-orange', cs:'current',
+         bio:'Mesa Verde lead PM', union:null, bfax:true, certs:[{n:'OSHA 30',s:'current'}] },
+    crews:[
+      { label:'Crew A', trade:'General',    color:'var(--mint)',
+        foreman:{ name:'David Freeman', role:'General Foreman', trade:'General', av:'av-teal', cs:'current',
+                  bio:'General Foreman · Mesa Verde', union:'LIUNA Local 300', bfax:true,
+                  certs:[{n:'OSHA 30',s:'current'},{n:'Forklift',s:'current'},{n:'Competent Person',s:'current'}] },
+        workers:[
+          { name:'Sandra Chen',   role:'Apprentice',      trade:'Equipment', av:'av-blue',   cs:'expiring', bfax:true,  union:null,          bio:'Yr 2 apprentice', certs:[{n:'Forklift',s:'expiring'},{n:'OSHA 10',s:'current'}] },
+          { name:'Raj Patel',     role:'Jrny. Plumber',   trade:'Plumbing',  av:'av-mint',   cs:'current',  bfax:true,  union:'UA Local 78', bio:'6 yrs tenure',    certs:[{n:'OSHA 10',s:'current'},{n:'UA License',s:'current'}] },
+          { name:'Tom Garrett',   role:'Laborer',          trade:'General',   av:'av-yellow', cs:'current',  bfax:false, union:null,          bio:'3 yrs tenure',    certs:[{n:'OSHA 10',s:'current'}] },
+          { name:'Maria Santos',  role:'Jrny. Carpenter', trade:'Carpentry',  av:'av-pink',   cs:'current',  bfax:true,  union:'UBC Local 55',bio:'5 yrs tenure',    certs:[{n:'OSHA 10',s:'current'},{n:'Scaffold',s:'current'}] },
+        ]
+      },
+      { label:'Crew B', trade:'Mechanical', color:'var(--orange)',
+        foreman:{ name:'James Wu', role:'Mechanical Lead', trade:'Mechanical', av:'av-blue', cs:'current',
+                  bio:'Mechanical Lead · UA Local 78', union:'UA Local 78', bfax:true,
+                  certs:[{n:'OSHA 30',s:'current'},{n:'UA License',s:'current'},{n:'Welding',s:'current'}] },
+        workers:[
+          { name:'Ben Torres',     role:'Jrny. Pipefitter', trade:'Mechanical', av:'av-orange', cs:'current',  bfax:true,  union:'UA Local 78', bio:'5 yrs tenure',    certs:[{n:'OSHA 10',s:'current'},{n:'UA License',s:'current'}] },
+          { name:'Liam Chen',      role:'Apprentice',        trade:'Mechanical', av:'av-mint',   cs:'expiring', bfax:false, union:null,          bio:'Yr 1 apprentice', certs:[{n:'OSHA 10',s:'expiring'}] },
+          { name:'Arka Mukherjee', role:'Jrny. Plumber',     trade:'Plumbing',   av:'av-teal',   cs:'current',  bfax:true,  union:'UA Local 78', bio:'4 yrs tenure',    certs:[{n:'OSHA 10',s:'current'},{n:'UA License',s:'current'}] },
+        ]
+      },
+    ]
+  },
+  { id:'hb', name:'Harbor Bridge Restoration', emoji:'🌉', phase:'Structural Rehab Phase 3',
+    pm:{ name:'Paula Rodriguez', role:'Project Manager', trade:'Management', av:'av-blue', cs:'current',
+         bio:'Also manages Riverside Tower', union:null, bfax:true, certs:[{n:'OSHA 30',s:'current'}] },
+    crews:[
+      { label:'Crew A', trade:'Structural', color:'var(--mint)',
+        foreman:{ name:'Mike Reyes', role:'Structural Lead', trade:'Structural', av:'av-orange', cs:'current',
+                  bio:'11 yrs · Iron Workers', union:'Iron Workers Local 416', bfax:true,
+                  certs:[{n:'OSHA 30',s:'current'},{n:'Rigging',s:'current'},{n:'Conf. Space',s:'current'},{n:'Fall Prot.',s:'current'}] },
+        workers:[
+          { name:'Roberto Baez',  role:'Jrny. Plumber',  trade:'Plumbing',   av:'av-mint',   cs:'current',  bfax:true,  union:'UA Local 78',           bio:'Zero incidents 6mo · commended', certs:[{n:'OSHA 10',s:'current'},{n:'Conf. Space',s:'current'}] },
+          { name:'Anna Fischer',  role:'Jrny. Carpenter', trade:'Carpentry',  av:'av-pink',   cs:'current',  bfax:true,  union:'UBC Local 55',           bio:'7 yrs tenure',                   certs:[{n:'OSHA 10',s:'current'},{n:'Rigging',s:'current'}] },
+          { name:'Patrick Cruz',  role:'Ironworker',      trade:'Structural', av:'av-blue',   cs:'current',  bfax:true,  union:'Iron Workers Local 416', bio:'5 yrs tenure',                   certs:[{n:'OSHA 10',s:'current'},{n:'Rigging',s:'current'}] },
+          { name:'Jeff Nakamura', role:'Ironworker',      trade:'Structural', av:'av-teal',   cs:'current',  bfax:true,  union:'Iron Workers Local 416', bio:'3 yrs tenure',                   certs:[{n:'OSHA 10',s:'current'}] },
+          { name:'Walt Johnson',  role:'Laborer',         trade:'General',    av:'av-yellow', cs:'expiring', bfax:false, union:null,                     bio:'2 yrs tenure',                   certs:[{n:'OSHA 10',s:'expiring'}] },
+        ]
+      },
+    ]
+  },
+  { id:'dc', name:'Downtown Commons', emoji:'🏙', phase:'Interior Fit-Out Phase 2',
+    pm:{ name:'Rachel Kim', role:'Project Manager', trade:'Management', av:'av-pink', cs:'current',
+         bio:'Downtown Commons lead', union:null, bfax:true, certs:[{n:'OSHA 30',s:'current'}] },
+    crews:[
+      { label:'Crew A', trade:'General',   color:'var(--mint)',
+        foreman:{ name:'Ernie Lopez', role:'General Foreman', trade:'General', av:'av-teal', cs:'current',
+                  bio:'General Foreman · Downtown', union:'LIUNA Local 300', bfax:true,
+                  certs:[{n:'OSHA 30',s:'current'},{n:'Competent Person',s:'current'}] },
+        workers:[
+          { name:'Chris Baker', role:'Crew Lead',         trade:'General',    av:'av-orange', cs:'current', bfax:true,  union:'LIUNA Local 300', bio:'4 yrs tenure', certs:[{n:'OSHA 10',s:'current'},{n:'First Aid',s:'current'}] },
+          { name:'Dana White',  role:'Jrny. Electrician', trade:'Electrical', av:'av-mint',   cs:'current', bfax:true,  union:'IBEW Local 11',   bio:'5 yrs tenure', certs:[{n:'OSHA 10',s:'current'},{n:'CA C-10',s:'current'}] },
+          { name:'Sam Ortiz',   role:'Laborer',            trade:'General',    av:'av-yellow', cs:'missing', bfax:false, union:null,              bio:'New hire · no certs on file', certs:[] },
+        ]
+      },
+      { label:'Crew B', trade:'Finishing', color:'var(--pink)',
+        foreman:{ name:'Lisa Park', role:'Finishing Lead', trade:'Finishing', av:'av-pink', cs:'current',
+                  bio:'8 yrs · Finishing Lead', union:null, bfax:true,
+                  certs:[{n:'OSHA 30',s:'current'},{n:'Lead Abatement',s:'current'}] },
+        workers:[
+          { name:'Nick Alcantara',  role:'Jrny. Painter',  trade:'Finishing', av:'av-blue',   cs:'current',  bfax:true,  union:null, bio:'6 yrs tenure',    certs:[{n:'OSHA 10',s:'current'},{n:'Lead Abatement',s:'current'}] },
+          { name:'Michelle Albion', role:'Apprentice',      trade:'Finishing', av:'av-teal',   cs:'expiring', bfax:false, union:null, bio:'Yr 1 apprentice', certs:[{n:'OSHA 10',s:'expiring'}] },
+          { name:'Caleb Ross',      role:'Jrny. Carpenter', trade:'Carpentry', av:'av-orange', cs:'current',  bfax:true,  union:'UBC Local 55', bio:'4 yrs tenure', certs:[{n:'OSHA 10',s:'current'}] },
+        ]
+      },
+      { label:'Crew C', trade:'MEP',      color:'var(--blue)',
+        foreman:{ name:'Tony Ruiz', role:'MEP Lead', trade:'MEP', av:'av-orange', cs:'current',
+                  bio:'MEP Lead · IBEW', union:'IBEW Local 11', bfax:true,
+                  certs:[{n:'OSHA 30',s:'current'},{n:'CA C-10',s:'current'}] },
+        workers:[
+          { name:'Ralph Kim',  role:'Jrny. Electrician', trade:'Electrical', av:'av-blue',   cs:'current',  bfax:true,  union:'IBEW Local 11', bio:'6 yrs tenure',    certs:[{n:'OSHA 10',s:'current'},{n:'CA C-10',s:'current'}] },
+          { name:'Larry Chen', role:'Jrny. Plumber',     trade:'Plumbing',   av:'av-mint',   cs:'current',  bfax:true,  union:'UA Local 78',   bio:'5 yrs tenure',    certs:[{n:'OSHA 10',s:'current'},{n:'UA License',s:'current'}] },
+          { name:'Jim Walsh',  role:'Apprentice',         trade:'MEP',        av:'av-yellow', cs:'expiring', bfax:false, union:null,            bio:'Yr 2 apprentice', certs:[{n:'OSHA 10',s:'expiring'}] },
+        ]
+      },
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════════════
+//  LAYOUT ENGINE
+// ═══════════════════════════════════════════════════════
+const PM_W=172, FM_W=158, W_W=150;
+const H_GAP=16, CREW_GAP=56;
+const PM_H=72, FM_H=96, W_H=82;
+const V_PM_FM=62, V_FM_W=56;
+
+function renderProject(proj) {
+  const nodesEl = document.getElementById('nodes');
+  const svg     = document.getElementById('svgLines');
+  nodesEl.innerHTML = ''; svg.innerHTML = '';
+
+  // Crew widths
+  const cWidths = proj.crews.map(c =>
+    Math.max(FM_W, c.workers.length*(W_W+H_GAP)-H_GAP)
+  );
+  const totalW = cWidths.reduce((a,b)=>a+b,0) + (proj.crews.length-1)*CREW_GAP;
+
+  const ox=48, oy=48;
+  const pmX = ox + totalW/2 - PM_W/2;
+  const pmY = oy;
+
+  // PM node
+  mkNode(nodesEl, pmX, pmY, PM_W, PM_H, 'ntype-pm', {
+    label:'PROJECT MANAGER', labelCol:'var(--blue)',
+    name: proj.pm.name, trade: proj.pm.trade, role: proj.pm.role,
+    cs: proj.pm.cs, av: proj.pm.av,
+    reports: null, bfax: proj.pm.bfax,
+    onclick: ()=>panelPm(proj)
+  });
+
+  let cx = ox;
+  const fmY = pmY + PM_H + V_PM_FM;
+  const wY  = fmY + FM_H + V_FM_W;
+
+  proj.crews.forEach((crew, ci) => {
+    const cw  = cWidths[ci];
+    const fmX = cx + cw/2 - FM_W/2;
+
+    // Foreman node — with crew-tab
+    const fmEl = mkNode(nodesEl, fmX, fmY, FM_W, FM_H, 'ntype-foreman', {
+      label: crew.label + ' · ' + crew.trade,
+      labelCol: crew.color,
+      name: crew.foreman.name, trade: crew.foreman.trade,
+      role: crew.foreman.role, cs: crew.foreman.cs,
+      av: crew.foreman.av, reports: crew.workers.length,
+      bfax: crew.foreman.bfax,
+      onclick: ()=>panelForeman(crew, proj.name)
+    });
+    // Add crew tab label
+    const tab = document.createElement('div');
+    tab.className = 'crew-tab';
+    tab.style.color = crew.color;
+    tab.textContent = crew.label;
+    fmEl.appendChild(tab);
+
+    // PM → Foreman connector
+    drawConn(svg, pmX+PM_W/2, pmY+PM_H, fmX+FM_W/2, fmY, false);
+
+    // Workers
+    crew.workers.forEach((w, wi) => {
+      const wX = cx + wi*(W_W+H_GAP);
+      mkNode(nodesEl, wX, wY, W_W, W_H, '', {
+        label: w.trade, labelCol:'var(--t3)',
+        name: w.name, trade: w.trade, role: w.role,
+        cs: w.cs, av: w.av, reports: null, bfax: w.bfax,
+        onclick: ()=>panelWorker(w, crew.foreman.name, crew.label, proj.name)
+      });
+      drawConn(svg, fmX+FM_W/2, fmY+FM_H, wX+W_W/2, wY, true);
+    });
+
+    cx += cw + CREW_GAP;
+  });
+
+  // Status bar
+  const allW  = proj.crews.flatMap(c=>c.workers);
+  const ok    = allW.filter(w=>w.cs==='current').length;
+  const issues= allW.filter(w=>w.cs!=='current').length;
+  const comp  = allW.length ? Math.round(ok/allW.length*100) : 100;
+  document.getElementById('sbProj').textContent    = proj.name;
+  document.getElementById('sbWorkers').textContent = allW.length + ' workers';
+  document.getElementById('sbCrews').textContent   = proj.crews.length + ' crew' + (proj.crews.length>1?'s':'');
+  document.getElementById('sbIssues').textContent  = issues>0 ? issues+' cert issue'+(issues>1?'s':'') : '';
+  document.getElementById('sbIssueSep').style.display = issues>0 ? '' : 'none';
+  document.getElementById('sbComp').textContent    = comp+'% compliant';
+  document.getElementById('sbComp').style.color    = comp>=90?'var(--mint)':comp>=75?'var(--yellow)':'var(--red)';
+
+  setTimeout(fitCanvas, 60);
+}
+
+function renderCorp() {
+  const nodesEl = document.getElementById('nodes');
+  const svg     = document.getElementById('svgLines');
+  nodesEl.innerHTML = ''; svg.innerHTML = '';
+
+  const CW=162, CG=22;
+  const EXECS = [
+    { name:'Strategic Steve', role:'CEO / Owner',    trade:'Executive',   av:'av-blue',   cs:'current' },
+    { name:'HR Helen',        role:'HR Manager',     trade:'HR',          av:'av-mint',   cs:'current' },
+    { name:'Safety Sam',      role:'Safety Director',trade:'Safety',      av:'av-orange', cs:'current' },
+    { name:'Fiscal Fran',     role:'CFO',            trade:'Finance',     av:'av-teal',   cs:'current' },
+  ];
+  const PMS = [
+    { name:'Paula Rodriguez', role:'PM · Riverside / Harbor', trade:'Management', av:'av-blue',   cs:'current' },
+    { name:'Oliver Nash',     role:'PM · Mesa Verde',         trade:'Management', av:'av-orange', cs:'current' },
+    { name:'Rachel Kim',      role:'PM · Downtown Commons',   trade:'Management', av:'av-pink',   cs:'current' },
+  ];
+
+  const execTotalW = EXECS.length*(CW+CG)-CG;
+  const compX = 48 + execTotalW/2 - CW/2;
+
+  // Company
+  mkNode(nodesEl, compX, 48, CW, PM_H, 'ntype-exec', {
+    label:'COMPANY', labelCol:'var(--pink)',
+    name:'BigCat Construction', trade:'General Contractor',
+    role:'Licensed GC · 4 active projects',
+    cs:'current', av:'av-blue', reports:null, bfax:true, onclick:()=>{}
+  });
+
+  // Execs
+  const eY = 48+PM_H+60;
+  let ex = 48;
+  EXECS.forEach(e => {
+    mkNode(nodesEl, ex, eY, CW, FM_H, 'ntype-foreman', {
+      label:'EXECUTIVE', labelCol:'var(--mint)',
+      name:e.name, trade:e.trade, role:e.role,
+      cs:e.cs, av:e.av, reports:null, bfax:true, onclick:()=>{}
+    });
+    drawConn(svg, compX+CW/2, 48+PM_H, ex+CW/2, eY, false);
+    ex += CW+CG;
+  });
+
+  // PMs under CEO (first exec)
+  const pmY2 = eY + FM_H + 58;
+  const pmTotalW = PMS.length*(CW+CG)-CG;
+  let pmx = 48 + execTotalW/2 - pmTotalW/2;
+  const ceoCx = 48 + CW/2;
+  PMS.forEach(p => {
+    mkNode(nodesEl, pmx, pmY2, CW, W_H, '', {
+      label:'PROJECT MANAGER', labelCol:'var(--blue)',
+      name:p.name, trade:p.trade, role:p.role,
+      cs:p.cs, av:p.av, reports:null, bfax:true, onclick:()=>{}
+    });
+    drawConn(svg, ceoCx, eY+FM_H, pmx+CW/2, pmY2, false);
+    pmx += CW+CG;
+  });
+
+  document.getElementById('sbProj').textContent    = 'Corporate View';
+  document.getElementById('sbWorkers').textContent = '247 workers';
+  document.getElementById('sbCrews').textContent   = '4 projects · 10 crews';
+  document.getElementById('sbIssues').textContent  = '';
+  document.getElementById('sbIssueSep').style.display = 'none';
+  document.getElementById('sbComp').textContent    = '91% compliant';
+  document.getElementById('sbComp').style.color    = 'var(--mint)';
+
+  setTimeout(fitCanvas, 60);
+}
+
+// ═══════════════════════════════════════════════════════
+//  NODE FACTORY
+// ═══════════════════════════════════════════════════════
+function mkNode(container, x, y, w, h, cls, o) {
+  const el = document.createElement('div');
+  el.className = 'node ' + (cls||'');
+  el.style.cssText = `left:${x}px;top:${y}px;width:${w}px;min-height:${h}px;`;
+
+  const footHtml = (() => {
+    if (o.reports !== null)
+      return `<div class="n-foot"><svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="opacity:.5;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>${o.reports} direct reports</div>`;
+    if (o.bfax === true)
+      return `<div class="n-foot bfax-ok"><svg width="10" height="10" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>BuilderFax ✓</div>`;
+    if (o.bfax === false)
+      return `<div class="n-foot bfax-no"><svg width="10" height="10" viewBox="0 0 20 20" fill="currentColor" style="opacity:.5"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.414-11.414a1 1 0 00-1.414 0L10 8.586 8.414 7a1 1 0 00-1.414 1.414L8.586 10 7 11.586a1 1 0 101.414 1.414L10 11.414l1.586 1.586a1 1 0 001.414-1.414L11.414 10l1.586-1.586a1 1 0 000-1.414z"/></svg>BFax not connected</div>`;
+    return '';
+  })();
+
+  el.innerHTML = `
+    ${o.label?`<div class="n-label" style="color:${o.labelCol}">${o.label}</div>`:''}
+    <div class="n-name">
+      <span class="n-name-t">${o.name}</span>
+      <span class="cert-dot" style="background:${cCol(o.cs)}"></span>
+    </div>
+    <div class="n-trade">${o.trade}</div>
+    <div class="n-role">${o.role}</div>
+    ${footHtml}
+  `;
+  el.addEventListener('click', o.onclick);
+  container.appendChild(el);
+  return el;
+}
+
+// ═══════════════════════════════════════════════════════
+//  SVG CONNECTORS
+// ═══════════════════════════════════════════════════════
+function drawConn(svg, x1, y1, x2, y2, dashed) {
+  const mid = (y1+y2)/2;
+  const p = document.createElementNS('http://www.w3.org/2000/svg','path');
+  p.setAttribute('d', `M${x1},${y1} C${x1},${mid} ${x2},${mid} ${x2},${y2}`);
+  p.setAttribute('class', dashed ? 'conn-fm' : 'conn-pm');
+  svg.appendChild(p);
+}
+
+// ═══════════════════════════════════════════════════════
+//  PANEL — WORKER
+// ═══════════════════════════════════════════════════════
+function panelWorker(w, foremanName, crewLabel, projName) {
+  const alertHtml = {
+    expired:  `<div class="alert alert-red"><span>⚠</span><div><strong>Certification expired.</strong> Worker is auto-blocked from cert-required site assignments by Scheduler.</div></div>`,
+    missing:  `<div class="alert alert-red"><span>⚠</span><div><strong>No certs on file.</strong> Worker cannot be assigned to any cert-required site until resolved.</div></div>`,
+    expiring: `<div class="alert alert-yellow"><span>◆</span><div><strong>Cert expiring within 30 days.</strong> Assign renewal now to prevent scheduling block.</div></div>`,
+    current:  `<div class="alert alert-mint"><span>✓</span><div>All certifications current. Eligible for all site assignments.</div></div>`,
+  }[w.cs] || '';
+
+  const certHtml = w.certs.length
+    ? w.certs.map(c=>`<div class="cert-row"><span style="font-weight:500">${c.n}</span>${cPill(c.s)}</div>`).join('')
+    : `<div style="color:var(--t3);font-size:12px;padding:6px 0">No certifications on file.</div>`;
+
+  const needsRenewal = w.cs==='expired'||w.cs==='expiring';
+  const needsBfax    = !w.bfax;
+
+  openPanel(w.name, `${w.role} · ${crewLabel} · ${projName}`, `
+    <div class="psec">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div class="av ${w.av}" style="width:46px;height:46px;font-size:15px">${ini(w.name)}</div>
+        <div>
+          <div style="font-weight:700;font-size:15px">${w.name}</div>
+          <div style="font-size:12px;color:var(--t2);margin-top:1px">${w.bio}</div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px">
+            ${w.union?`<span class="pill p-blue">${w.union}</span>`:`<span class="pill p-ghost">Non-union</span>`}
+            ${w.bfax?`<span class="pill p-mint"><svg width="9" height="9" viewBox="0 0 20 20" fill="currentColor" style="margin-right:1px"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>BuilderFax ✓</span>`:`<span class="pill p-orange">BFax not connected</span>`}
+          </div>
+        </div>
+      </div>
+      ${alertHtml}
+    </div>
+    <div class="psec">
+      <div class="psec-title">Project &amp; Crew</div>
+      <div style="background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:11px 13px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12.5px">
+        <div><div style="color:var(--t3);font-size:11px">Project</div><div style="font-weight:600;margin-top:1px">${projName}</div></div>
+        <div><div style="color:var(--t3);font-size:11px">Crew</div><div style="font-weight:600;margin-top:1px">${crewLabel}</div></div>
+        <div><div style="color:var(--t3);font-size:11px">Foreman</div><div style="font-weight:600;margin-top:1px">${foremanName}</div></div>
+        <div><div style="color:var(--t3);font-size:11px">Trade</div><div style="font-weight:600;margin-top:1px">${w.trade}</div></div>
+      </div>
+    </div>
+    <div class="psec">
+      <div class="psec-title">Certifications</div>
+      ${certHtml}
+    </div>
+    <div class="psec">
+      <div class="psec-title">Actions</div>
+      <div class="actions">
+        ${needsRenewal?`<button class="action-btn ab-mint" onclick=""><div class="action-icon ai-mint">📚</div><div><div>Assign Renewal Course</div><div class="ab-sub">Auto-enroll in LMS · notifies worker</div></div></button>`:''}
+        ${needsBfax?`<button class="action-btn ab-mint" onclick=""><div class="action-icon ai-mint">📲</div><div><div>Send BuilderFax Invite</div><div class="ab-sub">SMS to ${w.name.split(' ')[0]}'s mobile</div></div></button>`:''}
+        <button class="action-btn ab-ghost" onclick=""><div class="action-icon ai-ghost">📋</div><div><div>Start Performance Review</div><div class="ab-sub">Annual review · assigned to ${foremanName}</div></div></button>
+        <button class="action-btn ab-ghost" onclick=""><div class="action-icon ai-ghost">⭐</div><div><div>Log Commendation</div><div class="ab-sub">Add to performance record</div></div></button>
+        <button class="action-btn ab-ghost" onclick=""><div class="action-icon ai-yellow">👤</div><div><div>View Full Employee Profile</div><div class="ab-sub">Open in Employees module</div></div></button>
+        <button class="action-btn ab-ghost" onclick=""><div class="action-icon ai-blue">📅</div><div><div>View in Scheduler</div><div class="ab-sub">See upcoming assignments</div></div></button>
+        ${needsRenewal?`<button class="action-btn ab-ghost" onclick=""><div class="action-icon ai-ghost">📄</div><div><div>Upload Certificate Manually</div><div class="ab-sub">PDF or photo · bypasses BFax</div></div></button>`:''}
+        <button class="action-btn ab-red" onclick=""><div class="action-icon ai-red">⚠</div><div><div>Log Incident</div><div class="ab-sub">Creates record in Performance module</div></div></button>
+      </div>
+    </div>
+    <div class="proto-note">⬡ Eng: context-aware actions — renewal + invite buttons only render when relevant to worker's cert status / BFax state.</div>
+  `);
+}
+
+// ═══════════════════════════════════════════════════════
+//  PANEL — FOREMAN
+// ═══════════════════════════════════════════════════════
+function panelForeman(crew, projName) {
+  const workers = crew.workers;
+  const cnt = { current:0, expiring:0, expired:0, missing:0 };
+  workers.forEach(w=>cnt[w.cs]=(cnt[w.cs]||0)+1);
+  const bfaxOk    = workers.filter(w=>w.bfax).length;
+  const issues    = (cnt.expired||0)+(cnt.missing||0);
+  const expiring  = cnt.expiring||0;
+  const comp      = workers.length ? Math.round((cnt.current||0)/workers.length*100) : 100;
+  const bfaxMiss  = workers.filter(w=>!w.bfax).length;
+
+  openPanel(crew.foreman.name, `${crew.label} · ${crew.foreman.role} · ${projName}`, `
+    <div class="psec">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div class="av ${crew.foreman.av}" style="width:46px;height:46px;font-size:15px">${ini(crew.foreman.name)}</div>
+        <div>
+          <div style="font-weight:700;font-size:15px">${crew.foreman.name}</div>
+          <div style="font-size:12px;color:var(--t2)">${crew.foreman.bio}</div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px">
+            ${crew.foreman.union?`<span class="pill p-blue">${crew.foreman.union}</span>`:''}
+            <span class="pill p-mint">BuilderFax ✓</span>
+          </div>
+        </div>
+      </div>
+      ${issues>0?`<div class="alert alert-red"><span>⚠</span><div><strong>${issues} worker${issues>1?'s':''} in ${crew.label}</strong> have expired or missing certs. Scheduler is blocking their assignment.</div></div>`:''}
+      ${expiring>0?`<div class="alert alert-yellow"><span>◆</span><div><strong>${expiring} cert${expiring>1?'s':''} expiring within 30 days</strong> in ${crew.label}. Assign renewals now.</div></div>`:''}
+    </div>
+    <div class="psec">
+      <div class="psec-title">Foreman Certifications</div>
+      ${crew.foreman.certs.map(c=>`<div class="cert-row"><span style="font-weight:500">${c.n}</span>${cPill(c.s)}</div>`).join('')}
+    </div>
+    <div class="psec">
+      <div class="psec-title">${crew.label} Summary</div>
+      <div class="info-grid">
+        <div class="info-cell"><div class="info-val">${workers.length}</div><div class="info-lbl">Workers</div></div>
+        <div class="info-cell"><div class="info-val" style="color:${comp>=90?'var(--mint)':comp>=75?'var(--yellow)':'var(--red)'}">${comp}%</div><div class="info-lbl">Cert compliant</div></div>
+        <div class="info-cell"><div class="info-val" style="color:${issues>0?'var(--red)':'var(--mint)'}">${issues}</div><div class="info-lbl">Cert issues</div></div>
+        <div class="info-cell"><div class="info-val" style="color:var(--mint)">${bfaxOk}/${workers.length}</div><div class="info-lbl">BFax connected</div></div>
+      </div>
+    </div>
+    <div class="psec">
+      <div class="psec-title">${crew.label} Workers — click to open</div>
+      ${workers.map(w=>{
+        const d = JSON.stringify({name:w.name,role:w.role,trade:w.trade,av:w.av,cs:w.cs,bfax:w.bfax,union:w.union,bio:w.bio,certs:w.certs});
+        return `<div class="worker-row" onclick='openWorkerFromPanel(${esc(d)},"${esc(crew.foreman.name)}","${esc(crew.label)}","${esc(projName)}")'>
+          <div style="display:flex;align-items:center;gap:9px">
+            <div class="av ${w.av}" style="width:26px;height:26px;font-size:10px">${ini(w.name)}</div>
+            <div>
+              <div style="font-size:12.5px;font-weight:500">${w.name}</div>
+              <div style="font-size:11.5px;color:var(--t2)">${w.trade} · ${w.role}</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            ${w.bfax
+              ?`<svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill="#7aecb4"/></svg>`
+              :`<svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.414-11.414a1 1 0 00-1.414 0L10 8.586 8.414 7a1 1 0 00-1.414 1.414L8.586 10 7 11.586a1 1 0 101.414 1.414L10 11.414l1.586 1.586a1 1 0 001.414-1.414L11.414 10l1.586-1.586a1 1 0 000-1.414z" fill="#667085"/></svg>`}
+            <span class="cert-dot" style="background:${cCol(w.cs)};width:8px;height:8px"></span>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="psec">
+      <div class="psec-title">Actions</div>
+      <div class="actions">
+        <button class="action-btn ab-mint" onclick=""><div class="action-icon ai-mint">📋</div><div><div>Start ${crew.label} Review Cycle</div><div class="ab-sub">Sends review forms to ${crew.foreman.name}</div></div></button>
+        <button class="action-btn ab-ghost" onclick=""><div class="action-icon ai-ghost">📚</div><div><div>Assign Crew-Wide Training</div><div class="ab-sub">Bulk-enroll ${crew.label} in LMS course</div></div></button>
+        ${bfaxMiss>0?`<button class="action-btn ab-ghost" onclick=""><div class="action-icon ai-mint">📲</div><div><div>Bulk BFax Invite (${bfaxMiss} missing)</div><div class="ab-sub">SMS all unconnected workers in ${crew.label}</div></div></button>`:''}
+        <button class="action-btn ab-ghost" onclick=""><div class="action-icon ai-blue">📅</div><div><div>View ${crew.label} Schedule</div><div class="ab-sub">Open Scheduler filtered to this crew</div></div></button>
+        <button class="action-btn ab-ghost" onclick=""><div class="action-icon ai-ghost">📊</div><div><div>Crew Performance Report</div><div class="ab-sub">Incidents, scores, cert compliance</div></div></button>
+        <button class="action-btn ab-ghost" onclick=""><div class="action-icon ai-ghost">👤</div><div><div>View Foreman Profile</div><div class="ab-sub">Full employee record in Employees</div></div></button>
+        <button class="action-btn ab-ghost" onclick=""><div class="action-icon ai-yellow">➕</div><div><div>Add Worker to ${crew.label}</div><div class="ab-sub">Assign from Employees · updates Scheduler</div></div></button>
+      </div>
+    </div>
+    <div class="proto-note">⬡ Eng: "Start Review Cycle" creates review tasks for each worker report, bulk-assigns to foreman, and sets due date from HR settings. Bulk invite calls BFax /invite endpoint with worker phone numbers.</div>
+  `);
+}
+
+// ═══════════════════════════════════════════════════════
+//  PANEL — PM
+// ═══════════════════════════════════════════════════════
+function panelPm(proj) {
+  const allW     = proj.crews.flatMap(c=>c.workers);
+  const issues   = allW.filter(w=>w.cs!=='current').length;
+  const comp     = allW.length ? Math.round(allW.filter(w=>w.cs==='current').length/allW.length*100) : 100;
+  const bfaxMiss = allW.filter(w=>!w.bfax).length;
+
+  openPanel(proj.pm.name, `Project Manager · ${proj.name}`, `
+    <div class="psec">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div class="av ${proj.pm.av}" style="width:46px;height:46px;font-size:15px">${ini(proj.pm.name)}</div>
+        <div>
+          <div style="font-weight:700;font-size:15px">${proj.pm.name}</div>
+          <div style="font-size:12px;color:var(--t2)">${proj.pm.bio}</div>
+        </div>
+      </div>
+    </div>
+    <div class="psec">
+      <div class="psec-title">Project Overview — ${proj.name}</div>
+      <div style="font-size:12px;color:var(--t2);margin-bottom:10px">${proj.phase}</div>
+      <div class="info-grid">
+        <div class="info-cell"><div class="info-val">${allW.length}</div><div class="info-lbl">Workers</div></div>
+        <div class="info-cell"><div class="info-val" style="color:${comp>=90?'var(--mint)':comp>=75?'var(--yellow)':'var(--red)'}">${comp}%</div><div class="info-lbl">Cert compliant</div></div>
+        <div class="info-cell"><div class="info-val" style="color:${issues>0?'var(--red)':'var(--mint)'}">${issues}</div><div class="info-lbl">Cert issues</div></div>
+        <div class="info-cell"><div class="info-val">${proj.crews.length}</div><div class="info-lbl">Active crews</div></div>
+      </div>
+    </div>
+    <div class="psec">
+      <div class="psec-title">Crews — click to open</div>
+      ${proj.crews.map(c=>{
+        const cd = JSON.stringify(c).replace(/"/g,'&quot;');
+        return `<div class="worker-row" onclick='openCrewFromPanel(${cd},"${esc(proj.name)}")'>
+          <div>
+            <div style="font-size:12.5px;font-weight:600" >${c.label} — ${c.foreman.name}</div>
+            <div style="font-size:11.5px;color:var(--t2)">${c.trade} · ${c.workers.length} workers</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="cert-dot" style="background:${cCol(c.foreman.cs)};width:8px;height:8px"></span>
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="psec">
+      <div class="psec-title">Actions</div>
+      <div class="actions">
+        <button class="action-btn ab-mint" onclick=""><div class="action-icon ai-mint">📋</div><div><div>Start Project Review Cycle</div><div class="ab-sub">Kicks off all crew reviews · due 30 days</div></div></button>
+        <button class="action-btn ab-ghost" onclick=""><div class="action-icon ai-ghost">📊</div><div><div>Project Workforce Report</div><div class="ab-sub">Cert compliance, costs, performance</div></div></button>
+        <button class="action-btn ab-ghost" onclick=""><div class="action-icon ai-blue">📅</div><div><div>View Project Schedule</div><div class="ab-sub">Open Scheduler for ${proj.name}</div></div></button>
+        ${bfaxMiss>0?`<button class="action-btn ab-ghost" onclick=""><div class="action-icon ai-mint">📲</div><div><div>Bulk BFax Invite (${bfaxMiss} missing)</div><div class="ab-sub">SMS all unconnected workers on project</div></div></button>`:''}
+        <button class="action-btn ab-ghost" onclick=""><div class="action-icon ai-ghost">📚</div><div><div>Assign Project-Wide Training</div><div class="ab-sub">Enroll all workers in a course</div></div></button>
+        <button class="action-btn ab-ghost" onclick=""><div class="action-icon ai-ghost">➕</div><div><div>Add Worker to Project</div><div class="ab-sub">Assign from Employees module</div></div></button>
+      </div>
+    </div>
+  `);
+}
+
+// ═══════════════════════════════════════════════════════
+//  PANEL — OPEN / CLOSE
+// ═══════════════════════════════════════════════════════
+function openPanel(title, sub, body) {
+  document.getElementById('panelTitle').textContent = title;
+  document.getElementById('panelSub').textContent   = sub;
+  document.getElementById('panelBody').innerHTML    = body;
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('panelBody').scrollTop = 0;
+}
+function closePanel() { document.getElementById('overlay').classList.remove('open'); }
+function maybeClose(e) { if(e.target===document.getElementById('overlay')) closePanel(); }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closePanel(); });
+
+// Cross-panel drilldowns
+window.openWorkerFromPanel = function(data, fm, crew, proj) {
+  if(typeof data==='string') data=JSON.parse(data);
+  closePanel();
+  requestAnimationFrame(()=>panelWorker(data, fm, crew, proj));
+};
+window.openCrewFromPanel = function(data, proj) {
+  if(typeof data==='string') data=JSON.parse(data);
+  closePanel();
+  requestAnimationFrame(()=>panelForeman(data, proj));
+};
+
+// ═══════════════════════════════════════════════════════
+//  VIEW / PROJECT SWITCHING
+// ═══════════════════════════════════════════════════════
+let currentView = 'proj', currentProjIdx = 0;
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('vCorp').classList.toggle('on', v==='corp');
+  document.getElementById('vProj').classList.toggle('on', v==='proj');
+  const tabs = document.getElementById('projTabs');
+  tabs.style.opacity = v==='proj' ? '1' : '.3';
+  tabs.style.pointerEvents = v==='proj' ? '' : 'none';
+  if(v==='proj') renderProject(PROJECTS[currentProjIdx]);
+  else renderCorp();
+}
+function setProject(idx, btn) {
+  currentProjIdx = idx;
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  if(currentView==='proj') renderProject(PROJECTS[idx]);
+}
+
+// ═══════════════════════════════════════════════════════
+//  PERSONA SWITCHER
+// ═══════════════════════════════════════════════════════
+const PERSONAS = [
+  { name:'HR Helen',        av:'av-mint',   in:'HH' },
+  { name:'Strategic Steve', av:'av-blue',   in:'SS' },
+  { name:'Safety Sam',      av:'av-orange', in:'SM' },
+  { name:'Foreman Fran.',   av:'av-teal',   in:'FF' },
+];
+let pi = 0;
+function nextPersona() {
+  pi = (pi+1)%PERSONAS.length;
+  const p = PERSONAS[pi];
+  document.getElementById('pName').textContent = p.name;
+  const pav = document.getElementById('pAv');
+  pav.className = 'persona-av ' + p.av;
+  pav.style.cssText = 'width:22px;height:22px;font-size:9px';
+  pav.textContent = p.in;
+  document.getElementById('navAv').textContent = p.in;
+}
+
+// ═══════════════════════════════════════════════════════
+//  PAN + ZOOM
+// ═══════════════════════════════════════════════════════
+let scale=1, panX=40, panY=40, isDragging=false, lastX=0, lastY=0;
+
+function applyTransform() {
+  document.getElementById('canvas').style.transform = `translate(${panX}px,${panY}px) scale(${scale})`;
+  document.getElementById('zLbl').textContent = Math.round(scale*100)+'%';
+}
+function applyZoom(factor, mx, my) {
+  const wrap = document.getElementById('canvasWrap');
+  if(mx===undefined){ mx=wrap.offsetWidth/2; my=wrap.offsetHeight/2; }
+  const prev=scale;
+  scale = Math.max(0.2, Math.min(2.5, scale*factor));
+  panX = mx-(mx-panX)*(scale/prev);
+  panY = my-(my-panY)*(scale/prev);
+  applyTransform();
+}
+function fitCanvas() {
+  const wrap  = document.getElementById('canvasWrap');
+  const nodes = document.querySelectorAll('.node');
+  if(!nodes.length) return;
+  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
+  nodes.forEach(n=>{
+    const l=parseInt(n.style.left)||0, t=parseInt(n.style.top)||0;
+    x0=Math.min(x0,l); y0=Math.min(y0,t);
+    x1=Math.max(x1,l+(n.offsetWidth||155));
+    y1=Math.max(y1,t+(n.offsetHeight||90));
+  });
+  const pad=60, cw=x1-x0+pad*2, ch=y1-y0+pad*2;
+  const ww=wrap.offsetWidth, wh=wrap.offsetHeight;
+  scale = Math.max(0.2, Math.min(1.15, Math.min(ww/cw, wh/ch)));
+  panX = (ww-cw*scale)/2 - x0*scale + pad*scale;
+  panY = (wh-ch*scale)/2 - y0*scale + pad*scale;
+  applyTransform();
+}
+function resetCanvas(){ scale=1; panX=40; panY=40; applyTransform(); }
+
+const cw = document.getElementById('canvasWrap');
+cw.addEventListener('mousedown', e=>{
+  if(e.target.closest('.node')) return;
+  isDragging=true; lastX=e.clientX; lastY=e.clientY;
+  cw.classList.add('panning');
+});
+window.addEventListener('mousemove', e=>{
+  if(!isDragging) return;
+  panX+=e.clientX-lastX; panY+=e.clientY-lastY;
+  lastX=e.clientX; lastY=e.clientY;
+  applyTransform();
+});
+window.addEventListener('mouseup', ()=>{ isDragging=false; cw.classList.remove('panning'); });
+cw.addEventListener('wheel', e=>{
+  e.preventDefault();
+  const r=cw.getBoundingClientRect();
+  applyZoom(e.deltaY>0?0.9:1.1, e.clientX-r.left, e.clientY-r.top);
+},{passive:false});
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+renderProject(PROJECTS[0]);
+</script>
+</body>
+</html>
