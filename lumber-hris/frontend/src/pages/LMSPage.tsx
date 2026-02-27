@@ -25,13 +25,11 @@ const categoryIcons: Record<string, string> = {
   'Equipment': '🔧',
 }
 
-const mockRules = [
-  { id: '1', name: 'OSHA 10 for All Field Workers', description: 'Auto-assign OSHA 10-Hour to all employees with field department', trigger: 'department=Field', active: true },
-  { id: '2', name: 'First Aid for Crew Leads', description: 'Auto-assign First Aid/CPR course to foremen and crew leads', trigger: 'role=Foreman', active: true },
-  { id: '3', name: 'Safety Orientation for New Hires', description: 'Auto-assign within 48 hours of hire date', trigger: 'hire_date=new', active: true },
-  { id: '4', name: 'Fall Protection Refresher', description: 'Re-assign annually for all workers at height-eligible projects', trigger: 'trade=Ironwork,Carpentry', active: false },
-  { id: '5', name: 'Equipment Certification Renewal', description: 'Re-assign 30 days before certification expiry', trigger: 'cert_expiry=30d', active: true },
-]
+const triggerLabels: Record<string, string> = {
+  NEW_HIRE: 'Triggered on new hire',
+  CERT_EXPIRING: 'Triggered on certification expiry',
+  LOW_REVIEW_SCORE: 'Triggered on low review score',
+}
 
 export default function LMSPage() {
   const [tab, setTab] = useState<Tab>('manager')
@@ -39,6 +37,7 @@ export default function LMSPage() {
   const [assignments, setAssignments] = useState<any[]>([])
   const [expiring, setExpiring] = useState<any[]>([])
   const [compliance, setCompliance] = useState<any>(null)
+  const [rules, setRules] = useState<any[]>([])
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [loading, setLoading] = useState(true)
@@ -49,11 +48,13 @@ export default function LMSPage() {
       api.get('/lms/assignments'),
       api.get('/lms/expiring?days=30'),
       api.get('/lms/compliance'),
-    ]).then(([cRes, aRes, eRes, compRes]) => {
+      api.get('/lms/rules'),
+    ]).then(([cRes, aRes, eRes, compRes, rRes]) => {
       setCourses(cRes.data || [])
       setAssignments(aRes.data || [])
       setExpiring(eRes.data || [])
       setCompliance(compRes.data)
+      setRules(rRes.data || [])
       setLoading(false)
     }).catch(() => setLoading(false))
   }, [])
@@ -293,21 +294,24 @@ export default function LMSPage() {
       {/* Auto-Enrollment Rules */}
       {tab === 'rules' && (
         <div className="space-y-3">
-          {mockRules.map(r => (
+          {rules.map((r: any) => (
             <div key={r.id} className="bg-white rounded-xl border p-4 flex items-center gap-4"
               style={{ borderColor: 'var(--border)' }}>
               <div className="w-10 h-10 rounded-lg flex items-center justify-center"
-                style={{ backgroundColor: r.active ? 'rgba(122,236,180,.1)' : '#f5f6f8' }}>
-                <Shield size={20} style={{ color: r.active ? '#15803d' : 'var(--t4)' }} />
+                style={{ backgroundColor: r.is_active ? 'rgba(122,236,180,.1)' : '#f5f6f8' }}>
+                <Shield size={20} style={{ color: r.is_active ? '#15803d' : 'var(--t4)' }} />
               </div>
               <div className="flex-1">
                 <div className="font-semibold text-sm" style={{ color: 'var(--t1)' }}>{r.name}</div>
-                <div className="text-xs mt-0.5" style={{ color: 'var(--t3)' }}>{r.description}</div>
+                <div className="text-xs mt-0.5" style={{ color: 'var(--t3)' }}>
+                  {triggerLabels[r.trigger_type] || r.trigger_type?.replace(/_/g, ' ')}
+                  {r.trigger_config && ` · ${r.trigger_config}`}
+                </div>
               </div>
               <div className="w-10 h-5 rounded-full cursor-pointer relative transition-colors"
-                style={{ backgroundColor: r.active ? 'var(--mint)' : '#d1d5db' }}>
+                style={{ backgroundColor: r.is_active ? 'var(--mint)' : '#d1d5db' }}>
                 <div className="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all"
-                  style={{ left: r.active ? '22px' : '2px' }}></div>
+                  style={{ left: r.is_active ? '22px' : '2px' }}></div>
               </div>
             </div>
           ))}

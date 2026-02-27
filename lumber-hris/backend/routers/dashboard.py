@@ -40,12 +40,21 @@ async def get_kpis(db: Session = Depends(get_db), _=Depends(get_current_user)):
     ).filter(Employee.status == "ACTIVE").scalar() or 0
     avg_months = round(avg_tenure / 30.44, 1)
 
+    # Compute turnover rate: terminated in last 12 months / avg headcount * 100
+    twelve_months_ago = today - timedelta(days=365)
+    terminated_12m = db.query(func.count(Employee.id)).filter(
+        Employee.status == "TERMINATED",
+        Employee.termination_date >= twelve_months_ago,
+    ).scalar() or 0
+    avg_headcount = active + (terminated_12m / 2)
+    turnover_rate = round((terminated_12m / avg_headcount) * 100, 1) if avg_headcount else 0
+
     return {
         "total_headcount": active,
-        "open_positions": 12,  # Placeholder
+        "open_positions": 0,
         "pending_reviews": pending,
         "expiring_certs": exp_certs + expired,
-        "turnover_rate": 8.5,  # Placeholder
+        "turnover_rate": turnover_rate,
         "avg_tenure_months": avg_months,
         "training_compliance_pct": compliance_pct,
         "active_projects": active_proj,

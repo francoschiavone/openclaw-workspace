@@ -221,7 +221,7 @@ async def list_pips(db: Session = Depends(get_db), _=Depends(get_current_user)):
 
 # ---- Calibration 9-box ----
 
-@performance_router.get("/calibration")
+@performance_router.get("/calibration/nine-box")
 async def calibration_grid(
     cycle_id: Optional[str] = None,
     db: Session = Depends(get_db), _=Depends(get_current_user),
@@ -231,23 +231,20 @@ async def calibration_grid(
         q = q.filter(PerformanceReview.review_cycle_id == cycle_id)
     reviews = q.all()
 
-    # Build 3x3 grid
-    cells = {}
-    for perf in range(1, 4):
-        for pot in range(1, 4):
-            cells[f"{perf}_{pot}"] = {"performance": perf, "potential": pot, "employees": []}
+    # Build 3x3 grid: rows = High/Medium/Low potential, cols = Low/Medium/High performance
+    grid = [[{"count": 0, "employees": []} for _ in range(3)] for _ in range(3)]
 
+    total_reviewed = 0
     for r in reviews:
         if r.overall_rating is None:
             continue
-        perf_level = 1 if r.overall_rating < 2.5 else (2 if r.overall_rating < 3.5 else 3)
-        pot_level = 2  # Default medium potential
-        key = f"{perf_level}_{pot_level}"
-        if key in cells:
-            cells[key]["employees"].append({
-                "id": r.employee_id,
-                "name": _emp_name(db, r.employee_id),
-                "rating": r.overall_rating,
-            })
+        total_reviewed += 1
+        perf_idx = 0 if r.overall_rating < 2.5 else (1 if r.overall_rating < 3.5 else 2)
+        pot_idx = 1  # Default medium potential
+        grid[pot_idx][perf_idx]["count"] += 1
+        grid[pot_idx][perf_idx]["employees"].append({
+            "name": _emp_name(db, r.employee_id),
+            "rating": r.overall_rating,
+        })
 
-    return list(cells.values())
+    return {"grid": grid, "total_reviewed": total_reviewed}

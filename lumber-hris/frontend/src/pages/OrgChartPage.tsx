@@ -4,13 +4,22 @@ import api from '@/lib/api'
 
 interface FlatEmployee {
   id: string
-  first_name: string
-  last_name: string
+  parentId: string
+  name: string
+  employee_number: string
   job_title: string
-  department_name: string
-  manager_id: string | null
-  status: string
-  hire_date: string
+  department: string
+  trade: string
+  photo_url: string
+  direct_reports: number
+  cert_status: string
+  // computed
+  first_name?: string
+  last_name?: string
+  department_name?: string
+  manager_id?: string | null
+  status?: string
+  hire_date?: string
 }
 
 interface ProjectData {
@@ -38,6 +47,8 @@ const H_GAP = 30
 const V_GAP = 60
 
 function buildTree(employees: FlatEmployee[]): TreeNode[] {
+  if (!employees || employees.length === 0) return []
+  
   const byId = new Map<string, FlatEmployee>()
   const childrenMap = new Map<string, FlatEmployee[]>()
   
@@ -47,22 +58,25 @@ function buildTree(employees: FlatEmployee[]): TreeNode[] {
   })
   
   employees.forEach(e => {
-    if (e.manager_id && childrenMap.has(e.manager_id)) {
-      childrenMap.get(e.manager_id)!.push(e)
+    const pid = e.parentId || e.manager_id
+    if (pid && childrenMap.has(pid)) {
+      childrenMap.get(pid)!.push(e)
     }
   })
   
-  // Find roots (no manager or manager not in dataset)
-  const roots = employees.filter(e => !e.manager_id || !byId.has(e.manager_id))
+  // Find roots (no parent or parent not in dataset)
+  const roots = employees.filter(e => {
+    const pid = e.parentId || e.manager_id
+    return !pid || !byId.has(pid)
+  })
   
   function makeNode(emp: FlatEmployee, depth: number): TreeNode {
     const kids = childrenMap.get(emp.id) || []
-    // Limit depth to avoid infinite recursion
-    const childNodes = depth < 5 ? kids.slice(0, 12).map(k => makeNode(k, depth + 1)) : []
+    const childNodes = depth < 4 ? kids.slice(0, 10).map(k => makeNode(k, depth + 1)) : []
     return { emp, children: childNodes, x: 0, y: 0 }
   }
   
-  return roots.slice(0, 6).map(r => makeNode(r, 0))
+  return roots.slice(0, 5).map(r => makeNode(r, 0))
 }
 
 function layoutTree(node: TreeNode, x: number, y: number, level: number): number {
@@ -277,14 +291,14 @@ export default function OrgChartPage() {
                   <div className="flex items-start gap-2">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0"
                       style={{ backgroundColor: 'var(--blue)' }}>
-                      {node.emp.first_name[0]}{node.emp.last_name[0]}
+                      {(node.emp.name || '??').split(' ').map(w => w[0]).join('').slice(0, 2)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1">
                         <span className="text-xs font-semibold truncate" style={{ color: 'var(--t1)' }}>
-                          {node.emp.first_name} {node.emp.last_name}
+                          {node.emp.name}
                         </span>
-                        <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: statusDot(node.emp.status) }}></span>
+                        <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: statusDot(node.emp.status || node.emp.cert_status === 'ok' ? 'ACTIVE' : 'ON_LEAVE') }}></span>
                       </div>
                       <div className="text-[11px] truncate" style={{ color: 'var(--t3)' }}>{node.emp.job_title}</div>
                     </div>
@@ -292,7 +306,7 @@ export default function OrgChartPage() {
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-[10px] px-1.5 py-0.5 rounded" 
                       style={{ backgroundColor: 'rgba(37,99,235,.08)', color: 'var(--blue)', fontWeight: 500 }}>
-                      {node.emp.department_name}
+                      {node.emp.department || node.emp.department_name}
                     </span>
                     {node.children.length > 0 && (
                       <span className="text-[10px]" style={{ color: 'var(--t4)' }}>
@@ -403,7 +417,7 @@ export default function OrgChartPage() {
             </span>
             <span className="w-px h-3" style={{ backgroundColor: 'var(--border)' }}></span>
             <span style={{ color: 'var(--t2)' }}>
-              <strong>{employees.filter(e => e.status === 'ACTIVE').length}</strong> active
+              <strong>{employees.filter(e => e.cert_status === 'ok').length}</strong> compliant
             </span>
             <span className="w-px h-3" style={{ backgroundColor: 'var(--border)' }}></span>
             <span style={{ color: 'var(--t2)' }}>
@@ -431,23 +445,23 @@ export default function OrgChartPage() {
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-full flex items-center justify-center text-white text-lg font-bold"
                   style={{ backgroundColor: 'var(--blue)' }}>
-                  {selectedEmployee.first_name[0]}{selectedEmployee.last_name[0]}
+                  {(selectedEmployee.name || '??').split(' ').map(w => w[0]).join('').slice(0, 2)}
                 </div>
                 <div>
                   <div className="font-bold text-lg" style={{ color: 'var(--t1)' }}>
-                    {selectedEmployee.first_name} {selectedEmployee.last_name}
+                    {selectedEmployee.name}
                   </div>
                   <div className="text-sm" style={{ color: 'var(--t3)' }}>{selectedEmployee.job_title}</div>
-                  <div className="text-xs mt-0.5" style={{ color: 'var(--t4)' }}>{selectedEmployee.department_name}</div>
+                  <div className="text-xs mt-0.5" style={{ color: 'var(--t4)' }}>{selectedEmployee.department || selectedEmployee.department_name}</div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { icon: Calendar, label: 'Hire Date', value: selectedEmployee.hire_date?.slice(0, 10) },
-                  { icon: Briefcase, label: 'Status', value: selectedEmployee.status?.replace(/_/g, ' ') },
-                  { icon: MapPin, label: 'Department', value: selectedEmployee.department_name },
-                  { icon: Users, label: 'ID', value: selectedEmployee.id.slice(0, 8) + '...' },
+                  { icon: Calendar, label: 'Employee #', value: selectedEmployee.employee_number || '—' },
+                  { icon: Briefcase, label: 'Trade', value: selectedEmployee.trade || '—' },
+                  { icon: MapPin, label: 'Department', value: selectedEmployee.department || selectedEmployee.department_name || '—' },
+                  { icon: Users, label: 'Reports', value: `${selectedEmployee.direct_reports || 0} direct` },
                 ].map((f, i) => (
                   <div key={i} className="p-3 rounded-lg" style={{ backgroundColor: '#f8f9fa', border: '1px solid var(--border)' }}>
                     <div className="flex items-center gap-1.5 mb-1">
