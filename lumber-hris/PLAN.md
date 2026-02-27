@@ -2,9 +2,10 @@
 
 ## Document Info
 - **Created**: 2026-02-27T04:00Z
+- **Updated**: 2026-02-27T04:50Z
 - **Author**: Opus (AI) — supervised by Franco Schiavone
 - **Status**: ACTIVE
-- **Version**: 1.0
+- **Version**: 2.0 (post market research)
 
 ---
 
@@ -74,23 +75,66 @@ Given the constraints above, the optimal architecture is:
 - **Easy Docker**: Single Dockerfile, one image to deploy
 - **Matches Lumber's likely stack**: Construction SaaS companies use modern JS frameworks
 
-### 2.3 Technology Stack (Final)
+### 2.3 Market Research Summary
 
-| Layer | Technology | Version | Purpose |
-|-------|-----------|---------|---------|
-| Framework | Next.js | 14.x | Full-stack React framework |
-| Language | TypeScript | 5.x | Type safety |
-| UI Library | shadcn/ui | latest | Pre-built accessible components |
-| CSS | Tailwind CSS | 3.x | Utility-first styling |
-| ORM | Prisma | 5.x | Type-safe database access |
-| Database (dev) | SQLite | 3.x | Zero-config development |
-| Database (prod) | PostgreSQL | 16 | Production deployment |
-| Authentication | NextAuth.js | 4.x | JWT-based auth with roles |
-| Org Chart | D3.js | 7.x | Interactive org visualization |
-| Charts | Chart.js + react-chartjs-2 | 4.x | Analytics dashboards |
-| Icons | Lucide React | latest | Consistent icon set |
-| Date Utils | date-fns | 3.x | Date formatting |
-| Containerization | Docker + Docker Compose | - | Deployment |
+#### Open Source HRIS Projects Evaluated
+| Project | Stack | Verdict |
+|---------|-------|---------|
+| **Frappe HR** (Python/Frappe+Vue) | Most popular OSS HRIS | ❌ Massive framework dependency, Vue not React, impossible to match Lumber prototype UI |
+| **Horilla** (Django+HTML) | 2nd most popular | ❌ Static HTML templates, not modern SPA |
+| **programinglive/hris** (Laravel+React+TS+Inertia) | Good features | ❌ PHP backend, doesn't run in our sandbox |
+| **ahmed-fawzy99** (Laravel+Vue+Inertia) | Good UX, demo online | ❌ PHP+Vue, not our stack |
+| **aveer.hr** (Next.js+TS+Supabase+shadcn) | Modern, clean | ✅ Validates our stack choice — exact same tech. Too basic to fork but proves architecture works |
+| **OrangeHRM** (PHP+Symfony) | Industry leader (OSS) | ❌ Legacy PHP, old UI |
+
+#### Commercial HRIS Tech Stacks
+| Product | Frontend | Backend | Key Design Pattern |
+|---------|----------|---------|-------------------|
+| **BambooHR** | React | Ruby on Rails | Clean employee directory, tabbed profiles, simple review forms, self-service |
+| **Gusto** | React | Ruby on Rails | Employee-centric data model, payroll integration |
+| **Rippling** | React | Python | **Unified employee data model** — everything connects to employee record, cross-module automation |
+| **Procore** | React | Ruby on Rails | Construction-native, field worker UX, project-based views |
+
+#### Key Design Patterns Adopted from Market Research
+1. **Rippling's Unified Data Model**: Employee record is the center of everything. All modules (performance, training, org chart) reference back to the employee. Cross-module data flows naturally.
+2. **BambooHR's UX Principles**: Simple navigation, clean employee profiles with tabbed sections, "few quick questions" performance reviews that encourage action, employee self-service.
+3. **Procore's Construction UX**: Project/crew-based views alongside corporate hierarchy, field worker considerations (mobile-friendly, simple interfaces).
+
+#### Reusable Libraries Identified
+1. **`d3-org-chart`** (bumbeishvili) — Purpose-built D3 org chart library with React integration. Has: pan/zoom, expand/collapse, search, custom node content, export, minimap, paging. **Saves weeks of D3 work.**
+2. **`recharts`** — React chart library (used by Kiranism dashboard starter). Better React integration than Chart.js.
+3. **`@tanstack/react-table`** — Industry-standard data table for React. Server-side search, filter, sort, pagination.
+4. **`react-hook-form` + `zod`** — Form management with schema validation. Used by shadcn/ui.
+
+#### Lumber Prototype v5 Analysis (critical — this IS the design spec)
+The HTML prototype defines:
+- **Module structure**: HRIS contains subpages: dashboard, employees, orgchart, performance, lms, analytics
+- **Performance tabs**: dashboard, cycles, review-form, incidents, commends
+- **LMS tabs**: catalog, worker, manager, rules
+- **Color scheme**: Nav bg #1e2d3b, mint accent #7aecb4, blue #2563eb, page bg #f0f2f5
+- **Construction terms deeply embedded**: crew (127×), trade (74×), OSHA (65×), union (43×), foreman (32×)
+- **D3.js already used** for org chart with corporate + project views
+- **Font**: System font stack
+
+### 2.4 Technology Stack (Final — informed by research)
+
+| Layer | Technology | Version | Why this choice |
+|-------|-----------|---------|----------------|
+| Framework | Next.js | 14.x | Same stack as aveer.hr (validated); React universal in commercial HRIS |
+| Language | TypeScript | 5.x | End-to-end type safety (Rippling pattern) |
+| UI Library | shadcn/ui | latest | Used by aveer.hr, Cal.com, modern SaaS; matches prototype look |
+| CSS | Tailwind CSS | 3.x | Utility-first; easy to match prototype colors exactly |
+| ORM | Prisma | 5.x | Type-safe, supports SQLite→PostgreSQL swap |
+| Database (dev) | SQLite | 3.x | Zero-config, works in sandbox |
+| Database (prod) | PostgreSQL | 16 | Industry standard (BambooHR, Rippling, Gusto all use it) |
+| Authentication | NextAuth.js | 4.x | JWT with roles, session management |
+| Org Chart | **d3-org-chart** | 3.x | Purpose-built D3 org chart; pan/zoom/search/export/minimap built-in |
+| Charts | **Recharts** | 2.x | Better React integration than Chart.js; used by top dashboard starters |
+| Data Tables | **@tanstack/react-table** | 8.x | Industry standard; server-side operations |
+| Forms | react-hook-form + zod | - | Schema validation; shadcn/ui native integration |
+| Icons | Lucide React | latest | Consistent, tree-shakeable |
+| Date Utils | date-fns | 3.x | Lightweight date formatting |
+| Containerization | Docker + Docker Compose | - | Production deployment |
 
 ---
 
@@ -720,16 +764,28 @@ Realistic distribution:
 
 ## 6. UI/UX Specifications
 
-### 6.1 Branding (Lumber)
+### 6.1 Branding (Lumber — from Prototype v5, EXACT)
 
-Based on the HTML prototypes in the Design Iterations folder:
-- **Primary Color**: Deep blue (#1e40af / blue-800) — Lumber brand
-- **Accent**: Amber/orange for alerts and CTAs
-- **Background**: Light gray (#f8fafc)
-- **Sidebar**: Dark blue with white text
-- **Typography**: System font stack (Inter preferred)
+Extracted directly from the HTML prototype v5 CSS variables:
+- **Nav Background**: `#1e2d3b` (dark blue-gray)
+- **Nav Text**: `#c8d6e2` (light blue-gray)
+- **Active/Accent**: `#7aecb4` (mint green) — Lumber signature color
+- **Secondary Accent**: `#2563eb` (blue)
+- **Page Background**: `#f0f2f5` (light gray)
+- **White**: `#ffffff`
+- **Border**: `#e2e6ea`
+- **Text Primary (t1)**: `#111827`
+- **Text Secondary (t2)**: `#374151`
+- **Text Tertiary (t3)**: `#6b7280`
+- **Alert Red**: `#dc2626`
+- **Warning Yellow**: `#d97706`
+- **Orange**: `#ea580c`
+- **Purple**: `#7c3aed`
+- **Typography**: System font stack
+- **Nav Height**: 52px
+- **Sub-nav Height**: 44px
 - **Cards**: White with subtle shadow, rounded corners
-- **Tables**: Alternating row colors, sticky headers
+- **Tables**: Clean borders with #e2e6ea
 
 ### 6.2 Layout
 
