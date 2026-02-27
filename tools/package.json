@@ -1,0 +1,18 @@
+{
+  "name": "tools",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@wearebravelabs/domain-checker-mcp": "^1.0.2",
+    "domain-search-mcp": "^1.10.1",
+    "whois": "^2.16.1",
+    "whois-parsed": "^1.0.14"
+  }
+}
