@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@anthropic-ai/claude-code": "^2.1.63",
     "@wearebravelabs/domain-checker-mcp": "^1.0.2",
     "domain-search-mcp": "^1.10.1",
     "whois": "^2.16.1",
